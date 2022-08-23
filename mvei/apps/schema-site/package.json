@@ -9,6 +9,7 @@
     "verify": "pnpm typecheck && pnpm test"
   },
   "keywords": [
-    "records"
+    "records",
+    "release"
   ]
 }
