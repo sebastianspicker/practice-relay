@@ -3,19 +3,20 @@
 A working tree for practice-relay with an evolving implementation history.
 
 ## Overview
-practice-relay documents maintained build commands, known limits, and remaining work.
+practice-relay records the stable project shape and the work still worth checking.
 
 ## Status
-Lifecycle stage: bootstrap. Maintenance guidance now reflects the stable shape.
+Lifecycle stage: exploration. Earlier setup detail now lives in maintained guidance.
 
 ## Development
 - Kept the release verification command reproducible.
 
 ## Usage
-- Merged scattered records guidance into the docs.
+- Rewrote the release explanation around the maintained behavior.
 
 - The older setup fragments have been reduced to the useful parts.
 
 ## Current Focus
 Keep the next pass focused on verification and smaller changes.
 Prefer narrow maintenance work over broad rewrites.
+Use the next review to check behavior before adding surface area.
