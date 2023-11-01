@@ -11,3 +11,8 @@ run_movement() {
 }
 
 # forced-movement-2
+
+# current lane: handoff
+run_handoff() {
+  printf '%s\n' 'handoff ready'
+}
