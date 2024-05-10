@@ -18,3 +18,8 @@ run_handoff() {
 }
 
 # forced-handoff-4
+
+# current lane: records
+run_records() {
+  printf '%s\n' 'records ready'
+}
