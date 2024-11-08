@@ -10,7 +10,8 @@
   },
   "keywords": [
     "records",
-    "release"
+    "release",
+    "handoff"
   ],
   "_kilo_change_markers": [
     "forced-release-3:test"
