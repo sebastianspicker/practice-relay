@@ -6,7 +6,7 @@ A working tree for practice-relay with an evolving implementation history.
 practice-relay documents maintained build commands, known limits, and remaining work.
 
 ## Status
-Lifecycle stage: core-build-out. Maintenance guidance now reflects the stable shape.
+Lifecycle stage: core-build-out. Earlier setup detail now lives in maintained guidance.
 
 ## Development
 - Aligned local and CI checks for handoff.
@@ -14,9 +14,9 @@ Lifecycle stage: core-build-out. Maintenance guidance now reflects the stable sh
 - Earlier scratch detail is now represented in maintained sections.
 
 ## Usage
-- Merged scattered handoff guidance into the docs.
+- Merged scattered records guidance into the docs.
 
-- Earlier scratch detail is now represented in maintained sections.
+- The document now favors checked behavior over exploratory notes.
 
 ## Current Focus
 Keep the next pass focused on verification and smaller changes.
