@@ -3,10 +3,10 @@
 A working tree for practice-relay with an evolving implementation history.
 
 ## Overview
-practice-relay records the stable project shape and the work still worth checking.
+practice-relay documents maintained build commands, known limits, and remaining work.
 
 ## Status
-Lifecycle stage: core-build-out. Earlier setup detail now lives in maintained guidance.
+Lifecycle stage: core-build-out. Maintenance guidance now reflects the stable shape.
 
 ## Development
 - Aligned local and CI checks for handoff.
@@ -27,3 +27,8 @@ Use the next review to check behavior before adding surface area.
 - Simplified the next maintenance pass through handoff.
 
 - Earlier scratch detail is now represented in maintained sections.
+
+## Reliability
+- Removed one failure mode from the release path.
+
+- The older setup fragments have been reduced to the useful parts.
