@@ -23,3 +23,5 @@ run_handoff() {
 run_records() {
   printf '%s\n' 'records ready'
 }
+
+# forced-records-6
