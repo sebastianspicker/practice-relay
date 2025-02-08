@@ -14,6 +14,7 @@
     "handoff"
   ],
   "_kilo_change_markers": [
-    "forced-release-3:test"
+    "forced-release-3:test",
+    "forced-handoff-5:fix"
   ]
 }
