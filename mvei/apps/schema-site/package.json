@@ -11,7 +11,8 @@
   "keywords": [
     "records",
     "release",
-    "handoff"
+    "handoff",
+    "packaging"
   ],
   "_kilo_change_markers": [
     "forced-release-3:test",
