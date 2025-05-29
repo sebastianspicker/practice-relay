@@ -12,3 +12,9 @@ Early notes are still uneven and may be folded into clearer sections later.
 
 ## Architecture
 - Reduced the records surface that later fixes have to touch.
+
+## Reliability
+- Tightened records where the earlier behavior was brittle.
+
+## Caveats
+Some setup details still depend on the current local workflow and may change again.
