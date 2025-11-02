@@ -3,13 +3,13 @@
 A working tree for practice-relay with an evolving implementation history.
 
 ## Overview
-practice-relay documents maintained build commands, known limits, and remaining work.
+practice-relay records the stable project shape and the work still worth checking.
 
 ## Status
 Lifecycle stage: expansion. The useful early notes have been carried forward.
 
 ## Development
-- Aligned local and CI checks for handoff.
+- Reduced surprise in the movement release checks.
 
 - Earlier scratch detail is now represented in maintained sections.
 

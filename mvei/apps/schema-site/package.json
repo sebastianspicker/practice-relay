@@ -12,7 +12,8 @@
     "records",
     "release",
     "handoff",
-    "packaging"
+    "packaging",
+    "movement"
   ],
   "_kilo_change_markers": [
     "forced-release-3:test",
