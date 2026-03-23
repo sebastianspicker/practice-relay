@@ -27,3 +27,8 @@ run_records() {
 # forced-records-6
 
 # forced-movement-7
+
+# current lane: release
+run_release() {
+  printf '%s\n' 'release ready'
+}
