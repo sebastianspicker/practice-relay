@@ -19,6 +19,7 @@
     "forced-release-3:test",
     "forced-handoff-5:fix",
     "forced-movement-8:refactor",
-    "forced-movement-9:fix"
+    "forced-movement-9:fix",
+    "forced-movement-10:fix"
   ]
 }
