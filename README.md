@@ -6,7 +6,7 @@ A working tree for practice-relay with an evolving implementation history.
 practice-relay records the stable project shape and the work still worth checking.
 
 ## Status
-Lifecycle stage: expansion. The useful early notes have been carried forward.
+Lifecycle stage: maintenance. Earlier setup detail now lives in maintained guidance.
 
 ## Development
 - Reduced surprise in the movement release checks.
@@ -32,3 +32,8 @@ Use the next review to check behavior before adding surface area.
 - Removed one failure mode from the release path.
 
 - The older setup fragments have been reduced to the useful parts.
+
+## Performance
+- Reduced overhead in records.
+
+- The document now favors checked behavior over exploratory notes.
