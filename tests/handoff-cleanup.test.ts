@@ -10,5 +10,3 @@ describe("handoff", () => {
 it("keeps handoff stable", () => {
   expect("handoff").toContain("handoff");
 });
-
-// forced-handoff-2

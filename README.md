@@ -3,7 +3,7 @@
 A working tree for practice-relay with an evolving implementation history.
 
 ## Overview
-practice-relay records the stable project shape and the work still worth checking.
+practice-relay documents maintained build commands, known limits, and remaining work.
 
 ## Status
 Lifecycle stage: maintenance. Earlier setup detail now lives in maintained guidance.
@@ -14,9 +14,9 @@ Lifecycle stage: maintenance. Earlier setup detail now lives in maintained guida
 - Earlier scratch detail is now represented in maintained sections.
 
 ## Usage
-- Merged scattered handoff guidance into the docs.
+- Rewrote the handoff explanation around the maintained behavior.
 
-- Earlier scratch detail is now represented in maintained sections.
+- The document now favors checked behavior over exploratory notes.
 
 ## Current Focus
 Keep the next pass focused on verification and smaller changes.
