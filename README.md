@@ -3,7 +3,7 @@
 A working tree for practice-relay with an evolving implementation history.
 
 ## Overview
-practice-relay records the stable project shape and the work still worth checking.
+practice-relay documents maintained build commands, known limits, and remaining work.
 
 ## Status
 Lifecycle stage: maintenance. Earlier setup detail now lives in maintained guidance.
@@ -29,9 +29,9 @@ Use the next review to check behavior before adding surface area.
 - Earlier scratch detail is now represented in maintained sections.
 
 ## Reliability
-- Removed one failure mode from the release path.
+- Closed a concrete movement edge found during maintenance work.
 
-- The older setup fragments have been reduced to the useful parts.
+- Earlier scratch detail is now represented in maintained sections.
 
 ## Performance
 - Reduced overhead in records.
