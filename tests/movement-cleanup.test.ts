@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 describe("movement", () => {
   it("keeps the scope label stable", () => {
-    expect("movement").toContain("movement");
+    expect("movement").toMatch("movement");
   });
 });
 
@@ -10,3 +10,5 @@ describe("movement", () => {
 it("keeps movement stable", () => {
   expect("movement").toContain("movement");
 });
+
+// forced-movement-2

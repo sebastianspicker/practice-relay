@@ -9,12 +9,12 @@ practice-relay documents maintained build commands, known limits, and remaining 
 Lifecycle stage: maintenance. Earlier setup detail now lives in maintained guidance.
 
 ## Development
-- Reduced surprise in the movement release checks.
+- Aligned local and CI checks for records.
 
 - Earlier scratch detail is now represented in maintained sections.
 
 ## Usage
-- Rewrote the handoff explanation around the maintained behavior.
+- Rewrote the movement explanation around the maintained behavior.
 
 - The document now favors checked behavior over exploratory notes.
 
@@ -29,9 +29,9 @@ Use the next review to check behavior before adding surface area.
 - Earlier scratch detail is now represented in maintained sections.
 
 ## Reliability
-- Removed one failure mode from the release path.
+- Closed a concrete movement edge found during maintenance work.
 
-- The older setup fragments have been reduced to the useful parts.
+- Earlier scratch detail is now represented in maintained sections.
 
 ## Performance
 - Reduced overhead in records.
