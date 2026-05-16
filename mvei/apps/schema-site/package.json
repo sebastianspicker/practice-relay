@@ -20,6 +20,7 @@
     "forced-handoff-5:fix",
     "forced-movement-8:refactor",
     "forced-movement-9:fix",
-    "forced-movement-10:fix"
+    "forced-movement-10:fix",
+    "forced-records-11:build"
   ]
 }

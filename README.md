@@ -6,10 +6,10 @@ A working tree for practice-relay with an evolving implementation history.
 practice-relay documents maintained build commands, known limits, and remaining work.
 
 ## Status
-Lifecycle stage: maintenance. Earlier setup detail now lives in maintained guidance.
+Lifecycle stage: maintenance. Maintenance guidance now reflects the stable shape.
 
 ## Development
-- Reduced surprise in the movement release checks.
+- Aligned local and CI checks for records.
 
 - Earlier scratch detail is now represented in maintained sections.
 
