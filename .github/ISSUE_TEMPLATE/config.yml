@@ -1,0 +1,4 @@
+# Issue chooser policy for the public alpha.
+# Why: vulnerability reports must not be redirected into public blank issues.
+blank_issues_enabled: false
+contact_links: []

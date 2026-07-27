@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mac-research.local/schemas/mvei-laban-subset/0.2.json",
+  "title": "MvEI Laban subset profile",
+  "description": "Pedagogical Labanotation subset - not full professional density. Partial documents allowed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "profile",
+    "id",
+    "completeness",
+    "measures",
+    "symbols"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "0.2.0" },
+    "profile": { "const": "mvei-laban-subset" },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "completeness": {
+      "type": "string",
+      "enum": ["sketch", "partial", "complete"]
+    },
+    "staff": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "support_left",
+              "support_right",
+              "leg_left",
+              "leg_right",
+              "body",
+              "arm_left",
+              "arm_right",
+              "head"
+            ]
+          }
+        }
+      }
+    },
+    "measures": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "index"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "index": { "type": "integer", "minimum": 0 },
+          "beats": { "type": "number", "minimum": 0 }
+        }
+      }
+    },
+    "symbols": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "column", "measureId"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "support",
+              "gesture",
+              "direction",
+              "level",
+              "turn",
+              "stillness",
+              "path"
+            ]
+          },
+          "column": {
+            "type": "string",
+            "enum": [
+              "support_left",
+              "support_right",
+              "leg_left",
+              "leg_right",
+              "body",
+              "arm_left",
+              "arm_right",
+              "head"
+            ]
+          },
+          "measureId": { "type": "string" },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "place",
+              "forward",
+              "backward",
+              "left",
+              "right",
+              "diagonal_fl",
+              "diagonal_fr",
+              "diagonal_bl",
+              "diagonal_br"
+            ]
+          },
+          "level": {
+            "type": "string",
+            "enum": ["low", "middle", "high"]
+          },
+          "durationBeats": { "type": "number", "minimum": 0 },
+          "beatOffset": {
+            "type": "number",
+            "minimum": 0,
+            "description": "Optional beat position within the measure (0-based). Additive ladder field."
+          },
+          "simultaneousGroup": {
+            "type": "string",
+            "description": "Optional group id for symbols that sound/read together across columns. Not full Laban staff density."
+          },
+          "motifSymbol": {
+            "type": "string",
+            "description": "Optional Motif vocabulary link"
+          },
+          "timeAnchor": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "tMs": { "type": "number" },
+              "musicMeasure": { "type": "string" },
+              "mediaFragment": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "annotationLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string",
+            "enum": ["elan", "motion_bank", "other"]
+          },
+          "uri": { "type": "string" }
+        }
+      }
+    },
+    "musicCoTimeline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0-annex" },
+        "musicxmlRef": { "type": ["string", "null"] },
+        "meiRef": { "type": ["string", "null"] },
+        "anchors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["motifItemId"],
+            "properties": {
+              "motifItemId": { "type": "string" },
+              "musicMeasure": { "type": "string" },
+              "tMs": { "type": "number" }
+            }
+          }
+        }
+      }
+    },
+    "migrationProvenance": {
+      "type": "object",
+      "description": "Set when imported from LabanWriter intermediate",
+      "properties": {
+        "source": { "type": "string" },
+        "warnings": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

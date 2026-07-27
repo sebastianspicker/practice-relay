@@ -1,0 +1,26 @@
+{
+  "name": "@practice-relay/mvei-reference-reader",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "Read-only Motif JSON summary used by local multi-implementation checks",
+  "main": "./src/index.mjs",
+  "exports": {
+    ".": {
+      "import": "./src/index.mjs",
+      "default": "./src/index.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["src"],
+  "bin": {
+    "mvei-reference-read": "./src/cli.mjs"
+  },
+  "scripts": {
+    "test": "node --test src/*.test.mjs"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  }
+}

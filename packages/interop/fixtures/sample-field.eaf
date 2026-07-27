@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Field-like ELAN annotation document: regions + comments + unknown tiers (gesture, speaker).
+     MEDIA_FILE empty → lossy-import warning for missing media. Hand-authored for fidelity tests. -->
+<ANNOTATION_DOCUMENT AUTHOR="field-lab" DATE="2026-03-01T12:00:00Z" FORMAT="3.0" VERSION="3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <HEADER MEDIA_FILE="" TIME_UNITS="milliseconds">
+    <PROPERTY NAME="session">rehearsal-week6</PROPERTY>
+    <PROPERTY NAME="workRecordId">field-session-01</PROPERTY>
+  </HEADER>
+  <TIME_ORDER>
+    <TIME_SLOT TIME_SLOT_ID="ts0" TIME_VALUE="0"/>
+    <TIME_SLOT TIME_SLOT_ID="ts1500" TIME_VALUE="1500"/>
+    <TIME_SLOT TIME_SLOT_ID="ts3000" TIME_VALUE="3000"/>
+    <TIME_SLOT TIME_SLOT_ID="ts5000" TIME_VALUE="5000"/>
+    <TIME_SLOT TIME_SLOT_ID="ts8000" TIME_VALUE="8000"/>
+  </TIME_ORDER>
+  <TIER TIER_ID="regions" LINGUISTIC_TYPE_REF="default">
+    <ANNOTATION>
+      <ALIGNABLE_ANNOTATION ANNOTATION_ID="a-reg-0" TIME_SLOT_REF1="ts0" TIME_SLOT_REF2="ts1500">
+        <ANNOTATION_VALUE>warmup</ANNOTATION_VALUE>
+      </ALIGNABLE_ANNOTATION>
+    </ANNOTATION>
+    <ANNOTATION>
+      <ALIGNABLE_ANNOTATION ANNOTATION_ID="a-reg-1" TIME_SLOT_REF1="ts1500" TIME_SLOT_REF2="ts5000">
+        <ANNOTATION_VALUE>phrase-A</ANNOTATION_VALUE>
+      </ALIGNABLE_ANNOTATION>
+    </ANNOTATION>
+    <ANNOTATION>
+      <ALIGNABLE_ANNOTATION ANNOTATION_ID="a-reg-2" TIME_SLOT_REF1="ts5000" TIME_SLOT_REF2="ts8000">
+        <ANNOTATION_VALUE>coda</ANNOTATION_VALUE>
+      </ALIGNABLE_ANNOTATION>
+    </ANNOTATION>
+  </TIER>
+  <TIER TIER_ID="comments" LINGUISTIC_TYPE_REF="default" PARENT_REF="regions">
+    <ANNOTATION>
+      <ALIGNABLE_ANNOTATION ANNOTATION_ID="a-cmt-0" TIME_SLOT_REF1="ts0" TIME_SLOT_REF2="ts1500">
+        <ANNOTATION_VALUE>faculty-1: Check alignment with downbeat</ANNOTATION_VALUE>
+      </ALIGNABLE_ANNOTATION>
+    </ANNOTATION>
+    <ANNOTATION>
+      <ALIGNABLE_ANNOTATION ANNOTATION_ID="a-cmt-1" TIME_SLOT_REF1="ts1500" TIME_SLOT_REF2="ts5000">
+        <ANNOTATION_VALUE>faculty-1: Travel path clearer on take 2</ANNOTATION_VALUE>
+      </ALIGNABLE_ANNOTATION>
+    </ANNOTATION>
+  </TIER>
+  <!-- Unknown tiers: imported only as warnings (not regions/comments). -->
+  <TIER TIER_ID="gesture" LINGUISTIC_TYPE_REF="default">
+    <ANNOTATION>
+      <ALIGNABLE_ANNOTATION ANNOTATION_ID="a-ges-0" TIME_SLOT_REF1="ts3000" TIME_SLOT_REF2="ts5000">
+        <ANNOTATION_VALUE>arm-arc-right</ANNOTATION_VALUE>
+      </ALIGNABLE_ANNOTATION>
+    </ANNOTATION>
+  </TIER>
+  <TIER TIER_ID="speaker" LINGUISTIC_TYPE_REF="default">
+    <ANNOTATION>
+      <ALIGNABLE_ANNOTATION ANNOTATION_ID="a-spk-0" TIME_SLOT_REF1="ts0" TIME_SLOT_REF2="ts8000">
+        <ANNOTATION_VALUE>dancer-A</ANNOTATION_VALUE>
+      </ALIGNABLE_ANNOTATION>
+    </ANNOTATION>
+  </TIER>
+  <LINGUISTIC_TYPE LINGUISTIC_TYPE_ID="default" TIME_ALIGNABLE="true"/>
+</ANNOTATION_DOCUMENT>

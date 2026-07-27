@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "template-faculty-multi-asset-week6",
+  "title": "Faculty multi-asset template - week 6 duet study",
+  "description": "Seed for Practice Relay Q17: multi-domain package assignment, not video-only.",
+  "tracks": [
+    { "id": "tr-audio", "type": "audio", "label": "Reference audio", "ref": "media/ref.wav" },
+    { "id": "tr-video", "type": "video", "label": "Performance video", "ref": "media/take-preferred.mp4" },
+    { "id": "tr-music", "type": "music_notation", "label": "Score", "ref": "scores/piece.musicxml" },
+    { "id": "tr-move", "type": "movement_annotation", "label": "Movement annotation", "ref": "annotation/move-v0.json" },
+    { "id": "tr-cues", "type": "media_cues", "label": "Cues", "ref": "cues/cues.json" },
+    { "id": "tr-text", "type": "text", "label": "Reflection", "ref": "text/reflection.md" }
+  ],
+  "takes": [
+    { "id": "take-01", "label": "Run 1", "mediaPath": "media/take-01.mp4" },
+    { "id": "take-02", "label": "Run 2 (preferred)", "mediaPath": "media/take-preferred.mp4" }
+  ],
+  "preferredTakeId": "take-02",
+  "consentPurposes": ["course_assessment", "formative_feedback"],
+  "submitTag": "submit-week6",
+  "packagePrimaryChrome": true,
+  "docs": {
+    "packageVsVideo": "practice-relay/docs/package-vs-video.md",
+    "templateDoc": "practice-relay/docs/faculty-multi-asset-template.md"
+  }
+}

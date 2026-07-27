@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<!-- MvEI fixture corpus browser. Why: implementers need an inspectable catalogue for schema validation. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MvEI public corpus browser</title>
+  <style>
+    :root { color-scheme:light; --paper:#fff; --surface:#f5f7fb; --surface-strong:#edf1f8; --ink:#172033; --muted:#687083; --quiet:#8b92a2; --line:#d8dde8; --line-strong:#bcc4d2; --accent:#164ce5; --accent-soft:#edf2ff; --product:#67506a; --warning:#9a5708; --warning-soft:#fff7e8; --focus:#0068d8; --radius-sm:6px; --radius-md:9px; --ui:"Avenir Next",Avenir,"Helvetica Neue",Helvetica,Arial,sans-serif; --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace; }
+    * { box-sizing:border-box; }
+    html { background:var(--paper); }
+    body { min-width:320px; min-height:100dvh; margin:0; color:var(--ink); font:14px/1.5 var(--ui); background:var(--paper); -webkit-font-smoothing:antialiased; }
+    a { color:var(--accent); text-underline-offset:3px; }
+    a:hover { color:#0f3fc8; }
+    a:focus-visible { outline:3px solid color-mix(in srgb,var(--focus) 62%,transparent); outline-offset:3px; }
+    code { padding:.12rem .32rem; border:1px solid var(--line); border-radius:3px; background:var(--surface); font:12px/1.4 var(--mono); overflow-wrap:anywhere; }
+    .skip { position:fixed; z-index:20; top:12px; left:12px; padding:10px 14px; border-radius:var(--radius-sm); color:var(--paper); background:var(--ink); transform:translateY(-160%); }
+    .skip:focus { transform:translateY(0); }
+    .topbar { min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:0 clamp(1rem,3vw,2rem); border-bottom:1px solid var(--line); background:var(--paper); }
+    .brand { display:flex; align-items:center; gap:.75rem; color:var(--ink); font:700 21px/1 var(--ui); letter-spacing:-.025em; }
+    .mark { width:38px; height:26px; color:var(--product); }
+    .top-meta { margin:0; color:var(--muted); font:10px/1.4 var(--mono); letter-spacing:.08em; text-transform:uppercase; }
+    .layout { display:grid; grid-template-columns:190px minmax(0,1fr); min-height:calc(100dvh - 64px); }
+    .rail { padding:24px 14px; border-right:1px solid var(--line); background:#fbfcfe; }
+    .rail-title { margin:0 0 12px; padding:0 .75rem; color:var(--muted); font:10px/1.4 var(--mono); letter-spacing:.09em; text-transform:uppercase; }
+    .rail a { min-height:40px; display:flex; align-items:center; padding:0 .75rem; border-left:3px solid transparent; border-radius:0 var(--radius-sm) var(--radius-sm) 0; color:#4c5567; text-decoration:none; }
+    .rail a:hover { color:var(--accent); background:var(--surface); }
+    .rail a[aria-current="page"] { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); font-weight:650; }
+    main { min-width:0; padding:clamp(2rem,4.5vw,4.5rem); }
+    .hero { display:flex; justify-content:space-between; align-items:end; gap:2rem; max-width:1280px; margin:0 auto 28px; padding-bottom:24px; border-bottom:1px solid var(--line); }
+    .eyebrow { margin:0 0 12px; color:var(--muted); font:10px/1.4 var(--mono); letter-spacing:.09em; text-transform:uppercase; }
+    h1 { max-width:14ch; margin:0; font:500 clamp(38px,5vw,62px)/.96 var(--display); letter-spacing:-.045em; }
+    .lede { max-width:48rem; margin:16px 0 0; color:var(--muted); font-size:15px; }
+    .version { flex:0 0 auto; padding:.6rem .75rem; border:1px solid #bed0ff; border-radius:var(--radius-sm); background:var(--accent-soft); color:var(--accent); font:11px/1.3 var(--mono); }
+    .metrics { display:grid; grid-template-columns:repeat(3,1fr); max-width:1280px; margin:0 auto 18px; border-block:1px solid var(--line); background:var(--paper); }
+    .metric { display:flex; align-items:center; gap:.8rem; min-height:68px; padding:12px 18px; border-right:1px solid var(--line); }
+    .metric:last-child { border:0; }
+    .metric strong { font:500 31px/.9 var(--display); }
+    .metric span { max-width:12ch; color:var(--muted); font-size:12px; line-height:1.2; }
+    .catalogue { max-width:1280px; margin:0 auto; overflow:hidden; border:1px solid var(--line); border-radius:var(--radius-md); background:var(--paper); }
+    .catalogue-head { display:flex; justify-content:space-between; gap:1rem; align-items:end; padding:20px 22px; border-bottom:1px solid var(--line); }
+    h2 { margin:0; font:650 22px/1.1 var(--ui); letter-spacing:-.02em; }
+    .catalogue-head p { margin:0; color:var(--muted); }
+    .table-wrap { overflow-x:auto; }
+    table { width:100%; border-collapse:collapse; }
+    th, td { padding:.85rem 1rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:#fbfcfe; color:var(--muted); font:10px/1.35 var(--mono); letter-spacing:.07em; text-transform:uppercase; }
+    td { font-size:13px; }
+    td:first-child { min-width:150px; }
+    td:first-child code { white-space:nowrap; }
+    tbody tr:last-child td { border-bottom:0; }
+    tbody tr:hover { background:var(--surface); }
+    .profile { color:var(--product); font-weight:650; }
+    .state { display:inline-block; min-width:54px; padding:.16rem .38rem; border:1px solid var(--line); border-radius:4px; background:var(--surface); color:var(--muted); text-align:center; font:11px/1.3 var(--mono); }
+    .state--partial { border-color:#e4a24d; background:var(--warning-soft); color:var(--warning); }
+    .state--sketch { border-color:#8fb0ff; background:var(--accent-soft); color:var(--accent); }
+    .file-link { display:inline-flex; align-items:center; gap:5px; white-space:nowrap; }
+    .external-icon { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .note { display:grid; grid-template-columns:auto minmax(0,1fr); gap:1rem; max-width:1280px; margin:18px auto 0; padding:18px 20px; border:1px solid #bed0ff; border-radius:var(--radius-sm); background:var(--accent-soft); color:#40506f; }
+    .note-mark { color:var(--accent); font-size:20px; }
+    .note p { margin:0; }
+    .note p + p { margin-top:8px; }
+    @media (max-width:760px) {
+      .topbar { align-items:flex-start; }
+      .top-meta { max-width:18ch; text-align:right; }
+      .layout { display:block; }
+      .rail { display:flex; gap:.25rem; overflow-x:auto; padding:8px; border-right:0; border-bottom:1px solid var(--line); background:var(--paper); }
+      .rail-title { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+      .rail a { flex:0 0 auto; min-height:44px; display:grid; place-items:center; padding:.55rem .75rem; border-left:0; border-bottom:2px solid transparent; }
+      main { padding:28px 14px 42px; }
+      .hero { display:block; }
+      .version { display:inline-block; margin-top:18px; }
+      .metrics { grid-template-columns:1fr; }
+      .metric { min-height:64px; border-right:0; border-bottom:1px solid var(--line); }
+      .catalogue-head { display:block; }
+      .catalogue-head p { margin-top:8px; }
+      .table-wrap { overflow:visible; }
+      table, tbody, tr, td { display:block; }
+      thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+      tr { padding:12px 14px; border-bottom:1px solid var(--line); }
+      tbody tr:last-child { border-bottom:0; }
+      td { display:grid; grid-template-columns:100px minmax(0,1fr); gap:10px; padding:.32rem 0; border:0; overflow-wrap:anywhere; }
+      td:first-child { min-width:0; }
+      td:first-child code { white-space:normal; }
+      td::before { content:attr(data-label); color:var(--muted); font:10px/1.5 var(--mono); letter-spacing:.06em; text-transform:uppercase; }
+      .file-link { white-space:normal; }
+      .note { grid-template-columns:1fr; }
+    }
+    @media (prefers-reduced-motion:reduce) { * { scroll-behavior:auto!important; transition:none!important; animation:none!important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#catalogue">Skip to fixture index</a>
+  <header class="topbar">
+    <div class="brand"><svg class="mark" viewBox="0 0 64 40" aria-hidden="true"><path d="M6 30C14 30 18 8 27 8s9 22 17 22 8-14 14-14" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="6" cy="30" r="3" fill="currentColor"/><circle cx="27" cy="8" r="3" fill="currentColor"/><circle cx="44" cy="30" r="3" fill="currentColor"/><circle cx="58" cy="16" r="3" fill="currentColor"/></svg>MvEI</div>
+    <p class="top-meta">Movement Encoding Initiative · reference infrastructure</p>
+  </header>
+  <div class="layout">
+    <nav class="rail" aria-label="Corpus sections"><p class="rail-title">Reference</p><a href="#catalogue" aria-current="page">Corpus</a><a href="#validation">Validation</a><a href="../../../schemas/">Schemas</a></nav>
+    <main>
+      <section class="hero" aria-labelledby="page-title"><div><p class="eyebrow">Public fixture catalogue · 0.1.0-corpus-index</p><h1 id="page-title">MvEI public corpus</h1><p class="lede">Public MvEI pedagogical corpus catalogue for multi-implementation validation</p></div><span class="version">generated from index.json</span></section>
+      <section class="metrics" aria-label="Corpus summary"><div class="metric"><strong>9</strong><span>fixture documents</span></div><div class="metric"><strong>3</strong><span>represented profiles</span></div><div class="metric"><strong>6</strong><span>partial examples</span></div></section>
+      <section class="catalogue" id="catalogue" aria-labelledby="catalogue-title"><div class="catalogue-head"><div><p class="eyebrow">Package · <code>@practice-relay/movement-encode</code></p><h2 id="catalogue-title">Fixture index</h2></div><p>Inspect the source document for each validation case.</p></div><div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>id</th>
+        <th>profile</th>
+        <th>completeness</th>
+        <th>file</th>
+        <th>title</th>
+      </tr>
+    </thead>
+    <tbody>
+<tr>
+  <td data-label="Fixture"><code>motif-sketch-01</code></td>
+  <td data-label="Profile"><span class="profile">mvei-motif</span></td>
+  <td data-label="Completeness"><span class="state state--sketch">sketch</span></td>
+  <td data-label="Source"><a class="file-link" href="../motif-sketch-01.json">motif-sketch-01.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Pedagogical Motif sketch - walk and turn</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>motif-partial-02</code></td>
+  <td data-label="Profile"><span class="profile">mvei-motif</span></td>
+  <td data-label="Completeness"><span class="state state--partial">partial</span></td>
+  <td data-label="Source"><a class="file-link" href="../motif-partial-02.json">motif-partial-02.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Partial Motif with time anchors</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>laban-subset-01</code></td>
+  <td data-label="Profile"><span class="profile">mvei-laban-subset</span></td>
+  <td data-label="Completeness"><span class="state state--sketch">sketch</span></td>
+  <td data-label="Source"><a class="file-link" href="../laban-subset-01.json">laban-subset-01.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Pedagogical Laban subset - walk support</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>laban-subset-02</code></td>
+  <td data-label="Profile"><span class="profile">mvei-laban-subset</span></td>
+  <td data-label="Completeness"><span class="state state--partial">partial</span></td>
+  <td data-label="Source"><a class="file-link" href="../laban-subset-02.json">laban-subset-02.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Partial Laban subset with arm gesture + music anchor</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>laban-subset-03-dense</code></td>
+  <td data-label="Profile"><span class="profile">mvei-laban-subset</span></td>
+  <td data-label="Completeness"><span class="state state--partial">partial</span></td>
+  <td data-label="Source"><a class="file-link" href="../laban-subset-03-dense.json">laban-subset-03-dense.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Denser pedagogical subset - multi-column phrase</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>laban-subset-04</code></td>
+  <td data-label="Profile"><span class="profile">mvei-laban-subset</span></td>
+  <td data-label="Completeness"><span class="state state--partial">partial</span></td>
+  <td data-label="Source"><a class="file-link" href="../laban-subset-04.json">laban-subset-04.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Simultaneity ladder: multi-column + beatOffset groups</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>laban-subset-05</code></td>
+  <td data-label="Profile"><span class="profile">mvei-laban-subset</span></td>
+  <td data-label="Completeness"><span class="state state--partial">partial</span></td>
+  <td data-label="Source"><a class="file-link" href="../laban-subset-05.json">laban-subset-05.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Gradual density ladder - sketch columns → multi-limb phrase</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>laban-subset-06</code></td>
+  <td data-label="Profile"><span class="profile">mvei-laban-subset</span></td>
+  <td data-label="Completeness"><span class="state state--partial">partial</span></td>
+  <td data-label="Source"><a class="file-link" href="../laban-subset-06.json">laban-subset-06.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">Gradual density II - full staff columns + denser simultaneous phrase</td>
+</tr>
+<tr>
+  <td data-label="Fixture"><code>annotation-v0-demo</code></td>
+  <td data-label="Profile"><span class="profile">movement_annotation</span></td>
+  <td data-label="Completeness"><span class="state state---">-</span></td>
+  <td data-label="Source"><a class="file-link" href="../annotation-v0-demo.json">annotation-v0-demo.json <svg class="external-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3h7v7M10 14 21 3M19 13v7H4V5h7"/></svg></a></td>
+  <td data-label="Title">movement_annotation v0 demo events</td>
+</tr>
+    </tbody>
+  </table></div></section>
+  <aside class="note" id="validation"><span class="note-mark" aria-hidden="true">◇</span><div><p><strong>Validation boundary.</strong> Incomplete documents (sketch/partial) are valid. Not professional Laban density · not first-browser-Laban claims.</p><p>Validate with monorepo <code>pnpm validate:schemas</code> or <code>mvei-validate &lt;fixture.json&gt;</code> from <code>@practice-relay/mvei-validator</code>. See <code>docs/external-implementer-kit.md</code>.</p></div></aside>
+    </main>
+  </div>
+</body>
+</html>

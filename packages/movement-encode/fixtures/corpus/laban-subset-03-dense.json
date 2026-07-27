@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "0.2.0",
+  "profile": "mvei-laban-subset",
+  "id": "laban-subset-03-dense",
+  "title": "Denser pedagogical subset - multi-column phrase",
+  "completeness": "partial",
+  "staff": {
+    "columns": [
+      "support_left",
+      "support_right",
+      "leg_left",
+      "leg_right",
+      "body",
+      "arm_left",
+      "arm_right",
+      "head"
+    ]
+  },
+  "measures": [
+    { "id": "m0", "index": 0, "beats": 4 },
+    { "id": "m1", "index": 1, "beats": 4 },
+    { "id": "m2", "index": 2, "beats": 4 }
+  ],
+  "symbols": [
+    {
+      "id": "s1",
+      "kind": "support",
+      "column": "support_right",
+      "measureId": "m0",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifSymbol": "walk",
+      "timeAnchor": { "tMs": 0, "musicMeasure": "1" }
+    },
+    {
+      "id": "s2",
+      "kind": "support",
+      "column": "support_left",
+      "measureId": "m0",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifSymbol": "walk"
+    },
+    {
+      "id": "s3",
+      "kind": "gesture",
+      "column": "arm_left",
+      "measureId": "m1",
+      "direction": "left",
+      "level": "high",
+      "durationBeats": 2,
+      "motifSymbol": "gesture_arm",
+      "timeAnchor": { "tMs": 4000, "musicMeasure": "2" }
+    },
+    {
+      "id": "s4",
+      "kind": "gesture",
+      "column": "arm_right",
+      "measureId": "m1",
+      "direction": "right",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifSymbol": "gesture_arm"
+    },
+    {
+      "id": "s5",
+      "kind": "turn",
+      "column": "body",
+      "measureId": "m2",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifSymbol": "turn"
+    },
+    {
+      "id": "s6",
+      "kind": "direction",
+      "column": "head",
+      "measureId": "m2",
+      "direction": "forward",
+      "level": "high",
+      "durationBeats": 2
+    },
+    {
+      "id": "s7",
+      "kind": "path",
+      "column": "body",
+      "measureId": "m2",
+      "direction": "diagonal_fr",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifSymbol": "travel"
+    }
+  ],
+  "musicCoTimeline": {
+    "schemaVersion": "0.1.0-annex",
+    "musicxmlRef": "fixtures/demo/score.musicxml",
+    "meiRef": "fixtures/demo/score.mei",
+    "anchors": [
+      { "motifItemId": "s1", "musicMeasure": "1", "tMs": 0 },
+      { "motifItemId": "s3", "musicMeasure": "2", "tMs": 4000 },
+      { "motifItemId": "s5", "musicMeasure": "3", "tMs": 8000 }
+    ]
+  },
+  "annotationLinks": [
+    { "system": "motion_bank", "uri": "https://example.org/motion-bank/demo" }
+  ]
+}

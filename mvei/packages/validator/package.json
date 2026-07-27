@@ -1,0 +1,29 @@
+{
+  "name": "@practice-relay/mvei-validator",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "CLI validator for MvEI Motif / laban-subset / annotation fixtures",
+  "main": "./src/cli.ts",
+  "types": "./src/cli.ts",
+  "exports": {
+    ".": {
+      "types": "./src/cli.ts",
+      "import": "./src/cli.ts",
+      "default": "./src/cli.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["src"],
+  "bin": { "mvei-validate": "./src/cli.ts" },
+  "scripts": {
+    "test": "node --import tsx --test src/*.test.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": { "access": "public" }
+}

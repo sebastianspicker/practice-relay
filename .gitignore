@@ -1,0 +1,87 @@
+# Dependencies & build
+node_modules/
+dist/
+build/
+.turbo/
+coverage/
+.cache/
+.nyc_output/
+.eslintcache
+*.tsbuildinfo
+.vite/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env & secrets (keep .env.example only)
+.env
+.env.*
+!.env.example
+deploy/secrets/local/
+deploy/secrets/*
+!deploy/secrets/README.md
+!deploy/secrets/example/
+!deploy/secrets/example/**
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*~
+*.orig
+
+# Local analysis, automation, index, and session state
+/AGENTS.md
+.codegraph/
+.grok/
+.agents/
+.claude/
+.cursor/
+.codacy/
+.codex/
+.serena/
+/.scratch/
+/tmp/
+/release-artifacts/
+
+# Package manager
+.pnpm-store/
+.pnpm-debug.log*
+
+# Test and local dumps
+*.local.json
+*.test.db
+*.test.sqlite
+*.test.sqlite3
+.test-cache/
+.test-env/
+
+# Practice Relay durable lab data (PRACTICE_RELAY_DATA / media store)
+/data/**
+!data/README.md
+
+# Demo pack ephemeral fixtures / last run log
+fixtures/demo/.invalid*.json
+fixtures/demo/last-e2e-demo.txt
+
+# Playwright browsers (install on demand)
+playwright-report/
+test-results/
+blob-report/
+/*.tgz
+/*.tar.gz
+
+# Optional local compose overrides
+docker-compose.override.yml
+*.pid
+*.pem
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+!deploy/**/*.example

@@ -1,0 +1,12 @@
+/**
+ * Practice Relay web stylesheet entry - Quiet Dossier modules.
+ * Why residual: a thin import surface keeps the archival handoff aesthetic modular and reviewable.
+ */
+
+@import "./styles/tokens.css";
+@import "./styles/base.css";
+@import "./styles/layout.css";
+@import "./styles/dossier.css";
+@import "./styles/decision.css";
+@import "./styles/dialog.css";
+@import "./styles/responsive.css";

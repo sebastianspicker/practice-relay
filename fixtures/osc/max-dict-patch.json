@@ -1,0 +1,74 @@
+{
+  "kind": "practice-relay-max-dict",
+  "schemaVersion": "0.4.0",
+  "workRecordId": "ps-demo-week6-duet",
+  "title": "Week 6 duet study",
+  "note": "JSON Max adapter hint - rebuild with [udpreceive] [route] [dict] / [coll]. Practice Relay does not ship or own a Max runtime; schedule transport outside Practice Relay.",
+  "patchObjects": [
+    {
+      "box": "udpreceive 9001",
+      "role": "ingress",
+      "detail": "Listen for OSC on lab network port (choose free port)"
+    },
+    {
+      "box": "route /practice-relay/ps-demo-week6-duet/region /practice-relay/ps-demo-week6-duet/track /practice-relay/ps-demo-week6-duet/preferred_take",
+      "role": "demultiplex",
+      "detail": "Split Practice Relay address tree to three outlets"
+    },
+    {
+      "box": "dict practice-relay-cues",
+      "role": "store",
+      "detail": "Optional: load dict.cues from this patch JSON for offline transport"
+    },
+    {
+      "box": "coll practice-relay-timeline",
+      "role": "schedule",
+      "detail": "Index by tMs for metro/transport-driven fire"
+    }
+  ],
+  "routeTree": [
+    {
+      "pattern": "/practice-relay/ps-demo-week6-duet/region",
+      "outletHint": "outlet 0 → regionId label endMs"
+    },
+    {
+      "pattern": "/practice-relay/ps-demo-week6-duet/track",
+      "outletHint": "outlet 1 → trackId type ref label"
+    },
+    {
+      "pattern": "/practice-relay/ps-demo-week6-duet/preferred_take",
+      "outletHint": "outlet 2 → takeId"
+    }
+  ],
+  "dict": {
+    "recordId": "ps-demo-week6-duet",
+    "cues": [
+      {
+        "tMs": 0,
+        "address": "/practice-relay/ps-demo-week6-duet/region",
+        "args": ["r-warmup", "warmup", 8000]
+      },
+      {
+        "tMs": 0,
+        "address": "/practice-relay/ps-demo-week6-duet/track",
+        "args": ["tr-video", "video", "media/cam-a.mp4", "Cam A"]
+      },
+      {
+        "tMs": 0,
+        "address": "/practice-relay/ps-demo-week6-duet/track",
+        "args": ["tr-cues", "media_cues", "cues.json", "Cues"]
+      },
+      {
+        "tMs": 0,
+        "address": "/practice-relay/ps-demo-week6-duet/preferred_take",
+        "args": ["take-pref"]
+      },
+      {
+        "tMs": 8000,
+        "address": "/practice-relay/ps-demo-week6-duet/region",
+        "args": ["r-phrase", "phrase-A", 25000]
+      }
+    ],
+    "preferredTakeId": "take-pref"
+  }
+}

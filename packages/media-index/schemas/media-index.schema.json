@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mac-research.local/schemas/media-index/v0.1.json",
+  "title": "MediaIndex",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "takes"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "preferredTakeId": {
+      "type": ["string", "null"],
+      "description": "Reference / preferred take for critique and export"
+    },
+    "takes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/take" }
+    }
+  },
+  "$defs": {
+    "take": {
+      "type": "object",
+      "required": ["id", "kind", "createdAt"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "enum": ["video", "audio", "mixed", "other"]
+        },
+        "label": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "mediaRefs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["role", "pathOrUri"],
+            "properties": {
+              "role": { "type": "string" },
+              "pathOrUri": { "type": "string" },
+              "mimeType": { "type": "string" }
+            }
+          }
+        },
+        "consentId": {
+          "type": ["string", "null"],
+          "description": "Links to an explicit use-policy record"
+        },
+        "provenance": { "type": "string" }
+      }
+    }
+  }
+}
