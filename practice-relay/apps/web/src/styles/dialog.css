@@ -1,0 +1,134 @@
+/**
+ * Quiet Dossier package dialog surface.
+ * Why residual: local package preview stays paper-like, not modal SaaS chrome.
+ */
+
+dialog,
+#package-dialog {
+  width: min(520px, calc(100vw - 32px));
+  max-height: min(720px, calc(100vh - 32px));
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+  background: var(--paper);
+  box-shadow: 0 20px 60px oklch(0.22 0.018 255 / 0.12);
+}
+
+dialog::backdrop,
+#package-dialog::backdrop {
+  background: oklch(0.22 0.018 255 / 0.28);
+  backdrop-filter: blur(2px);
+}
+
+.dialog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.dialog-header h2 {
+  margin: 0;
+  font: 400 28px/1.1 var(--serif);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.dialog-header p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.dialog-header button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--bg);
+  cursor: pointer;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.dialog-header button:hover {
+  color: var(--ink);
+}
+
+.dialog-header .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.dialog-body {
+  padding: 24px 28px 28px;
+}
+
+.dialog-body h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 450;
+  color: var(--faint);
+  letter-spacing: -0.005em;
+}
+
+.dialog-body ul {
+  padding: 0;
+  margin: 0 0 24px;
+  border: 0;
+  border-radius: 0;
+  list-style: none;
+  overflow: visible;
+}
+
+.dialog-body li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.dialog-body li:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.dialog-body li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+.dialog-body code {
+  color: var(--muted);
+  font: 11px/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.dialog-warning {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 0;
+  color: var(--hold);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.dialog-warning .icon {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  margin-top: 1px;
+}

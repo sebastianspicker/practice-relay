@@ -1,0 +1,158 @@
+# Practice Relay production-lab stack (single-institution residual path).
+#
+# NOT multi-campus HA. NOT "production certified". Local docker lab only:
+# tenant-prefixed JSON store + MinIO S3-compatible media + file-mounted secrets.
+#
+# CI must never require this compose file or a running MinIO.
+# Zero-native unit/ops scripts: pnpm test:ops-slo · pnpm test:ops-restore
+#
+# Usage: see deploy/README.md
+
+services:
+  minio:
+    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        for secret in /run/secrets/minio_root_user /run/secrets/minio_root_password; do
+          test -s "$$secret"
+          if grep -qE 'REPLACE(_WITH)?|CHANGE_ME|change-me|practice-relay-lab-secret' "$$secret"; then
+            echo "refusing placeholder or default production-lab MinIO credential file" >&2
+            exit 1
+          fi
+        done
+        exec minio server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER_FILE: /run/secrets/minio_root_user
+      MINIO_ROOT_PASSWORD_FILE: /run/secrets/minio_root_password
+    secrets:
+      - minio_root_user
+      - minio_root_password
+    volumes:
+      - practice-relay-minio-data:/data
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+    healthcheck:
+      # Server image has no mc; TCP accept is enough for lab compose.
+      test: ["CMD-SHELL", "timeout 5s bash -c ':> /dev/tcp/127.0.0.1/9000' || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # Create the media bucket once MinIO is healthy (lab init, not HA orchestration).
+  createbucket:
+    image: minio/mc:RELEASE.2024-11-17T19-35-56Z
+    depends_on:
+      minio:
+        condition: service_healthy
+    secrets:
+      - minio_root_user
+      - minio_root_password
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        for secret in /run/secrets/minio_root_user /run/secrets/minio_root_password; do
+          test -s "$$secret"
+          if grep -qE 'REPLACE(_WITH)?|CHANGE_ME|change-me|practice-relay-lab-secret' "$$secret"; then
+            echo "refusing placeholder or default production-lab MinIO credential file" >&2
+            exit 1
+          fi
+        done
+        USER="$$(tr -d '\r\n' </run/secrets/minio_root_user)"
+        PASS="$$(tr -d '\r\n' </run/secrets/minio_root_password)"
+        attempt=0
+        until mc alias set lab http://minio:9000 "$$USER" "$$PASS"; do
+          attempt=$$((attempt + 1))
+          if [ "$$attempt" -ge 15 ]; then
+            echo "MinIO did not become ready for bucket initialization" >&2
+            exit 1
+          fi
+          sleep 2
+        done
+        mc mb --ignore-existing lab/practice-relay-media
+        mc anonymous set none lab/practice-relay-media
+        echo 'bucket practice-relay-media ready'
+
+  practice-relay-api:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.practice-relay-api
+    depends_on:
+      createbucket:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:8787:8787"
+    environment:
+      PORT: "8787"
+      # Bind the container interface; the published host port stays loopback-only.
+      PRACTICE_RELAY_HOST: "0.0.0.0"
+      # Tenant-prefixed JSON durable store (zero-native; not Postgres)
+      PRACTICE_RELAY_STORE: json
+      PRACTICE_RELAY_DATA: /var/lib/practice-relay/data
+      PRACTICE_RELAY_TENANT_ID: lab-default
+      PRACTICE_RELAY_MEDIA: /var/lib/practice-relay/media
+      # S3-compatible media via MinIO (network only when this compose is up)
+      PRACTICE_RELAY_OBJECT_STORE: s3
+      PRACTICE_RELAY_S3_ENDPOINT: http://minio:9000
+      PRACTICE_RELAY_S3_BUCKET: practice-relay-media
+      PRACTICE_RELAY_S3_FORCE_PATH_STYLE: "1"
+      PRACTICE_RELAY_S3_REGION: us-east-1
+      PRACTICE_RELAY_S3_ACCESS_KEY_FILE: /run/secrets/minio_root_user
+      PRACTICE_RELAY_S3_SECRET_KEY_FILE: /run/secrets/minio_root_password
+      # File secret mount pattern (see deploy/secrets/README.md)
+      SECRET_BACKEND: file
+      SECRET_FILE_DIR: /run/secrets/practice-relay
+      PRACTICE_RELAY_AUTH_SECRET_FILE: /run/secrets/practice-relay_auth
+      PRACTICE_RELAY_AUTH_USERS_FILE: /run/secrets/practice-relay_users
+      PRACTICE_RELAY_LTI_SECRET_FILE: /run/secrets/practice-relay_lti
+      PRACTICE_RELAY_REQUIRE_SECRETS: "1"
+      PRACTICE_RELAY_REQUIRE_CONFIGURED_AUTH_USERS: "1"
+      # Restore stays fail-closed until an operations drill explicitly enables it.
+      PRACTICE_RELAY_LAB_OPS: "0"
+    secrets:
+      - source: practice-relay_auth
+        target: practice-relay_auth
+      - source: practice-relay_lti
+        target: practice-relay_lti
+      - source: practice-relay_users
+        target: practice-relay_users
+      - source: minio_root_user
+        target: minio_root_user
+      - source: minio_root_password
+        target: minio_root_password
+    volumes:
+      - practice-relay-data:/var/lib/practice-relay/data
+      - practice-relay-media-meta:/var/lib/practice-relay/media
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8787/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+secrets:
+  # Copy from deploy/secrets/example/* into deploy/secrets/local/ (gitignored) before up.
+  # Or supply equivalent file mounts through the deployment environment.
+  practice-relay_auth:
+    file: ./deploy/secrets/local/auth
+  practice-relay_lti:
+    file: ./deploy/secrets/local/lti
+  practice-relay_users:
+    file: ./deploy/secrets/local/users.json
+  minio_root_user:
+    file: ./deploy/secrets/local/minio_root_user
+  minio_root_password:
+    file: ./deploy/secrets/local/minio_root_password
+
+volumes:
+  practice-relay-minio-data:
+  practice-relay-data:
+  practice-relay-media-meta:

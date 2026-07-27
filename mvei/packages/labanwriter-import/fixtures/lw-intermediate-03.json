@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "0.2.0-lw-intermediate",
+  "source": "labanwriter-intermediate",
+  "id": "lw-import-03",
+  "title": "LW intermediate sample C - multi-column simultaneity",
+  "measures": [
+    { "id": "m0", "index": 0, "beats": 4 },
+    { "id": "m1", "index": 1, "beats": 4 },
+    { "id": "m2", "index": 2, "beats": 4 }
+  ],
+  "cells": [
+    {
+      "id": "c1",
+      "column": "support_right",
+      "measureId": "m0",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c2",
+      "column": "support_left",
+      "measureId": "m0",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c3",
+      "column": "arm_right",
+      "measureId": "m0",
+      "symbolHint": "gesture",
+      "direction": "place",
+      "level": "high",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c4",
+      "column": "arm_left",
+      "measureId": "m0",
+      "symbolHint": "gesture",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c5",
+      "column": "leg_right",
+      "measureId": "m1",
+      "symbolHint": "gesture",
+      "direction": "forward",
+      "level": "low",
+      "durationBeats": 2,
+      "motifHint": "gesture_leg"
+    },
+    {
+      "id": "c6",
+      "column": "head",
+      "measureId": "m1",
+      "symbolHint": "direction",
+      "direction": "right",
+      "level": "high",
+      "durationBeats": 1
+    },
+    {
+      "id": "c7",
+      "column": "body",
+      "measureId": "m2",
+      "symbolHint": "turn",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "turn"
+    },
+    {
+      "id": "c8",
+      "column": "body",
+      "measureId": "m2",
+      "symbolHint": "path",
+      "direction": "diagonal_fr",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "travel"
+    },
+    {
+      "id": "c9",
+      "column": "body",
+      "measureId": "m2",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 1,
+      "motifHint": "stillness"
+    }
+  ],
+  "notes": [
+    "Transcribed intermediate with multi-column simultaneity - not binary .lw",
+    "Pedagogical density only; not professional Labanotation parity"
+  ]
+}

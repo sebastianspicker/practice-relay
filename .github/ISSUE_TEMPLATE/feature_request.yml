@@ -1,0 +1,34 @@
+name: Feature request
+description: Propose a change within the documented alpha scope
+title: "[feat] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read [docs/ALPHA.md](../../docs/ALPHA.md) and product scope docs first.
+        Production campus LTI, invented pilot outcomes, and a Practice Relay/MvEI Workbench product merge are out of alpha scope.
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product
+      options:
+        - Practice Relay
+        - MvEI
+        - MvEI Workbench
+        - WorkRecord Core and shared packages
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: Problem and evidence
+      description: What current behavior or documented limitation motivates this change?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true

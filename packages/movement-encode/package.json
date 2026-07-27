@@ -1,0 +1,37 @@
+{
+  "name": "@practice-relay/movement-encode",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "MvEI schemas, Motif/laban-subset types, and co-timeline helpers",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./schemas/*": "./schemas/*",
+    "./fixtures/corpus/*": "./fixtures/corpus/*",
+    "./fixtures/corpus/index.json": "./fixtures/corpus/index.json",
+    "./vocab/*": "./vocab/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "schemas",
+    "fixtures/corpus",
+    "vocab",
+    "PUBLISH.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  }
+}

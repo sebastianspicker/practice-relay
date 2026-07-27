@@ -1,0 +1,25 @@
+# Optional Prometheus scrape snippet for Practice Relay lab metrics.
+# Not a full Prometheus deployment - paste into your scrape_configs or
+# import as a file_sd / additional scrape config.
+#
+# Scrapes admin-authenticated in-process text at GET /metrics (see practice-relay/docs/slo.md).
+# This is lab observability, not federated multi-campus HA.
+
+scrape_configs:
+  - job_name: practice-relay-api
+    metrics_path: /metrics
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    authorization:
+      type: Bearer
+      # File contains only the current admin session token, without "Bearer ".
+      credentials_file: /run/secrets/practice-relay_admin_session
+    static_configs:
+      - targets:
+          # docker-compose.production-lab.yml host mapping
+          - host.docker.internal:8787
+          # or same-network compose service:
+          # - practice-relay-api:8787
+        labels:
+          product: practice-relay
+          tier: production-lab

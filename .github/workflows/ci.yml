@@ -1,0 +1,76 @@
+# Practice Relay CI: types, quality, docs, schemas, evidence, tests, claim guards, and demos.
+# Why: public alpha must not greenwash IMS/SSO/firstness claims or ship broken packages.
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: types · quality · docs · schemas · evidence · test · claims · e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Code quality
+        run: pnpm quality:check
+
+      - name: Validate repository documentation links
+        run: pnpm validate:docs
+
+      - name: Validate schemas (work-record package + MvEI corpus)
+        run: pnpm validate:schemas
+
+      - name: Validate evidence wiring
+        run: pnpm validate:evidence
+
+      - name: Verify public candidate hygiene
+        run: pnpm verify:public-hygiene
+
+      - name: Test monorepo
+        run: pnpm test
+
+      - name: Kill-switch / lab-only claim guards
+        run: |
+          pnpm test:kill-switches
+          pnpm test:lab-only-claims
+
+      - name: Demo e2e (mock university pack)
+        run: pnpm demo:e2e
+
+      - name: Maturity scorecard (structural + heavy)
+        run: pnpm maturity:check
+
+      - name: Release-specific dry-runs
+        run: |
+          pnpm publish:dry-run
+          pnpm test:osc-stage
+          pnpm demo:pilot-dry-run

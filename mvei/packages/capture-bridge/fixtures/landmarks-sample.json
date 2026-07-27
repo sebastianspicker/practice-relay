@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "0.2.0-landmarks",
+  "source": "mediapipe",
+  "id": "cap-sample-01",
+  "frames": [
+    {
+      "tMs": 0,
+      "points": [
+        { "name": "nose", "x": 0.5, "y": 0.2 },
+        { "name": "left_hip", "x": 0.45, "y": 0.6 }
+      ]
+    },
+    {
+      "tMs": 100,
+      "points": [
+        { "name": "nose", "x": 0.51, "y": 0.21 },
+        { "name": "left_hip", "x": 0.46, "y": 0.61 }
+      ]
+    },
+    {
+      "tMs": 200,
+      "points": [
+        { "name": "nose", "x": 0.7, "y": 0.25 },
+        { "name": "left_hip", "x": 0.65, "y": 0.7 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "0.1.0-corpus-index",
+  "description": "Public MvEI pedagogical corpus catalogue for multi-implementation validation",
+  "package": "@practice-relay/movement-encode",
+  "basePath": "fixtures/corpus",
+  "fixtures": [
+    {
+      "id": "motif-sketch-01",
+      "file": "motif-sketch-01.json",
+      "profile": "mvei-motif",
+      "completeness": "sketch",
+      "schema": "schemas/mvei-motif-stub.schema.json",
+      "title": "Pedagogical Motif sketch - walk and turn"
+    },
+    {
+      "id": "motif-partial-02",
+      "file": "motif-partial-02.json",
+      "profile": "mvei-motif",
+      "completeness": "partial",
+      "schema": "schemas/mvei-motif-stub.schema.json",
+      "title": "Partial Motif with time anchors"
+    },
+    {
+      "id": "laban-subset-01",
+      "file": "laban-subset-01.json",
+      "profile": "mvei-laban-subset",
+      "completeness": "sketch",
+      "schema": "schemas/mvei-laban-subset.schema.json",
+      "title": "Pedagogical Laban subset - walk support"
+    },
+    {
+      "id": "laban-subset-02",
+      "file": "laban-subset-02.json",
+      "profile": "mvei-laban-subset",
+      "completeness": "partial",
+      "schema": "schemas/mvei-laban-subset.schema.json",
+      "title": "Partial Laban subset with arm gesture + music anchor"
+    },
+    {
+      "id": "laban-subset-03-dense",
+      "file": "laban-subset-03-dense.json",
+      "profile": "mvei-laban-subset",
+      "completeness": "partial",
+      "schema": "schemas/mvei-laban-subset.schema.json",
+      "title": "Denser pedagogical subset - multi-column phrase"
+    },
+    {
+      "id": "laban-subset-04",
+      "file": "laban-subset-04.json",
+      "profile": "mvei-laban-subset",
+      "completeness": "partial",
+      "schema": "schemas/mvei-laban-subset.schema.json",
+      "title": "Simultaneity ladder: multi-column + beatOffset groups"
+    },
+    {
+      "id": "laban-subset-05",
+      "file": "laban-subset-05.json",
+      "profile": "mvei-laban-subset",
+      "completeness": "partial",
+      "schema": "schemas/mvei-laban-subset.schema.json",
+      "title": "Gradual density ladder - sketch columns \u2192 multi-limb phrase"
+    },
+    {
+      "id": "laban-subset-06",
+      "file": "laban-subset-06.json",
+      "profile": "mvei-laban-subset",
+      "completeness": "partial",
+      "schema": "schemas/mvei-laban-subset.schema.json",
+      "title": "Gradual density II - full staff columns + denser simultaneous phrase"
+    },
+    {
+      "id": "annotation-v0-demo",
+      "file": "annotation-v0-demo.json",
+      "profile": "movement_annotation",
+      "completeness": null,
+      "schema": "schemas/movement-annotation-v0.schema.json",
+      "title": "movement_annotation v0 demo events"
+    }
+  ]
+}

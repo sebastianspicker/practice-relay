@@ -1,0 +1,86 @@
+{
+  "id": "ps-demo-week6-duet",
+  "title": "Week 6 duet study: multi-asset WorkRecord",
+  "description": "Coherent alpha demo pack: multi-domain tracks, preferred take, use policy, region comments, and MvEI Motif attachment between Practice Relay and MvEI Workbench.",
+  "members": [
+    { "userId": "faculty-ada", "role": "faculty" },
+    { "userId": "student-lee", "role": "student" }
+  ],
+  "tracks": [
+    {
+      "id": "tr-audio",
+      "type": "audio",
+      "label": "Reference audio",
+      "ref": "media/week6-ref.wav"
+    },
+    {
+      "id": "tr-video",
+      "type": "video",
+      "label": "Performance video",
+      "ref": "media/week6-take-preferred.mp4"
+    },
+    {
+      "id": "tr-music",
+      "type": "music_notation",
+      "label": "Score (MusicXML path ref)",
+      "ref": "scores/week6-duet.musicxml"
+    },
+    {
+      "id": "tr-move-ann",
+      "type": "movement_annotation",
+      "label": "Movement annotation (not Labanotation)",
+      "ref": "annotation/week6-move-v0.json"
+    },
+    {
+      "id": "tr-cues",
+      "type": "media_cues",
+      "label": "Media cues",
+      "ref": "cues/week6-cues.json"
+    },
+    {
+      "id": "tr-text",
+      "type": "text",
+      "label": "Student reflection",
+      "ref": "text/week6-reflection.md"
+    }
+  ],
+  "takes": [
+    {
+      "id": "take-01",
+      "label": "Studio run 1",
+      "mediaPath": "media/week6-take-01.mp4"
+    },
+    {
+      "id": "take-02",
+      "label": "Studio run 2 (preferred)",
+      "mediaPath": "media/week6-take-preferred.mp4"
+    }
+  ],
+  "preferredTakeId": "take-02",
+  "region": {
+    "id": "reg-phrase-a",
+    "label": "Phrase A (bars 1–8)",
+    "startMs": 0,
+    "endMs": 8000
+  },
+  "comment": {
+    "id": "cmt-demo-1",
+    "regionId": "reg-phrase-a",
+    "trackId": "tr-video",
+    "authorId": "faculty-ada",
+    "body": "Align travel with measure 5: Motif item i3 timeAnchor should match preferred take.",
+    "resolved": false
+  },
+  "consent": {
+    "id": "consent-demo-1",
+    "subjectId": "student-lee",
+    "purposes": ["course_assessment", "formative_feedback"],
+    "exportAllowed": true
+  },
+  "motif": {
+    "trackId": "tr-mvei-motif",
+    "label": "MvEI Motif (week 6 duet)",
+    "ref": "fixtures/demo/motif.json"
+  },
+  "submitTag": "submit-week6-demo"
+}

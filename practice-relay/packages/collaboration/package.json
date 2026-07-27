@@ -1,0 +1,17 @@
+{
+  "name": "@practice-relay/collaboration",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test src/*.test.ts"
+  },
+  "dependencies": {
+    "@practice-relay/work-record-core": "workspace:*",
+    "yjs": "^13.6.20"
+  },
+  "license": "Apache-2.0"
+}

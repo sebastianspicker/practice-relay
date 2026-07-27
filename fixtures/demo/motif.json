@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "0.2.0",
+  "profile": "mvei-motif",
+  "id": "motif-demo-week6-duet",
+  "title": "Week 6 duet study: walk, gesture, travel",
+  "completeness": "partial",
+  "items": [
+    {
+      "id": "i1",
+      "symbol": "walk",
+      "order": 0,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 0,
+        "musicMeasure": "1"
+      }
+    },
+    {
+      "id": "i2",
+      "symbol": "gesture_arm",
+      "order": 1,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 2400,
+        "musicMeasure": "2"
+      }
+    },
+    {
+      "id": "i3",
+      "symbol": "travel",
+      "order": 2,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 4800,
+        "musicMeasure": "3",
+        "mediaFragment": "t=4.8"
+      }
+    },
+    {
+      "id": "i4",
+      "symbol": "stillness",
+      "order": 3,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 8000,
+        "musicMeasure": "3"
+      }
+    },
+    {
+      "id": "i5",
+      "symbol": "turn",
+      "order": 4,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 12000,
+        "musicMeasure": "4"
+      }
+    },
+    {
+      "id": "i6",
+      "symbol": "balance",
+      "order": 5,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 16000,
+        "musicMeasure": "5"
+      }
+    }
+  ],
+  "annotationLinks": [
+    {
+      "system": "elan",
+      "uri": "file://fixtures/demo/annotation-links/week6.eaf"
+    }
+  ],
+  "musicCoTimeline": {
+    "schemaVersion": "0.1.0-annex",
+    "musicxmlRef": "fixtures/demo/score.musicxml",
+    "meiRef": "fixtures/demo/score.mei",
+    "anchors": [
+      {
+        "motifItemId": "i1",
+        "musicMeasure": "1",
+        "tMs": 0
+      },
+      {
+        "motifItemId": "i2",
+        "musicMeasure": "2",
+        "tMs": 2400
+      },
+      {
+        "motifItemId": "i3",
+        "musicMeasure": "3",
+        "tMs": 4800
+      },
+      {
+        "motifItemId": "i4",
+        "musicMeasure": "3",
+        "tMs": 8000
+      },
+      {
+        "motifItemId": "i5",
+        "musicMeasure": "4",
+        "tMs": 12000
+      },
+      {
+        "motifItemId": "i6",
+        "musicMeasure": "5",
+        "tMs": 16000
+      }
+    ]
+  }
+}

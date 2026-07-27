@@ -1,0 +1,12 @@
+{
+  "name": "@practice-relay/web",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/dev.mjs",
+    "test": "node --test src/*.test.mjs"
+  },
+  "dependencies": {},
+  "license": "Apache-2.0"
+}

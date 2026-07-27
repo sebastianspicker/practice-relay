@@ -1,0 +1,347 @@
+openapi: 3.1.0
+info:
+  title: Practice Relay API
+  version: 0.4.0-alpha.1
+  description: |
+    Public-alpha HTTP surface for Practice Relay. Request and response schemas are
+    deliberately omitted where the route implementation is the current contract.
+    MvEI and MvEI Workbench remain separate products.
+servers:
+  - url: http://localhost:8787
+security:
+  - bearerAuth: []
+paths:
+  /health:
+    get:
+      summary: Public liveness and lab configuration status
+      security: []
+      responses:
+        "200": { description: Liveness status }
+  /readyz:
+    get:
+      summary: Public readiness check
+      security: []
+      responses:
+        "200": { description: Ready }
+        "503": { description: Not ready }
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      description: Bearer-authenticated configured operations-admin endpoint.
+      responses:
+        "200": { description: Prometheus text exposition }
+        "401": { description: Missing or invalid bearer session }
+        "403": { description: Operations-admin role required }
+  /ops/backup:
+    post:
+      summary: Create a durable-store backup
+      description: Bearer-authenticated configured operations-admin endpoint.
+      responses:
+        "200": { description: Backup manifest }
+        "400": { description: Durable store is not configured }
+  /ops/backups:
+    get:
+      summary: List durable-store backups
+      description: Bearer-authenticated configured operations-admin endpoint.
+      responses:
+        "200": { description: Backup list }
+  /ops/restore:
+    post:
+      summary: Restore a durable-store backup
+      description: Bearer-authenticated configured operations-admin endpoint. It is disabled unless PRACTICE_RELAY_LAB_OPS=1.
+      responses:
+        "200": { description: Restored backup manifest }
+        "400": { description: Invalid request or durable store unavailable }
+        "403": { description: Operations-admin role or lab restore flag required }
+  /ops/audit:
+    get:
+      summary: List durable-store audit events
+      description: Bearer-authenticated configured operations-admin endpoint.
+      responses:
+        "200": { description: Audit event list }
+  /auth/login:
+    post:
+      summary: Create a course-local bearer session
+      security: []
+      responses:
+        "200": { description: Session }
+        "401": { description: Invalid credentials }
+        "429": { description: Login rate limited }
+  /auth/users:
+    get:
+      summary: List configured users
+      description: Bearer-authenticated endpoint for configured faculty or operations-admin users.
+      responses:
+        "200": { description: User list }
+        "403": { description: Faculty or operations-admin role required }
+  /me:
+    get:
+      summary: Read the current bearer-session user
+      responses:
+        "200": { description: Current user }
+        "401": { description: Missing or invalid bearer session }
+  /demo/export:
+    get:
+      summary: Export the public consent-tagged demo record
+      description: Public demo route. The format=zip query returns a ZIP package; the default response is JSON.
+      security: []
+      responses:
+        "200": { description: Demo package export }
+  /lti/login:
+    get:
+      summary: Begin lab-only LTI OIDC login
+      description: Lab-only local-mock LTI endpoint; it does not use Practice Relay bearer sessions.
+      security: []
+      responses:
+        "200": { description: OIDC login result }
+        "400": { description: Invalid OIDC login initiation }
+    post:
+      summary: Begin lab-only LTI OIDC login
+      description: Lab-only local-mock LTI endpoint; it does not use Practice Relay bearer sessions.
+      security: []
+      responses:
+        "200": { description: OIDC login result }
+        "400": { description: Invalid OIDC login initiation }
+  /lti/jwks:
+    get:
+      summary: Read lab-only LTI JWKS
+      security: []
+      responses:
+        "200": { description: JWKS or active HMAC-path note }
+  /lti/oauth/token:
+    post:
+      summary: Issue a lab-only LTI AGS service token
+      description: Lab-only local-mock client-credentials endpoint; it does not use Practice Relay bearer sessions.
+      security: []
+      responses:
+        "200": { description: AGS service token }
+        "400": { description: Unsupported grant or scope }
+        "401": { description: Invalid client credentials }
+  /lti/ags/scores:
+    post:
+      summary: Submit a lab-only LTI AGS score
+      description: Lab-only local-mock endpoint authenticated with its AGS service token, not a Practice Relay bearer session.
+      security: []
+      responses:
+        "200": { description: Processed AGS score }
+        "400": { description: Invalid score payload }
+        "401": { description: Invalid AGS service token }
+  /lti/launch:
+    post:
+      summary: Complete a lab-only LTI launch
+      description: Lab-only local-mock endpoint validated against pending OIDC state; it does not use Practice Relay bearer sessions.
+      security: []
+      responses:
+        "200": { description: Verified launch }
+        "400": { description: Invalid state or ID token }
+  /profiles:
+    get:
+      summary: List public WorkRecord profile definitions
+      security: []
+      responses:
+        "200": { description: Profile definitions }
+  /work-records:
+    get:
+      summary: List WorkRecords visible to the bearer-session member
+      responses:
+        "200": { description: WorkRecord list }
+        "401": { description: Missing or invalid bearer session }
+    post:
+      summary: Create a WorkRecord for the bearer-session user
+      responses:
+        "201": { description: Created WorkRecord }
+        "400": { description: Invalid creation request }
+        "403": { description: Account role cannot create records }
+        "409": { description: WorkRecord id already exists }
+  /work-records/{id}:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    get:
+      summary: Read a WorkRecord
+      responses:
+        "200": { description: WorkRecord }
+        "403": { description: Record membership required }
+        "404": { description: WorkRecord not found }
+    patch:
+      summary: Update a WorkRecord title or members
+      description: Bearer-authenticated record-member mutation; assigning an admin member additionally requires a configured operations-admin actor.
+      responses:
+        "200": { description: Updated WorkRecord }
+        "400": { description: Invalid update request }
+        "403": { description: Record role denied }
+  /work-records/{id}/members:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a configured user as a WorkRecord member
+      description: Bearer-authenticated record-member mutation; assigning admin requires a configured operations-admin actor.
+      responses:
+        "200": { description: Updated WorkRecord }
+        "400": { description: Invalid member }
+        "403": { description: Record role denied }
+  /work-records/{id}/versions:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    get:
+      summary: Read WorkRecord versions and available events
+      responses:
+        "200": { description: Versions and events }
+  /work-records/{id}/collab:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    get:
+      summary: Read collaboration status and document overlay
+      responses:
+        "200": { description: Collaboration state }
+  /work-records/{id}/tracks:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a record track
+      responses: { "200": { description: Updated WorkRecord } }
+  /work-records/{id}/takes:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a take without caller-supplied media metadata
+      responses: { "200": { description: Updated WorkRecord } }
+  /work-records/{id}/takes/{takeId}/media:
+    parameters:
+      - { $ref: "#/components/parameters/WorkRecordId" }
+      - { $ref: "#/components/parameters/TakeId" }
+    post:
+      summary: Upload media for a take
+      description: Bearer-authenticated record-member mutation. Media metadata is assigned by the server.
+      responses:
+        "200": { description: Updated WorkRecord and media metadata }
+        "413": { description: Body or per-record quota exceeded }
+        "429": { description: Another media upload is active }
+  /work-records/{id}/preferred-take:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    put:
+      summary: Set the preferred take
+      responses: { "200": { description: Updated WorkRecord }, "400": { description: Invalid take } }
+  /work-records/{id}/regions:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a spine region
+      responses: { "200": { description: Updated WorkRecord } }
+  /work-records/{id}/comments:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a region-anchored comment
+      responses: { "200": { description: Updated WorkRecord } }
+  /work-records/{id}/comments/{commentId}/resolve:
+    parameters:
+      - { $ref: "#/components/parameters/WorkRecordId" }
+      - { $ref: "#/components/parameters/CommentId" }
+    post:
+      summary: Resolve a WorkRecord comment
+      responses: { "200": { description: Updated WorkRecord } }
+  /work-records/{id}/consent:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Attach a use-policy snapshot
+      responses: { "200": { description: Updated WorkRecord } }
+  /work-records/{id}/submit:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Submit an immutable named version
+      responses: { "200": { description: Updated WorkRecord and lab AGS result } }
+  /work-records/{id}/export:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Export a consent-permitted WorkRecord package
+      responses:
+        "200": { description: JSON package export or ZIP when requested }
+        "403": { description: Consent or use policy does not permit export }
+  /work-records/{id}/share:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Share a consent-permitted WorkRecord
+      responses:
+        "200": { description: Share result }
+        "403": { description: Consent or use policy does not permit sharing }
+  /work-records/{id}/analysis:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add an analysis track without overwriting media
+      responses: { "200": { description: Updated WorkRecord }, "400": { description: Rejected analysis track } }
+  /work-records/{id}/mvei:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Attach an MvEI motif reference
+      description: Stores a reference only; MvEI remains a separate product and schema stack.
+      responses: { "200": { description: Updated WorkRecord } }
+  /work-records/{id}/lti:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Build a lab-only LTI launch or simulate AGS passback
+      description: Bearer-authenticated record mutation using lab-only LTI configuration.
+      responses: { "200": { description: LTI launch or simulated AGS result } }
+  /work-records/{id}/interop:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Import EAF or OTIO JSON, or export an interop format
+      responses: { "200": { description: Import result or interop export }, "400": { description: Invalid interop request } }
+  /work-records/{id}/subjects:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a represented subject
+      responses: { "201": { description: Updated WorkRecord }, "400": { description: Invalid subject } }
+  /work-records/{id}/artifacts:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add an evidence artifact
+      responses: { "201": { description: Updated WorkRecord }, "400": { description: Invalid artifact } }
+  /work-records/{id}/annotations:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a Web Annotation
+      responses: { "201": { description: Updated WorkRecord }, "400": { description: Invalid annotation } }
+  /work-records/{id}/policies:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Add a represented-subject use policy
+      responses: { "201": { description: Updated WorkRecord }, "400": { description: Invalid policy } }
+  /work-records/{id}/snapshots:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Create an artifact snapshot
+      responses: { "201": { description: Snapshot }, "400": { description: Invalid snapshot } }
+  /work-records/{id}/exports:
+    parameters: [ { $ref: "#/components/parameters/WorkRecordId" } ]
+    post:
+      summary: Evaluate a represented-subject export and generate RO-Crate metadata when allowed
+      responses: { "200": { description: Allowed export }, "422": { description: Denied export decision } }
+  /media/{storageKey}:
+    parameters: [ { $ref: "#/components/parameters/StorageKey" } ]
+    get:
+      summary: Download authorized stored media
+      description: Bearer-authenticated. storageKey may contain path separators and must identify media referenced by a WorkRecord visible to the actor.
+      responses:
+        "200": { description: Media bytes }
+        "400": { description: Invalid storage key }
+        "403": { description: Record membership required }
+        "404": { description: Media not found }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Course-local HMAC session returned by POST /auth/login.
+  parameters:
+    WorkRecordId:
+      name: id
+      in: path
+      required: true
+      schema: { type: string }
+    TakeId:
+      name: takeId
+      in: path
+      required: true
+      schema: { type: string }
+    CommentId:
+      name: commentId
+      in: path
+      required: true
+      schema: { type: string }
+    StorageKey:
+      name: storageKey
+      in: path
+      required: true
+      schema: { type: string }

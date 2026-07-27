@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mac-research.local/schemas/mvei-motif/0.2.json",
+  "title": "MvEI Motif Profile",
+  "description": "Motif-level encoding with controlled vocabulary. Not full Labanotation. Not LabanLite CV IR. Partial documents allowed.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "profile", "id", "completeness", "items"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": ["0.1.0-stub", "0.2.0"],
+      "description": "0.1.0-stub retained for alpha fixtures; prefer 0.2.0"
+    },
+    "profile": { "const": "mvei-motif" },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string" },
+    "completeness": {
+      "type": "string",
+      "enum": ["sketch", "partial", "complete"],
+      "description": "Incomplete Motif scores must remain valid"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "symbol", "order"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "symbol": {
+            "type": "string",
+            "enum": [
+              "walk",
+              "run",
+              "turn",
+              "stillness",
+              "gesture_arm",
+              "gesture_leg",
+              "travel",
+              "jump",
+              "fall",
+              "rise",
+              "twist",
+              "balance",
+              "effort_strong",
+              "effort_light",
+              "phrase_begin",
+              "phrase_end"
+            ],
+            "description": "Controlled Motif vocabulary id"
+          },
+          "order": { "type": "integer", "minimum": 0 },
+          "durationHint": { "type": "string" },
+          "timeAnchor": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "tMs": { "type": "number" },
+              "musicMeasure": { "type": "string" },
+              "mediaFragment": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "annotationLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "system": {
+            "type": "string",
+            "enum": ["elan", "motion_bank", "other"]
+          },
+          "uri": { "type": "string" }
+        }
+      }
+    },
+    "musicCoTimeline": {
+      "type": "object",
+      "description": "Optional music co-timeline annex v0 (MusicXML/MEI anchors)",
+      "additionalProperties": false,
+      "required": ["schemaVersion"],
+      "properties": {
+        "schemaVersion": { "const": "0.1.0-annex" },
+        "musicxmlRef": { "type": ["string", "null"] },
+        "meiRef": { "type": ["string", "null"] },
+        "anchors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["motifItemId"],
+            "additionalProperties": false,
+            "properties": {
+              "motifItemId": { "type": "string", "minLength": 1 },
+              "musicMeasure": { "type": "string" },
+              "tMs": { "type": "number" },
+              "mediaFragment": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

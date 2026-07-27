@@ -1,0 +1,171 @@
+{
+  "schemaVersion": "0.2.0",
+  "profile": "mvei-laban-subset",
+  "id": "laban-subset-04",
+  "title": "Simultaneity ladder: multi-column + beatOffset groups",
+  "completeness": "partial",
+  "staff": {
+    "columns": [
+      "support_left",
+      "support_right",
+      "leg_left",
+      "leg_right",
+      "body",
+      "arm_left",
+      "arm_right",
+      "head"
+    ]
+  },
+  "measures": [
+    { "id": "m0", "index": 0, "beats": 4 },
+    { "id": "m1", "index": 1, "beats": 4 },
+    { "id": "m2", "index": 2, "beats": 4 },
+    { "id": "m3", "index": 3, "beats": 4 }
+  ],
+  "symbols": [
+    {
+      "id": "s-sup-r",
+      "kind": "support",
+      "column": "support_right",
+      "measureId": "m0",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "simultaneousGroup": "g-walk-0",
+      "motifSymbol": "walk",
+      "timeAnchor": { "tMs": 0, "musicMeasure": "1" }
+    },
+    {
+      "id": "s-sup-l",
+      "kind": "support",
+      "column": "support_left",
+      "measureId": "m0",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "simultaneousGroup": "g-walk-0",
+      "motifSymbol": "walk"
+    },
+    {
+      "id": "s-arm-r",
+      "kind": "gesture",
+      "column": "arm_right",
+      "measureId": "m0",
+      "direction": "place",
+      "level": "high",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "simultaneousGroup": "g-walk-0",
+      "motifSymbol": "gesture_arm"
+    },
+    {
+      "id": "s-arm-l",
+      "kind": "gesture",
+      "column": "arm_left",
+      "measureId": "m1",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "simultaneousGroup": "g-gesture-1",
+      "motifSymbol": "gesture_arm",
+      "timeAnchor": { "tMs": 4000, "musicMeasure": "2" }
+    },
+    {
+      "id": "s-leg-r",
+      "kind": "gesture",
+      "column": "leg_right",
+      "measureId": "m1",
+      "direction": "forward",
+      "level": "low",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "simultaneousGroup": "g-gesture-1",
+      "motifSymbol": "gesture_leg"
+    },
+    {
+      "id": "s-head",
+      "kind": "direction",
+      "column": "head",
+      "measureId": "m1",
+      "direction": "right",
+      "level": "high",
+      "durationBeats": 1,
+      "beatOffset": 2,
+      "simultaneousGroup": "g-gesture-1"
+    },
+    {
+      "id": "s-turn",
+      "kind": "turn",
+      "column": "body",
+      "measureId": "m2",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "motifSymbol": "turn",
+      "timeAnchor": { "tMs": 8000, "musicMeasure": "3" }
+    },
+    {
+      "id": "s-path",
+      "kind": "path",
+      "column": "body",
+      "measureId": "m2",
+      "direction": "diagonal_fr",
+      "level": "middle",
+      "durationBeats": 2,
+      "beatOffset": 2,
+      "motifSymbol": "travel"
+    },
+    {
+      "id": "s-still",
+      "kind": "stillness",
+      "column": "body",
+      "measureId": "m3",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 4,
+      "beatOffset": 0,
+      "motifSymbol": "stillness"
+    },
+    {
+      "id": "s-level",
+      "kind": "level",
+      "column": "leg_left",
+      "measureId": "m3",
+      "direction": "place",
+      "level": "low",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "simultaneousGroup": "g-close-3",
+      "motifSymbol": "effort_light"
+    },
+    {
+      "id": "s-bal",
+      "kind": "stillness",
+      "column": "support_right",
+      "measureId": "m3",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 2,
+      "beatOffset": 0,
+      "simultaneousGroup": "g-close-3",
+      "motifSymbol": "balance"
+    }
+  ],
+  "musicCoTimeline": {
+    "schemaVersion": "0.1.0-annex",
+    "musicxmlRef": "fixtures/demo/score.musicxml",
+    "meiRef": "fixtures/demo/score.mei",
+    "anchors": [
+      { "motifItemId": "s-sup-r", "musicMeasure": "1", "tMs": 0 },
+      { "motifItemId": "s-arm-l", "musicMeasure": "2", "tMs": 4000 },
+      { "motifItemId": "s-turn", "musicMeasure": "3", "tMs": 8000 }
+    ]
+  },
+  "annotationLinks": [
+    { "system": "elan", "uri": "file://fixtures/demo/annotation-links/week6.eaf" }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mac-research.local/schemas/movement-annotation-v0/0.1.json",
+  "title": "MovementAnnotationV0",
+  "description": "Practice Relay-native structured movement annotation (NOT full Labanotation / MvEI). Never label UI as Labanotation when using this type.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "events"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "kind": { "const": "movement_annotation" },
+    "events": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/event" }
+    }
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "required": ["id", "regionId", "label", "source"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "regionId": {
+          "type": "string",
+          "description": "time-core region id"
+        },
+        "label": { "type": "string" },
+        "bodySegment": { "type": "string" },
+        "space": { "type": "string" },
+        "motifId": { "type": ["string", "null"] },
+        "quality": {
+          "type": "string",
+          "enum": ["rehearsal", "performance", "sketch", "other"]
+        },
+        "source": {
+          "type": "string",
+          "enum": ["human", "plugin_pose", "imported_elan"]
+        },
+        "notes": { "type": "string" }
+      }
+    }
+  }
+}

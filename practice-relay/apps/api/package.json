@@ -1,0 +1,24 @@
+{
+  "name": "@practice-relay/api",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": { ".": "./src/index.ts" },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --import ./src/test-support/test-environment.mjs --import ./src/test-support/workspace-resolver.mjs --test src/*.test.ts"
+  },
+  "dependencies": {
+    "@practice-relay/auth": "workspace:*",
+    "@practice-relay/collaboration": "workspace:*",
+    "@practice-relay/work-record-core": "workspace:*",
+    "@practice-relay/media-store": "workspace:*",
+    "@practice-relay/work-record-package": "workspace:*",
+    "@practice-relay/record-store": "workspace:*",
+    "@practice-relay/interop": "workspace:*"
+  },
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a defect in alpha surfaces (API, schemas, shells, docs)
+title: "[bug] "
+labels: ["bug", "alpha"]
+body:
+  - type: dropdown
+    id: product
+    attributes:
+      label: Product surface
+      options:
+        - Practice Relay
+        - MvEI
+        - MvEI Workbench
+        - WorkRecord Core and shared packages
+        - Docs / CI
+        - Unsure
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Observed vs expected. Include command output if relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal steps from a clean frozen-lockfile install.
+      value: |
+        1. `pnpm install --frozen-lockfile`
+        2. Add the next command and its observed result.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit / version
+      placeholder: 0.4.0-alpha.1 or commit SHA

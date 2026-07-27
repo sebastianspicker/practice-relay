@@ -1,0 +1,235 @@
+# Campus lab day stack - local mock only.
+# MOCK LMS (not Canvas). Does NOT include a real Canvas or Moodle container.
+#
+# Before first use, copy deploy/secrets/example/* to deploy/secrets/local/ and
+# replace every placeholder. The compose file intentionally has no credential
+# defaults: missing, blank, or placeholder secret files stop the relevant
+# service before it accepts traffic.
+#
+# Usage (from monorepo root, after pnpm install on host OR first-run inside containers):
+#   docker compose -f docker-compose.campus-lab.yml up
+#   docker compose -f docker-compose.campus-lab.yml --profile minio up
+#
+# Host ports:
+#   http://127.0.0.1:8787 - Practice Relay API (loopback only)
+#   http://127.0.0.1:8790 - MOCK PLATFORM - not Canvas (loopback only)
+#   http://127.0.0.1:9000 - MinIO API (profile: minio; loopback only)
+#   http://127.0.0.1:9001 - MinIO console (profile: minio; loopback only)
+#
+# This stack provides local protocol tests, not an external LMS registration.
+# See practice-relay/docs/lab-only-tier.md and practice-relay/docs/lms-registration-preflight.md.
+
+name: practice-relay-campus-lab
+
+services:
+  practice-relay-api:
+    image: node:20-bookworm-slim
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - practice-relay-data:/data/practice-relay
+      - practice-relay-media:/data/media
+      - practice-relay-lti-keys:/data/lti-keys
+    environment:
+      PORT: "8787"
+      # Bind the container interface; the published host port stays loopback-only.
+      PRACTICE_RELAY_HOST: "0.0.0.0"
+      # Permit the Compose DNS name used by the server-side mock LMS client.
+      PRACTICE_RELAY_ALLOWED_HOSTS: practice-relay-api:8787
+      PRACTICE_RELAY_DATA: /data/practice-relay
+      PRACTICE_RELAY_MEDIA: /data/media
+      PRACTICE_RELAY_OBJECT_STORE: ${PRACTICE_RELAY_OBJECT_STORE:-fs}
+      # Mounted files are required so secrets are absent from compose config.
+      SECRET_BACKEND: file
+      PRACTICE_RELAY_AUTH_SECRET_FILE: /run/secrets/practice-relay_auth
+      PRACTICE_RELAY_LTI_SECRET_FILE: /run/secrets/practice-relay_lti
+      PRACTICE_RELAY_AUTH_USERS_FILE: /run/secrets/practice-relay_users
+      PRACTICE_RELAY_REQUIRE_SECRETS: "1"
+      PRACTICE_RELAY_REQUIRE_CONFIGURED_AUTH_USERS: "1"
+      PRACTICE_RELAY_LTI_KEYS_DIR: /data/lti-keys
+      PRACTICE_RELAY_LTI_GENERATE_RSA: ${PRACTICE_RELAY_LTI_GENERATE_RSA:-1}
+      PRACTICE_RELAY_LTI_PLATFORM_AUTH_URL: http://mock-lms:8790/platform/auth
+      PRACTICE_RELAY_LTI_PLATFORM_ISS: https://practice-relay.local/mock-platform
+      PRACTICE_RELAY_LTI_CLIENT_ID: practice-relay-tool
+      # Optional MinIO (enable with --profile minio and PRACTICE_RELAY_OBJECT_STORE=s3)
+      PRACTICE_RELAY_S3_ENDPOINT: ${PRACTICE_RELAY_S3_ENDPOINT:-http://minio:9000}
+      PRACTICE_RELAY_S3_BUCKET: ${PRACTICE_RELAY_S3_BUCKET:-practice-relay}
+      PRACTICE_RELAY_S3_ACCESS_KEY_FILE: /run/secrets/minio_root_user
+      PRACTICE_RELAY_S3_SECRET_KEY_FILE: /run/secrets/minio_root_password
+      PRACTICE_RELAY_S3_FORCE_PATH_STYLE: "1"
+      PRACTICE_RELAY_S3_REGION: us-east-1
+    secrets:
+      - practice-relay_auth
+      - practice-relay_lti
+      - practice-relay_users
+      - minio_root_user
+      - minio_root_password
+    command:
+      - bash
+      - -lc
+      - |
+        set -euo pipefail
+        for secret in /run/secrets/practice-relay_auth /run/secrets/practice-relay_lti /run/secrets/practice-relay_users; do
+          test -s "$$secret"
+          if grep -qE 'REPLACE(_WITH)?|CHANGE_ME|change-me|dev-only|practice-relay-lab-(auth|lti)-secret' "$$secret"; then
+            echo "refusing placeholder or default campus-lab secret file" >&2
+            exit 1
+          fi
+        done
+        node -e 'const fs=require("fs"); const users=JSON.parse(fs.readFileSync("/run/secrets/practice-relay_users","utf8")); if (!Array.isArray(users) || !users.some((user) => user && user.defaultRole === "admin") || users.some((user) => !user || typeof user.password !== "string" || /REPLACE(_WITH)?|CHANGE_ME|change-me|dev-only/i.test(user.password))) { throw new Error("campus-lab requires configured, non-placeholder users including an admin"); }'
+        if [ "$$PRACTICE_RELAY_OBJECT_STORE" = s3 ]; then
+          for secret in /run/secrets/minio_root_user /run/secrets/minio_root_password; do
+            test -s "$$secret"
+            if grep -qE 'REPLACE(_WITH)?|CHANGE_ME|change-me|practice-relay-lab-secret' "$$secret"; then
+              echo "refusing placeholder or default MinIO credential file" >&2
+              exit 1
+            fi
+          done
+          export PRACTICE_RELAY_S3_ACCESS_KEY="$$(tr -d '\r\n' </run/secrets/minio_root_user)"
+          export PRACTICE_RELAY_S3_SECRET_KEY="$$(tr -d '\r\n' </run/secrets/minio_root_password)"
+        fi
+        corepack enable
+        if [ ! -d node_modules ]; then
+          pnpm install --frozen-lockfile
+        fi
+        pnpm --filter @practice-relay/api start
+    ports:
+      - "127.0.0.1:8787:8787"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8787/readyz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 60s
+
+  mock-lms:
+    image: node:20-bookworm-slim
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    environment:
+      MOCK_PLATFORM_PORT: "8790"
+      # Bind the container interface; the published host port remains loopback-only.
+      MOCK_PLATFORM_HOST: "0.0.0.0"
+      # Server-side calls to Practice Relay use the compose network DNS name
+      PRACTICE_RELAY_API_BASE: http://practice-relay-api:8787
+      PRACTICE_RELAY_LTI_SECRET_FILE: /run/secrets/practice-relay_lti
+    secrets:
+      - practice-relay_lti
+    command:
+      - bash
+      - -lc
+      - |
+        set -euo pipefail
+        test -s /run/secrets/practice-relay_lti
+        if grep -qE 'REPLACE(_WITH)?|CHANGE_ME|change-me|dev-only|practice-relay-lti-lab-secret' /run/secrets/practice-relay_lti; then
+          echo "refusing placeholder or default campus-lab LTI secret file" >&2
+          exit 1
+        fi
+        export PRACTICE_RELAY_LTI_SECRET="$$(tr -d '\r\n' </run/secrets/practice-relay_lti)"
+        corepack enable
+        if [ ! -d node_modules ]; then
+          pnpm install --frozen-lockfile
+        fi
+        pnpm --filter @practice-relay/lti-mock-platform start
+    ports:
+      - "127.0.0.1:8790:8790"
+    depends_on:
+      practice-relay-api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8790/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 40s
+
+  # Optional object store for PRACTICE_RELAY_OBJECT_STORE=s3 demos (still local mock).
+  minio:
+    profiles: ["minio"]
+    image: minio/minio:RELEASE.2024-12-18T13-15-44Z
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        for secret in /run/secrets/minio_root_user /run/secrets/minio_root_password; do
+          test -s "$$secret"
+          if grep -qE 'REPLACE(_WITH)?|CHANGE_ME|change-me|practice-relay-lab-secret' "$$secret"; then
+            echo "refusing placeholder or default MinIO credential file" >&2
+            exit 1
+          fi
+        done
+        exec minio server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER_FILE: /run/secrets/minio_root_user
+      MINIO_ROOT_PASSWORD_FILE: /run/secrets/minio_root_password
+    secrets:
+      - minio_root_user
+      - minio_root_password
+    volumes:
+      - minio-data:/data
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:9001:9001"
+
+  # One-shot bucket bootstrap when minio profile is on
+  minio-init:
+    profiles: ["minio"]
+    image: minio/mc:RELEASE.2024-11-17T19-35-56Z
+    depends_on:
+      - minio
+    secrets:
+      - minio_root_user
+      - minio_root_password
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        USER="$$(tr -d '\r\n' </run/secrets/minio_root_user)"
+        PASS="$$(tr -d '\r\n' </run/secrets/minio_root_password)"
+        attempt=0
+        until mc alias set lab http://minio:9000 "$$USER" "$$PASS"; do
+          attempt=$$((attempt + 1))
+          if [ "$$attempt" -ge 15 ]; then
+            echo "MinIO did not become ready for bucket initialization" >&2
+            exit 1
+          fi
+          sleep 2
+        done
+        mc mb --ignore-existing lab/practice-relay
+        echo "minio bucket practice-relay ready (lab only)"
+    environment:
+      MINIO_ROOT_USER_FILE: /run/secrets/minio_root_user
+      MINIO_ROOT_PASSWORD_FILE: /run/secrets/minio_root_password
+
+volumes:
+  practice-relay-data:
+  practice-relay-media:
+  practice-relay-lti-keys:
+  minio-data:
+
+secrets:
+  # Required local files; copy deploy/secrets/example/* into the gitignored
+  # deploy/secrets/local/ directory and replace placeholders before `up`.
+  practice-relay_auth:
+    file: ./deploy/secrets/local/auth
+  practice-relay_lti:
+    file: ./deploy/secrets/local/lti
+  practice-relay_users:
+    file: ./deploy/secrets/local/users.json
+  minio_root_user:
+    file: ./deploy/secrets/local/minio_root_user
+  minio_root_password:
+    file: ./deploy/secrets/local/minio_root_password

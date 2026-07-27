@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "0.2.0",
+  "profile": "mvei-laban-subset",
+  "id": "laban-subset-02",
+  "title": "Partial Laban subset with arm gesture + music anchor",
+  "completeness": "partial",
+  "staff": {
+    "columns": ["support_left", "support_right", "arm_right", "body"]
+  },
+  "measures": [
+    { "id": "m0", "index": 0, "beats": 4 },
+    { "id": "m1", "index": 1, "beats": 4 }
+  ],
+  "symbols": [
+    {
+      "id": "s1",
+      "kind": "gesture",
+      "column": "arm_right",
+      "measureId": "m0",
+      "direction": "place",
+      "level": "high",
+      "durationBeats": 2,
+      "motifSymbol": "gesture_arm",
+      "timeAnchor": { "tMs": 0, "musicMeasure": "1" }
+    },
+    {
+      "id": "s2",
+      "kind": "turn",
+      "column": "body",
+      "measureId": "m1",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 4,
+      "motifSymbol": "turn",
+      "timeAnchor": { "tMs": 4000, "musicMeasure": "2" }
+    }
+  ],
+  "musicCoTimeline": {
+    "schemaVersion": "0.1.0-annex",
+    "musicxmlRef": "fixtures/demo/score.musicxml",
+    "meiRef": null,
+    "anchors": [
+      { "motifItemId": "s1", "musicMeasure": "1", "tMs": 0 },
+      { "motifItemId": "s2", "musicMeasure": "2", "tMs": 4000 }
+    ]
+  },
+  "annotationLinks": [
+    { "system": "elan", "uri": "file://example/laban-subset-02.eaf" }
+  ]
+}

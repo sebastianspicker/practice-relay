@@ -1,0 +1,271 @@
+{
+  "schemaVersion": "0.2.0-lw-intermediate",
+  "source": "labanwriter-intermediate",
+  "id": "lw-import-05",
+  "title": "LW intermediate sample E - full-column denser phrase (ladder)",
+  "measures": [
+    { "id": "m0", "index": 0, "beats": 4 },
+    { "id": "m1", "index": 1, "beats": 4 },
+    { "id": "m2", "index": 2, "beats": 4 },
+    { "id": "m3", "index": 3, "beats": 4 },
+    { "id": "m4", "index": 4, "beats": 4 },
+    { "id": "m5", "index": 5, "beats": 4 },
+    { "id": "m6", "index": 6, "beats": 4 },
+    { "id": "m7", "index": 7, "beats": 4 }
+  ],
+  "cells": [
+    {
+      "id": "c1",
+      "column": "support_right",
+      "measureId": "m0",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 4,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c2",
+      "column": "support_right",
+      "measureId": "m1",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c3",
+      "column": "support_left",
+      "measureId": "m1",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c4",
+      "column": "body",
+      "measureId": "m2",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "stillness"
+    },
+    {
+      "id": "c5",
+      "column": "arm_right",
+      "measureId": "m2",
+      "symbolHint": "gesture",
+      "direction": "place",
+      "level": "high",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c6",
+      "column": "body",
+      "measureId": "m3",
+      "symbolHint": "turn",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "turn"
+    },
+    {
+      "id": "c7",
+      "column": "arm_left",
+      "measureId": "m3",
+      "symbolHint": "gesture",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c8",
+      "column": "leg_right",
+      "measureId": "m3",
+      "symbolHint": "gesture",
+      "direction": "forward",
+      "level": "low",
+      "durationBeats": 2,
+      "motifHint": "gesture_leg"
+    },
+    {
+      "id": "c9",
+      "column": "body",
+      "measureId": "m4",
+      "symbolHint": "path",
+      "direction": "diagonal_fr",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "travel"
+    },
+    {
+      "id": "c10",
+      "column": "head",
+      "measureId": "m4",
+      "symbolHint": "direction",
+      "direction": "right",
+      "level": "high",
+      "durationBeats": 2
+    },
+    {
+      "id": "c11",
+      "column": "arm_right",
+      "measureId": "m4",
+      "symbolHint": "gesture",
+      "direction": "place",
+      "level": "high",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c12",
+      "column": "support_right",
+      "measureId": "m5",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "balance"
+    },
+    {
+      "id": "c13",
+      "column": "support_left",
+      "measureId": "m5",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "balance"
+    },
+    {
+      "id": "c14",
+      "column": "leg_left",
+      "measureId": "m5",
+      "symbolHint": "gesture",
+      "direction": "backward",
+      "level": "low",
+      "durationBeats": 2,
+      "motifHint": "gesture_leg"
+    },
+    {
+      "id": "c15",
+      "column": "leg_right",
+      "measureId": "m5",
+      "symbolHint": "gesture",
+      "direction": "forward",
+      "level": "low",
+      "durationBeats": 2,
+      "motifHint": "gesture_leg"
+    },
+    {
+      "id": "c16",
+      "column": "arm_left",
+      "measureId": "m5",
+      "symbolHint": "gesture",
+      "direction": "left",
+      "level": "high",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c17",
+      "column": "arm_right",
+      "measureId": "m5",
+      "symbolHint": "gesture",
+      "direction": "right",
+      "level": "high",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c18",
+      "column": "head",
+      "measureId": "m5",
+      "symbolHint": "direction",
+      "direction": "forward",
+      "level": "high",
+      "durationBeats": 2
+    },
+    {
+      "id": "c19",
+      "column": "body",
+      "measureId": "m5",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "stillness"
+    },
+    {
+      "id": "c20",
+      "column": "body",
+      "measureId": "m6",
+      "symbolHint": "path",
+      "direction": "diagonal_bl",
+      "level": "middle",
+      "durationBeats": 4,
+      "motifHint": "travel"
+    },
+    {
+      "id": "c21",
+      "column": "arm_right",
+      "measureId": "m6",
+      "symbolHint": "gesture",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c22",
+      "column": "leg_left",
+      "measureId": "m6",
+      "symbolHint": "gesture",
+      "direction": "forward",
+      "level": "low",
+      "durationBeats": 2,
+      "motifHint": "gesture_leg"
+    },
+    {
+      "id": "c23",
+      "column": "body",
+      "measureId": "m7",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 4,
+      "motifHint": "stillness"
+    },
+    {
+      "id": "c24",
+      "column": "support_right",
+      "measureId": "m7",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 4,
+      "motifHint": "balance"
+    },
+    {
+      "id": "c25",
+      "column": "support_left",
+      "measureId": "m7",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 4,
+      "motifHint": "balance"
+    }
+  ],
+  "notes": [
+    "Ladder step beyond lw-intermediate-04: full staff columns including leg_left",
+    "Denser simultaneous-style fill in m5 (all limbs) - still open intermediate, not binary .lw",
+    "Maps to pedagogical laban-subset density II (corpus laban-subset-06)"
+  ]
+}

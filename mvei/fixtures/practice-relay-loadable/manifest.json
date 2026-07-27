@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "0.4",
+  "profile": "urn:practice-relay:profile:work-record-package:0.4",
+  "workRecordId": "ps-practice-relay-mvei-001",
+  "title": "Practice Relay-loadable package - partial Motif study",
+  "createdAt": "2026-07-16T12:00:00.000Z",
+  "preferredTakeId": "take-01",
+  "tracks": [
+    {
+      "id": "tr-move-motif",
+      "type": "movement_notation",
+      "label": "MvEI Motif (partial)",
+      "ref": "motif.json"
+    },
+    {
+      "id": "tr-video",
+      "type": "video",
+      "label": "Reference take",
+      "ref": "media/take-01.mp4"
+    }
+  ],
+  "takes": [
+    {
+      "id": "take-01",
+      "label": "Studio run",
+      "mediaPath": "media/take-01.mp4"
+    }
+  ],
+  "consentSummary": {
+    "allTagged": true,
+    "purposes": ["course_assessment", "formative_feedback"],
+    "exportFiltered": true
+  },
+  "musicxmlRef": null,
+  "mveiRef": "motif.json",
+  "files": [
+    { "path": "manifest.json", "role": "manifest" },
+    { "path": "motif.json", "role": "movement_notation" }
+  ]
+}

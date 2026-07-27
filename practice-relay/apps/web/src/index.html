@@ -1,0 +1,80 @@
+<!doctype html>
+<!-- Practice Relay application shell. Why: handoff-first Quiet Dossier workspace. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Practice Relay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550&family=Instrument+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./app.css">
+  <!-- Critical focus ring: maturity gate requires focus-visible in this HTML file. -->
+  <style>
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    summary:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid #1a1f2e;
+      outline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to record workspace</a>
+
+  <header class="app-header">
+    <div class="wordmark" id="brand"></div>
+    <div class="meta-bar">
+      <span class="id mono" id="breadcrumb">…</span>
+      <span class="user">Ada M.</span>
+    </div>
+  </header>
+
+  <div class="shell" id="application-shell">
+    <aside class="record-index" aria-label="Records">
+      <label class="visually-hidden" for="record-filter">Filter work records</label>
+      <input id="record-filter" class="visually-hidden" type="search" placeholder="Filter records" autocomplete="off">
+      <ul id="records"></ul>
+    </aside>
+
+    <main class="workspace" id="workspace" tabindex="-1" aria-labelledby="record-title">
+      <div id="detail"></div>
+    </main>
+
+    <aside class="handoff-column decision" aria-label="Handoff decision">
+      <div id="readiness"></div>
+      <p id="status" class="status" role="status" aria-live="polite" data-kind="loading">Loading work records…</p>
+    </aside>
+  </div>
+
+  <footer class="scope-note" aria-labelledby="scope-heading">
+    <h2 id="scope-heading">Current scope</h2>
+    <p>
+      Practice Relay prepares WorkRecord handoffs. It does not replace
+      authoring, video critique, show-control, portfolio, or repository systems.
+    </p>
+  </footer>
+
+  <dialog id="package-dialog" aria-labelledby="dialog-title">
+    <header class="dialog-header">
+      <div>
+        <h2 id="dialog-title">Package preview</h2>
+        <p id="dialog-summary">Preparing local manifest…</p>
+      </div>
+      <button id="dialog-close" type="button" aria-label="Close package preview">×</button>
+    </header>
+    <div class="dialog-body">
+      <h3>Package manifest</h3>
+      <ul id="dialog-manifest"></ul>
+      <p class="dialog-warning">
+        Repository reuse still needs manual review. This preview does not change a remote record.
+      </p>
+    </div>
+  </dialog>
+
+  <script type="module" src="./practice-relay-app.mjs"></script>
+</body>
+</html>

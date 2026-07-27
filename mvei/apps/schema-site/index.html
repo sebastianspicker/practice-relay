@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<!-- MvEI schema site. Why: implementers need a product-neutral encoding reference surface. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MvEI: Movement Encoding Initiative</title>
+  <style>
+    :root { color-scheme: light; --paper:#fff; --surface:#f5f7fb; --surface-strong:#edf1f8; --ink:#172033; --muted:#687083; --quiet:#8b92a2; --line:#d8dde8; --line-strong:#bcc4d2; --accent:#164ce5; --accent-soft:#edf2ff; --product:#67506a; --warning:#9a5708; --warning-soft:#fff7e8; --focus:#0068d8; --radius-sm:6px; --radius-md:9px; --ui:"Avenir Next",Avenir,"Helvetica Neue",Helvetica,Arial,sans-serif; --display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin:0; min-width:320px; background:var(--paper); color:var(--ink); font:15px/1.55 var(--ui); -webkit-font-smoothing:antialiased; }
+    a { color:var(--accent); text-underline-offset:.2em; }
+    a:hover { color:#0f3fc8; }
+    a:focus-visible { outline:3px solid color-mix(in srgb,var(--focus) 62%,transparent); outline-offset:3px; }
+    code { overflow-wrap:anywhere; border:1px solid var(--line); border-radius:3px; background:var(--surface); padding:.12em .32em; font:.84em/1.4 var(--mono); }
+    h1,h2,h3 { color:var(--ink); line-height:1.08; }
+    h1 { max-width:15ch; margin:.25rem 0 .7rem; font:500 clamp(2.75rem,6vw,5.2rem)/.98 var(--display); letter-spacing:-.045em; }
+    h2 { margin:0; font:600 clamp(1.5rem,2.7vw,2.05rem)/1.1 var(--ui); letter-spacing:-.025em; }
+    h3 { margin:0 0 .55rem; font:650 1.05rem/1.2 var(--ui); letter-spacing:-.01em; }
+    p { margin: .65rem 0; }
+    .skip { position:fixed; z-index:20; top:12px; left:12px; padding:10px 14px; border-radius:var(--radius-sm); color:var(--paper); background:var(--ink); transform:translateY(-160%); }
+    .skip:focus { transform:translateY(0); }
+    .site-header { position:sticky; z-index:8; top:0; border-bottom:1px solid var(--line); background:rgb(255 255 255 / 96%); }
+    .header-inner,main,.site-footer { width:min(1180px,calc(100% - 2rem)); margin:0 auto; }
+    .header-inner { min-height:64px; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; }
+    .brand { display:flex; align-items:center; gap:.7rem; color:var(--ink); font:700 1.22rem/1 var(--ui); letter-spacing:-.025em; text-decoration:none; }
+    .mark { width:2.55rem; color:var(--product); }
+    .site-nav { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.25rem; font-size:.82rem; }
+    .site-nav a { min-height:38px; display:flex; align-items:center; padding:0 .72rem; border-radius:var(--radius-sm); color:var(--muted); text-decoration:none; }
+    .site-nav a:hover { color:var(--accent); background:var(--accent-soft); }
+    main { padding:clamp(2.5rem,6vw,5.5rem) 0 4rem; }
+    .eyebrow,.kicker,.meta { color:var(--muted); font:.7rem/1.4 var(--mono); letter-spacing:.09em; text-transform:uppercase; }
+    .hero { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(15rem,.65fr); gap:3rem; align-items:end; padding-bottom:2rem; border-bottom:1px solid var(--line-strong); }
+    .tagline { max-width:40rem; margin-bottom:0; color:var(--muted); font-size:1.06rem; }
+    .reference-note { border:1px solid #e4a24d; border-left:3px solid var(--warning); border-radius:var(--radius-sm); padding:.8rem 1rem; background:var(--warning-soft); color:#68420f; }
+    .reference-note p:first-child { margin-top: 0; }
+    .reference-note p:last-child { margin-bottom: 0; }
+    .section { scroll-margin-top:5rem; margin-top:3.25rem; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+    .section-heading p { margin: 0; }
+    .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .card { min-width:0; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--paper); padding:1.2rem; }
+    .card p:last-child { margin-bottom: 0; }
+    .card ul { margin: .7rem 0 0; padding-left: 1.2rem; }
+    .card li + li { margin-top: .45rem; }
+    .profile-list, .corpus-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 0; padding: 0; list-style: none; }
+    .profile-list li,.corpus-list li { min-width:0; border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:var(--radius-sm); background:var(--paper); padding:.9rem 1rem; }
+    .profile-list small, .corpus-list small { display: block; margin-top: .45rem; color: var(--muted); }
+    .corpus-link { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:1rem; border:1px solid #bed0ff; border-radius:var(--radius-sm); background:var(--accent-soft); padding:.9rem 1rem; }
+    .corpus-link p { margin: 0; }
+    .corpus-link a { display:inline-flex; align-items:center; gap:.35rem; font-weight:650; }
+    .link-icon { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+    .non-claims { border-left:3px solid var(--product); padding-left:1rem; color:var(--muted); }
+    .source-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; margin: .85rem 0 0; padding: 0; list-style: none; }
+    .source-list li { border:1px solid var(--line); border-radius:4px; padding:.45rem .55rem; background:var(--surface); }
+    .site-footer { border-top:1px solid var(--line); padding:1.3rem 0 2.5rem; color:var(--muted); }
+    @media (max-width: 720px) { .site-header { position:static; } .header-inner { min-height:auto; align-items:flex-start; flex-direction:column; padding:.85rem 0; } .site-nav { width:100%; justify-content:flex-start; overflow-x:auto; flex-wrap:nowrap; } .site-nav a { flex:0 0 auto; } .hero,.grid,.profile-list,.corpus-list { grid-template-columns:1fr; } .hero { gap:1.5rem; } .source-list { grid-template-columns:repeat(2,minmax(0,1fr)); } .corpus-link { align-items:flex-start; flex-direction:column; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { transition:none!important; animation:none!important; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to reference content</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#main" aria-label="Movement Encoding Initiative reference home"><svg class="mark" viewBox="0 0 48 32" aria-hidden="true"><path d="M2 4h10v10H2zM19 4h10v10H19zM36 4h10v10H36zM2 21h10v9H2zM19 21h10v9H19zM36 21h10v9H36z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 9h7m10 0h7M7 14v7m17-7v7m17-7v7" fill="none" stroke="currentColor" stroke-width="2"/></svg><span>MvEI</span></a>
+      <nav class="site-nav" aria-label="Reference sections"><a href="#profiles">Profiles</a><a href="#corpus">Corpus</a><a href="#boundaries">Boundaries</a><a href="#implementation">Implementation notes</a></nav>
+    </div>
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Movement encoding reference</p>
+        <h1 id="page-title">Movement Encoding Initiative</h1>
+        <p class="tagline">Schema profiles, validators, and fixtures for movement records.</p>
+      </div>
+      <aside class="reference-note" aria-label="Reference scope"><p class="kicker">Current alpha</p><p>Reference for the profiles and corpus shipped in this alpha.</p></aside>
+    </section>
+
+    <section class="section" aria-labelledby="companions-heading">
+      <div class="section-heading"><h2 id="companions-heading">Related surfaces</h2><p class="meta">Shared contracts, separate products</p></div>
+      <div class="grid">        <article class="card"><p class="kicker">authoring workbench</p><h3>MvEI Workbench</h3><p>Edits local Motif sequences and stores sessions in the browser.</p></article>
+        <article class="card"><p class="kicker">handoff application</p><h3>Practice Relay</h3><p>Carries MvEI references in policy-aware WorkRecord handoffs.</p></article></div>
+      <p class="non-claims">Not first browser Laban editor. Not LabanLite. Not MARC 358.</p>
+    </section>
+
+    <section class="section" id="profiles" aria-labelledby="profiles-heading">
+      <div class="section-heading"><h2 id="profiles-heading">Profiles</h2><p class="meta">Current implementation</p></div>
+      <ul class="profile-list">        <li><code>mvei-motif</code><small>0.2.0 · Pedagogical Motif profile with controlled vocabulary</small></li>
+        <li><code>mvei-laban-subset</code><small>0.2.0 · Pedagogical Labanotation subset (not full density)</small></li>
+        <li><code>movement_annotation</code><small>v0 · Practice Relay v0: not symbolic Labanotation</small></li>
+        <li><code>mvei-laban</code><small>not implemented · Full Labanotation profile is outside the current alpha</small></li></ul>
+    </section>
+
+    <section class="section" id="corpus" aria-labelledby="corpus-heading">
+      <div class="section-heading"><h2 id="corpus-heading">Corpus samples</h2><p class="meta">Pedagogical fixtures</p></div>
+      <ul class="corpus-list">        <li><code>motif-sketch-01</code><small>Pedagogical Motif sketch: walk and turn (completeness: sketch)</small></li>
+        <li><code>motif-partial-02</code><small>Partial Motif with time anchors (completeness: partial)</small></li>
+        <li><code>laban-subset-01</code><small>Pedagogical Laban subset: walk support (completeness: sketch)</small></li>
+        <li><code>laban-subset-02</code><small>Partial Laban subset with arm gesture + music anchor (completeness: partial)</small></li>
+        <li><code>laban-subset-03-dense</code><small>Denser pedagogical subset: multi-column phrase (completeness: partial)</small></li>
+        <li><code>laban-subset-04</code><small>Simultaneity ladder: multi-column + beatOffset groups (completeness: partial)</small></li>
+        <li><code>annotation-v0-demo</code><small>movement_annotation v0 demo events</small></li></ul>
+      <div class="corpus-link"><p>Machine-readable catalogue of pedagogical fixtures with profiles for external validators.<br /><span class="meta">Layout · <code>packages/movement-encode/fixtures/corpus/README.md</code></span></p><a href="/packages/movement-encode/fixtures/corpus/index.json">Open corpus index <svg class="link-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg></a></div>
+    </section>
+
+    <section class="section" id="boundaries" aria-labelledby="boundaries-heading">
+      <div class="section-heading"><h2 id="boundaries-heading">Boundaries</h2><p class="meta">Neighbours are not MvEI</p></div>
+      <div class="grid"><article class="card"><h3>Neighbours (not MvEI)</h3><ul>        <li><strong>LabanLab</strong>: Research web UI + motion preview: not MvEI</li>
+        <li><strong>LaMoGen / LabanLite</strong>: CV motion-gen IR: not ICKL-grade encoding standard</li>
+        <li><strong>MARC 358</strong>: Cataloguing notated movement: metadata ally, not score-file stack</li>
+        <li><strong>LabanWriter</strong>: Legacy Mac free graphical editor</li>
+        <li><strong>KineScribe</strong>: Free Motif/Laban literacy app</li></ul></article><article class="card"><h3>Capture bridge</h3><p>Landmark conversion accepts local provenance labels and emits sketch-quality annotations; no capture application or external integration is implemented.</p><p>Events use source plugin_pose and quality sketch; Motif output has completeness sketch.</p><ul class="source-list"><li><code>opencap</code></li>
+<li><code>mediapipe</code></li>
+<li><code>pose2sim</code></li>
+<li><code>other</code></li></ul><p class="meta">Doc · <code>mvei/docs/capture-preference.md</code></p></article></div>
+    </section>
+
+    <section class="section" id="implementation" aria-labelledby="implementation-heading">
+      <div class="section-heading"><h2 id="implementation-heading">Implementation notes</h2><p class="meta">Governance and interchange</p></div>
+      <div class="grid"><article class="card"><h3>Governance status</h3><p>No external organization or governance body is appointed; two independent organizations remain a future minimum threshold.</p><p class="meta">Doc · <code>mvei/docs/consortium-seed.md</code></p></article><article class="card"><h3>LabanWriter migration</h3><p>Motif is supported. Lossy LabanWriter import and full mvei-laban are not implemented.</p><p class="meta">Doc · <code>mvei/docs/labanwriter-migration.md</code></p></article><article class="card"><h3>Music co-timeline annex</h3><p>Optional musicCoTimeline on Motif (MusicXML/MEI anchors).</p><p class="meta">Schema · <code>packages/movement-encode/schemas/music-co-timeline-annex.schema.json</code><br />Doc · <code>mvei/docs/co-timeline-annex.md</code></p></article><article class="card"><h3>Schema source</h3><p>Versioned schema documents remain the implementation authority for this reference site.</p><p><code>packages/movement-encode/schemas/</code></p></article></div>
+    </section>
+
+  </main>
+  <footer class="site-footer"><p class="meta">MvEI reference surface</p><p>Schemas: <code>packages/movement-encode/schemas/</code></p></footer>
+</body>
+</html>

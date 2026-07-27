@@ -1,0 +1,17 @@
+{
+  "id": "practice-relay-alpha-week6-demo",
+  "title": "Week 6 duet - Practice Relay + MvEI + MvEI Workbench",
+  "products": ["Practice Relay", "MvEI", "MvEI Workbench"],
+  "mergeForbidden": true,
+  "seed": "work-record-seed.json",
+  "motif": "motif.json",
+  "coreFunctions": [
+    "multi-domain WorkRecord (≥4 track types)",
+    "preferred take",
+    "consent-gated work-record package export",
+    "region comment + resolve",
+    "MvEI Motif validate (accept valid / reject invalid)",
+    "MvEI Workbench Motif load/emit round-trip",
+    "Practice Relay Motif attachment via a real fixture path"
+  ]
+}

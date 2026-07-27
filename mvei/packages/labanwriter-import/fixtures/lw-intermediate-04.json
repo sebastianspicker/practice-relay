@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "0.2.0-lw-intermediate",
+  "source": "labanwriter-intermediate",
+  "id": "lw-import-04",
+  "title": "LW intermediate sample D - gradual density phrase (ladder)",
+  "measures": [
+    { "id": "m0", "index": 0, "beats": 4 },
+    { "id": "m1", "index": 1, "beats": 4 },
+    { "id": "m2", "index": 2, "beats": 4 },
+    { "id": "m3", "index": 3, "beats": 4 },
+    { "id": "m4", "index": 4, "beats": 4 }
+  ],
+  "cells": [
+    {
+      "id": "c1",
+      "column": "support_right",
+      "measureId": "m0",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 4,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c2",
+      "column": "support_right",
+      "measureId": "m1",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c3",
+      "column": "support_left",
+      "measureId": "m1",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c4",
+      "column": "body",
+      "measureId": "m2",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "stillness"
+    },
+    {
+      "id": "c5",
+      "column": "arm_right",
+      "measureId": "m2",
+      "symbolHint": "gesture",
+      "direction": "place",
+      "level": "high",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c6",
+      "column": "body",
+      "measureId": "m3",
+      "symbolHint": "turn",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "turn"
+    },
+    {
+      "id": "c7",
+      "column": "arm_left",
+      "measureId": "m3",
+      "symbolHint": "gesture",
+      "direction": "left",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "gesture_arm"
+    },
+    {
+      "id": "c8",
+      "column": "leg_right",
+      "measureId": "m3",
+      "symbolHint": "gesture",
+      "direction": "forward",
+      "level": "low",
+      "durationBeats": 2,
+      "motifHint": "gesture_leg"
+    },
+    {
+      "id": "c9",
+      "column": "body",
+      "measureId": "m4",
+      "symbolHint": "path",
+      "direction": "diagonal_fr",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "travel"
+    },
+    {
+      "id": "c10",
+      "column": "head",
+      "measureId": "m4",
+      "symbolHint": "direction",
+      "direction": "right",
+      "level": "high",
+      "durationBeats": 2
+    },
+    {
+      "id": "c11",
+      "column": "body",
+      "measureId": "m4",
+      "symbolHint": "stillness",
+      "direction": "place",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "stillness"
+    }
+  ],
+  "notes": [
+    "Gradual density: single support → bilateral support → body+arm → multi-limb → path+head",
+    "Transcribed intermediate - not binary .lw; pedagogical ladder only"
+  ]
+}

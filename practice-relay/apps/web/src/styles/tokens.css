@@ -1,0 +1,20 @@
+/**
+ * Quiet Dossier design tokens for Practice Relay web.
+ * Why: near-monochrome paper + hold accent keep the handoff surface archival and low-chrome.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550&family=Instrument+Serif&display=swap");
+
+:root {
+  color-scheme: light;
+  --bg: oklch(0.985 0.004 250);
+  --paper: oklch(1 0 0);
+  --ink: oklch(0.22 0.018 255);
+  --muted: oklch(0.5 0.016 255);
+  --faint: oklch(0.68 0.012 255);
+  --line: oklch(0.925 0.008 255);
+  --hold: oklch(0.5 0.09 48);
+  --ui: "Inter", "Helvetica Neue", system-ui, sans-serif;
+  --serif: "Instrument Serif", "Iowan Old Style", Georgia, serif;
+  --header-height: 64px;
+}

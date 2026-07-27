@@ -1,0 +1,26 @@
+# Practice Relay API image for production-lab compose only.
+# Zero-native runtime (Node + pnpm + tsx). No MinIO client binary required at build.
+# Does not claim multi-campus HA.
+
+FROM node:20-bookworm-slim
+
+RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
+COPY practice-relay ./practice-relay
+COPY packages ./packages
+
+# Install the API workspace graph only (no need for MvEI Workbench browsers).
+RUN pnpm install --frozen-lockfile --filter @practice-relay/api...
+
+ENV NODE_ENV=production
+ENV PORT=8787
+EXPOSE 8787
+
+COPY deploy/docker-entrypoint-practice-relay-api.sh /usr/local/bin/docker-entrypoint-practice-relay-api.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint-practice-relay-api.sh
+
+ENTRYPOINT ["docker-entrypoint-practice-relay-api.sh"]
+CMD ["pnpm", "--filter", "@practice-relay/api", "start"]

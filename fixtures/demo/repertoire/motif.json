@@ -1,0 +1,239 @@
+{
+  "schemaVersion": "0.2.0",
+  "profile": "mvei-motif",
+  "id": "motif-repertoire-16",
+  "title": "Repertoire study \u2014 16-measure co-timeline Motif",
+  "completeness": "partial",
+  "items": [
+    {
+      "id": "r1",
+      "symbol": "walk",
+      "order": 0,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 0,
+        "musicMeasure": "1"
+      }
+    },
+    {
+      "id": "r2",
+      "symbol": "gesture_arm",
+      "order": 1,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 4000,
+        "musicMeasure": "2"
+      }
+    },
+    {
+      "id": "r3",
+      "symbol": "travel",
+      "order": 2,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 8000,
+        "musicMeasure": "3",
+        "mediaFragment": "t=8"
+      }
+    },
+    {
+      "id": "r4",
+      "symbol": "stillness",
+      "order": 3,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 12000,
+        "musicMeasure": "4"
+      }
+    },
+    {
+      "id": "r5",
+      "symbol": "turn",
+      "order": 4,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 16000,
+        "musicMeasure": "5"
+      }
+    },
+    {
+      "id": "r6",
+      "symbol": "balance",
+      "order": 5,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 20000,
+        "musicMeasure": "6"
+      }
+    },
+    {
+      "id": "r7",
+      "symbol": "gesture_leg",
+      "order": 6,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 24000,
+        "musicMeasure": "7"
+      }
+    },
+    {
+      "id": "r8",
+      "symbol": "walk",
+      "order": 7,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 28000,
+        "musicMeasure": "8"
+      }
+    },
+    {
+      "id": "r9",
+      "symbol": "travel",
+      "order": 8,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 32000,
+        "musicMeasure": "9"
+      }
+    },
+    {
+      "id": "r10",
+      "symbol": "gesture_arm",
+      "order": 9,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 36000,
+        "musicMeasure": "10"
+      }
+    },
+    {
+      "id": "r11",
+      "symbol": "turn",
+      "order": 10,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 40000,
+        "musicMeasure": "11"
+      }
+    },
+    {
+      "id": "r12",
+      "symbol": "stillness",
+      "order": 11,
+      "durationHint": "2 counts",
+      "timeAnchor": {
+        "tMs": 44000,
+        "musicMeasure": "12"
+      }
+    },
+    {
+      "id": "r13",
+      "symbol": "jump",
+      "order": 12,
+      "durationHint": "1 count"
+    },
+    {
+      "id": "r14",
+      "symbol": "balance",
+      "order": 13,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 56000,
+        "musicMeasure": "15"
+      }
+    },
+    {
+      "id": "r15",
+      "symbol": "stillness",
+      "order": 14,
+      "durationHint": "4 counts",
+      "timeAnchor": {
+        "tMs": 60000,
+        "musicMeasure": "16"
+      }
+    }
+  ],
+  "annotationLinks": [
+    {
+      "system": "elan",
+      "uri": "file://fixtures/demo/repertoire/annotation-links/repertoire.eaf"
+    }
+  ],
+  "musicCoTimeline": {
+    "schemaVersion": "0.1.0-annex",
+    "musicxmlRef": "fixtures/demo/repertoire/score.musicxml",
+    "meiRef": "fixtures/demo/repertoire/score.mei",
+    "anchors": [
+      {
+        "motifItemId": "r1",
+        "musicMeasure": "1",
+        "tMs": 0
+      },
+      {
+        "motifItemId": "r2",
+        "musicMeasure": "2",
+        "tMs": 4000
+      },
+      {
+        "motifItemId": "r3",
+        "musicMeasure": "3",
+        "tMs": 8000
+      },
+      {
+        "motifItemId": "r4",
+        "musicMeasure": "4",
+        "tMs": 12000
+      },
+      {
+        "motifItemId": "r5",
+        "musicMeasure": "5",
+        "tMs": 16000
+      },
+      {
+        "motifItemId": "r6",
+        "musicMeasure": "6",
+        "tMs": 20000
+      },
+      {
+        "motifItemId": "r7",
+        "musicMeasure": "7",
+        "tMs": 24000
+      },
+      {
+        "motifItemId": "r8",
+        "musicMeasure": "8",
+        "tMs": 28000
+      },
+      {
+        "motifItemId": "r9",
+        "musicMeasure": "9",
+        "tMs": 32000
+      },
+      {
+        "motifItemId": "r10",
+        "musicMeasure": "10",
+        "tMs": 36000
+      },
+      {
+        "motifItemId": "r11",
+        "musicMeasure": "11",
+        "tMs": 40000
+      },
+      {
+        "motifItemId": "r12",
+        "musicMeasure": "12",
+        "tMs": 44000
+      },
+      {
+        "motifItemId": "r14",
+        "musicMeasure": "15",
+        "tMs": 56000
+      },
+      {
+        "motifItemId": "r15",
+        "musicMeasure": "16",
+        "tMs": 60000
+      }
+    ]
+  }
+}

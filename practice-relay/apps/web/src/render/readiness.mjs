@@ -1,0 +1,79 @@
+/**
+ * Quiet Dossier decision-column readiness renderer.
+ * Why: one calm status list and a single seal-focused action - not a dense condition console.
+ */
+import { escapeHtml } from "../html-escape.mjs";
+import { handoffChecks } from "../readiness.mjs";
+import {
+  ALPHA_LOCAL_ONLY,
+  PREPARE_EXPORT,
+  REVIEW_CONDITION,
+} from "../ui/copy.mjs";
+import { icon } from "../ui/icons.mjs";
+
+/**
+ * Render Quiet Dossier status list items from handoff checks.
+ * @param {{ label: string, complete: boolean }[]} checks Handoff checks.
+ * @returns {string}
+ */
+function renderStatusList(checks) {
+  return `<ul class="status-list">${checks
+    .map((check) => {
+      const cls = check.complete ? "ok" : "block";
+      return `<li class="${cls}">${escapeHtml(check.label)}</li>`;
+    })
+    .join("")}</ul>`;
+}
+
+/**
+ * Render the hold card when at least one condition is incomplete.
+ * @param {{ label: string, complete: boolean }} incomplete First incomplete check.
+ * @returns {string}
+ */
+function renderHoldCard(incomplete) {
+  return `<div class="hold-card">
+      <p>One condition before seal</p>
+      <p class="detail">${escapeHtml(incomplete.label)}. No silent grant.</p>
+      <button class="primary" type="button" data-action="resolve">${escapeHtml(REVIEW_CONDITION)}</button>
+    </div>`;
+}
+
+/**
+ * Render the Quiet Dossier decision column (status, hold, prepare export, package, optional MvEI).
+ * @param {object | null | undefined} record Workspace record, or falsy for empty state.
+ * @returns {string} HTML string for the decision column.
+ */
+export function renderReadiness(record) {
+  if (!record) {
+    return `<h2 id="readiness-heading">Handoff check</h2><p class="empty">Select a record to inspect its handoff state.</p>
+      <button type="button" data-action="export">${escapeHtml(PREPARE_EXPORT)}</button>`;
+  }
+
+  const checks = handoffChecks(record);
+  const incomplete = checks.find((check) => !check.complete);
+  const allComplete = !incomplete;
+
+  const prepareExport = allComplete
+    ? `<button class="primary" type="button" data-action="export">${escapeHtml(PREPARE_EXPORT)}</button>`
+    : `<button type="button" class="quiet-link" data-action="export">${escapeHtml(PREPARE_EXPORT)}</button>`;
+
+  const hold = incomplete ? renderHoldCard(incomplete) : "";
+
+  const packageSection = `<section class="package-summary" id="package-summary">
+      <button class="quiet-link" type="button" data-action="manifest">Package preview</button>
+    </section>`;
+
+  const motion = record.motion
+    ? `<p><a class="quiet-link" href="http://127.0.0.1:5175/" target="_blank" rel="noopener">Open in MvEI Workbench ${icon("external")}</a></p>`
+    : "";
+
+  return `<div class="decision-inner">
+      <h2 id="readiness-heading" class="visually-hidden">Handoff check</h2>
+      ${renderStatusList(checks)}
+      ${hold}
+      ${prepareExport}
+      ${packageSection}
+      ${motion}
+      <p class="alpha-note">${escapeHtml(ALPHA_LOCAL_ONLY)}</p>
+    </div>`;
+}

@@ -1,0 +1,223 @@
+/**
+ * Quiet Dossier workspace: title, path, evidence list, footnote.
+ * Why residual: hairline evidence rows and text path replace dense table chrome.
+ */
+
+.kicker {
+  margin: 0 0 18px;
+  font-size: 12px;
+  color: var(--faint);
+  letter-spacing: -0.005em;
+}
+
+.kicker span + span::before {
+  content: "·";
+  margin: 0 0.5em;
+  color: var(--line);
+}
+
+/* Serif only for the record title */
+.workspace h1,
+#record-title {
+  margin: 0 0 12px;
+  font: 400 44px/1.08 var(--serif);
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  white-space: normal;
+}
+
+.destination {
+  margin: 0 0 40px;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: -0.01em;
+}
+
+.destination em {
+  font-style: normal;
+  color: var(--ink);
+  font-weight: 450;
+}
+
+.path {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin: 0 0 44px;
+  padding: 0;
+  list-style: none;
+  font-size: 12.5px;
+}
+
+.path li {
+  display: flex;
+  align-items: baseline;
+  color: var(--faint);
+  font-weight: 400;
+}
+
+.path li:not(:last-child)::after {
+  content: "-";
+  margin: 0 11px;
+  color: oklch(0.88 0.008 255);
+  font-weight: 400;
+}
+
+.path .done {
+  color: var(--muted);
+}
+
+.path .now {
+  color: var(--hold);
+  font-weight: 500;
+}
+
+.section-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 4px;
+}
+
+.section-label h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 450;
+  color: var(--faint);
+  letter-spacing: -0.005em;
+}
+
+.section-label span {
+  font-size: 12px;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+
+#evidence-panel {
+  scroll-margin-top: 20px;
+}
+
+.evidence {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.evidence li {
+  display: grid;
+  grid-template-columns: 14px 48px minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.evidence li:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.evidence li.out {
+  opacity: 0.38;
+}
+
+.tick {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--ink);
+  color: var(--paper);
+  border: 0;
+  padding: 0;
+  justify-self: center;
+  cursor: pointer;
+}
+
+.tick svg {
+  width: 9px;
+  height: 9px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tick.empty {
+  background: transparent;
+  border: 1px solid var(--faint);
+  color: transparent;
+}
+
+.tick.empty svg {
+  visibility: hidden;
+}
+
+.thumb {
+  width: 48px;
+  height: 32px;
+  border-radius: 2px;
+  background: var(--bg) center / cover no-repeat;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.thumb.photo {
+  background-image: url("../assets/rehearsal-duet.png");
+  background-position: 50% 38%;
+}
+
+.thumb.glyph {
+  color: var(--faint);
+  font-size: 9px;
+  font-weight: 450;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.item {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item strong {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 450;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.item small {
+  margin-top: 3px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.take {
+  font-size: 12px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding-left: 8px;
+  text-align: right;
+}
+
+.take.none {
+  color: transparent;
+}
+
+.footnote {
+  margin: 28px 0 0;
+  font-size: 12px;
+  color: var(--faint);
+  max-width: 38ch;
+  line-height: 1.5;
+}
