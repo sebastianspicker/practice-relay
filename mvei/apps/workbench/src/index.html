@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!-- MvEI Workbench shell. Why: Motif authoring is a focused MvEI round-trip surface. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MvEI Workbench: MvEI (Movement Encoding Initiative) Motif editor</title>
+  <link rel="stylesheet" href="./workbench.css" />
+</head>
+<body>
+  <div id="mvei-workbench-live" class="workbench-status" role="status" aria-live="polite" aria-atomic="true">Editor mode: Motif canvas. Sequence tiles with controlled vocabulary.</div>
+  <header class="workbench-header">
+    <div class="brand"><svg class="mark" viewBox="0 0 48 48" role="img" aria-label="Articulated movement path mark"><path d="M8 37C14 37 15 12 24 12s7 24 16 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square"/><circle cx="8" cy="37" r="3" fill="currentColor"/><circle cx="24" cy="12" r="3" fill="currentColor"/><circle cx="40" cy="36" r="3" fill="currentColor"/><path d="M11 25h9m8 0h9" stroke="var(--cobalt-light)" stroke-width="2"/></svg><span>MvEI Workbench</span></div>
+    <div class="std"><span class="std-label">Standard</span>MvEI (Movement Encoding Initiative) · Motif authoring (alpha)</div>
+  </header>
+  <main>
+    <div class="workspace-heading">
+      <div>
+        <h1>MvEI Workbench</h1>
+        <p class="tagline">Edit a local Motif sequence and store it in this browser.</p>
+      </div>
+    </div>
+
+    <div class="editor-shell">
+    <section id="mode" aria-labelledby="mode-heading">
+      <h2 id="mode-heading">Editor mode</h2>
+      <div class="mode-bar" role="group" aria-label="Editor mode">
+        <button type="button" data-mode="motif" aria-pressed="true">Motif</button>
+        <button type="button" data-mode="laban-subset" aria-pressed="false">laban-subset staff</button>
+      </div>
+      <div class="session-bar" role="group" aria-label="Session">
+        <button type="button" data-action="session-save" aria-label="Save Motif session to local storage">Save session</button>
+        <button type="button" data-action="session-load" aria-label="Load Motif session from local storage">Load session</button>
+      </div>
+    </section>
+
+    <section id="document" aria-labelledby="doc-heading">
+      <h2 id="doc-heading">Loaded Motif</h2>
+      <p class="meta"><strong>id</strong> <code>motif-demo-week6-duet</code></p>
+      <p class="meta"><strong>profile</strong> <code>mvei-motif</code> · <strong>completeness</strong> <code>partial</code></p>
+      <p class="meta"><strong>title</strong> Week 6 duet study: walk, gesture, travel</p>
+      <p><strong>Items</strong> (6)</p>
+      <ul class="motif-items" aria-label="Motif items">
+          <li><code>i1</code> · walk · 4 counts</li>
+          <li><code>i2</code> · gesture_arm · 2 counts</li>
+          <li><code>i3</code> · travel · 4 counts</li>
+          <li><code>i4</code> · stillness · 2 counts</li>
+          <li><code>i5</code> · turn · 2 counts</li>
+          <li><code>i6</code> · balance · 2 counts</li>
+      </ul>
+      <h3 class="meta">Palette (keyboard: Enter / Space)</h3>
+      <div class="palette" role="toolbar" aria-label="Motif symbol palette">
+        <button type="button" class="palette-btn" data-symbol="walk" aria-label="Add walk to Motif" title="walk">walk</button>
+        <button type="button" class="palette-btn" data-symbol="run" aria-label="Add run to Motif" title="run">run</button>
+        <button type="button" class="palette-btn" data-symbol="turn" aria-label="Add turn to Motif" title="turn">turn</button>
+        <button type="button" class="palette-btn" data-symbol="stillness" aria-label="Add stillness to Motif" title="stillness">stillness</button>
+        <button type="button" class="palette-btn" data-symbol="gesture_arm" aria-label="Add gesture_arm to Motif" title="gesture_arm">gesture_arm</button>
+        <button type="button" class="palette-btn" data-symbol="gesture_leg" aria-label="Add gesture_leg to Motif" title="gesture_leg">gesture_leg</button>
+        <button type="button" class="palette-btn" data-symbol="travel" aria-label="Add travel to Motif" title="travel">travel</button>
+        <button type="button" class="palette-btn" data-symbol="jump" aria-label="Add jump to Motif" title="jump">jump</button>
+        <button type="button" class="palette-btn" data-symbol="fall" aria-label="Add fall to Motif" title="fall">fall</button>
+        <button type="button" class="palette-btn" data-symbol="rise" aria-label="Add rise to Motif" title="rise">rise</button>
+        <button type="button" class="palette-btn" data-symbol="twist" aria-label="Add twist to Motif" title="twist">twist</button>
+        <button type="button" class="palette-btn" data-symbol="balance" aria-label="Add balance to Motif" title="balance">balance</button>
+        <button type="button" class="palette-btn" data-symbol="effort_strong" aria-label="Add effort_strong to Motif" title="effort_strong">effort_strong</button>
+        <button type="button" class="palette-btn" data-symbol="effort_light" aria-label="Add effort_light to Motif" title="effort_light">effort_light</button>
+        <button type="button" class="palette-btn" data-symbol="phrase_begin" aria-label="Add phrase_begin to Motif" title="phrase_begin">phrase_begin</button>
+        <button type="button" class="palette-btn" data-symbol="phrase_end" aria-label="Add phrase_end to Motif" title="phrase_end">phrase_end</button>
+      </div>
+      <h3 class="meta">Canvas tiles</h3>
+      <div class="motif-canvas" role="list" aria-label="Motif sequence"><div class="motif-tile" role="listitem" tabindex="0" data-item-id="i1" aria-label="Motif symbol walk, order 0, id i1"><span class="motif-tile-symbol">walk</span></div>
+<div class="motif-tile" role="listitem" tabindex="0" data-item-id="i2" aria-label="Motif symbol gesture_arm, order 1, id i2"><span class="motif-tile-symbol">gesture_arm</span></div>
+<div class="motif-tile" role="listitem" tabindex="0" data-item-id="i3" aria-label="Motif symbol travel, order 2, id i3"><span class="motif-tile-symbol">travel</span></div>
+<div class="motif-tile" role="listitem" tabindex="0" data-item-id="i4" aria-label="Motif symbol stillness, order 3, id i4"><span class="motif-tile-symbol">stillness</span></div>
+<div class="motif-tile" role="listitem" tabindex="0" data-item-id="i5" aria-label="Motif symbol turn, order 4, id i5"><span class="motif-tile-symbol">turn</span></div>
+<div class="motif-tile" role="listitem" tabindex="0" data-item-id="i6" aria-label="Motif symbol balance, order 5, id i6"><span class="motif-tile-symbol">balance</span></div></div>
+    </section>
+
+    <section id="laban-subset" aria-labelledby="laban-heading" hidden>
+      <h2 id="laban-heading">laban-subset multi-staff</h2>
+      <p class="meta">Pedagogical column staff: not professional Labanotation density.</p>
+      <figure class="laban-subset-staff" data-profile="mvei-laban-subset" data-doc-id="laban-subset-04">
+  <figcaption>Simultaneity ladder: multi-column + beatOffset groups · laban-subset multi-staff (pedagogical)</figcaption>
+  <svg xmlns="http://www.w3.org/2000/svg" width="404" height="432" role="img" aria-label="Simultaneity ladder: multi-column + beatOffset groups column staff">
+    <text x="136" y="18" text-anchor="middle" font-size="10" fill="#9aa3b5">m0</text><text x="208" y="18" text-anchor="middle" font-size="10" fill="#9aa3b5">m1</text><text x="280" y="18" text-anchor="middle" font-size="10" fill="#9aa3b5">m2</text><text x="352" y="18" text-anchor="middle" font-size="10" fill="#9aa3b5">m3</text>
+    <g data-column="support_left" role="row"><text x="8" y="60" font-size="9" fill="#7eb8da">support_left</text><rect x="100" y="32" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="134" y="48" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-sup-l">walk</text><rect x="172" y="32" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="244" y="32" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="316" y="32" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/></g>
+<g data-column="support_right" role="row"><text x="8" y="108" font-size="9" fill="#7eb8da">support_right</text><rect x="100" y="80" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="134" y="96" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-sup-r">walk</text><rect x="172" y="80" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="244" y="80" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="316" y="80" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="350" y="96" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-bal">balance</text></g>
+<g data-column="leg_left" role="row"><text x="8" y="156" font-size="9" fill="#7eb8da">leg_left</text><rect x="100" y="128" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="172" y="128" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="244" y="128" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="316" y="128" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="350" y="144" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-level">effort_light</text></g>
+<g data-column="leg_right" role="row"><text x="8" y="204" font-size="9" fill="#7eb8da">leg_right</text><rect x="100" y="176" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="172" y="176" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="206" y="192" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-leg-r">gesture_leg</text><rect x="244" y="176" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="316" y="176" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/></g>
+<g data-column="body" role="row"><text x="8" y="252" font-size="9" fill="#7eb8da">body</text><rect x="100" y="224" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="172" y="224" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="244" y="224" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="278" y="240" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-turn">turn</text><text x="278" y="252" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-path">travel</text><rect x="316" y="224" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="350" y="240" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-still">stillness</text></g>
+<g data-column="arm_left" role="row"><text x="8" y="300" font-size="9" fill="#7eb8da">arm_left</text><rect x="100" y="272" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="172" y="272" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="206" y="288" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-arm-l">gesture_arm</text><rect x="244" y="272" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="316" y="272" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/></g>
+<g data-column="arm_right" role="row"><text x="8" y="348" font-size="9" fill="#7eb8da">arm_right</text><rect x="100" y="320" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="134" y="336" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-arm-r">gesture_arm</text><rect x="172" y="320" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="244" y="320" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="316" y="320" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/></g>
+<g data-column="head" role="row"><text x="8" y="396" font-size="9" fill="#7eb8da">head</text><rect x="100" y="368" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="172" y="368" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><text x="206" y="384" text-anchor="middle" font-size="9" fill="#e8eaf0" data-symbol-id="s-head">direction</text><rect x="244" y="368" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/><rect x="316" y="368" width="68" height="44" rx="3" fill="#1c2030" stroke="#2e3548"/></g>
+  </svg>
+</figure>
+    </section>
+
+    <section id="honesty" aria-labelledby="honesty-heading">
+      <h2 id="honesty-heading">Current scope</h2>
+      <ul>
+        <li>Partial Motif must validate against @practice-relay/movement-encode.</li>
+        <li>Practice Relay is a separate handoff application that can carry MvEI references.</li>
+        <li>MvEI Workbench is the focused authoring surface for the MvEI stack.</li>
+      </ul>
+    </section>
+    </div>
+
+    <footer>
+      <p>MvEI Workbench · MvEI (Movement Encoding Initiative) · local Motif editing · session localStorage</p>
+    </footer>
+  </main>
+  <script type="module" src="./workbench-client.mjs"></script>
+</body>
+</html>

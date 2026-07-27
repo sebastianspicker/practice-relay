@@ -1,0 +1,19 @@
+{
+  "name": "@practice-relay/acceptance-tests",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --import tsx --import ../../practice-relay/apps/api/src/test-support/test-environment.mjs --test *.test.ts"
+  },
+  "dependencies": {
+    "@practice-relay/api": "workspace:*",
+    "@practice-relay/work-record-core": "workspace:*",
+    "@practice-relay/work-record-package": "workspace:*",
+    "@practice-relay/movement-encode": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  },
+  "license": "Apache-2.0"
+}

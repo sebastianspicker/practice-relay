@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "0.2.0",
+  "profile": "mvei-motif",
+  "id": "motif-partial-02",
+  "title": "Partial Motif with time anchors",
+  "completeness": "partial",
+  "items": [
+    {
+      "id": "i1",
+      "symbol": "gesture_arm",
+      "order": 0,
+      "timeAnchor": { "tMs": 1200, "musicMeasure": "4" }
+    },
+    {
+      "id": "i2",
+      "symbol": "travel",
+      "order": 1,
+      "timeAnchor": { "tMs": 4800, "mediaFragment": "t=4.8" }
+    }
+  ],
+  "annotationLinks": [
+    { "system": "elan", "uri": "file://example/corpus/partial-02.eaf" }
+  ]
+}

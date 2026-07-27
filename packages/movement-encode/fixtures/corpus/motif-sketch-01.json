@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "0.2.0",
+  "profile": "mvei-motif",
+  "id": "motif-sketch-01",
+  "title": "Pedagogical Motif sketch - walk and turn",
+  "completeness": "sketch",
+  "items": [
+    { "id": "i1", "symbol": "walk", "order": 0, "durationHint": "2 counts" },
+    { "id": "i2", "symbol": "turn", "order": 1, "durationHint": "1 count" },
+    { "id": "i3", "symbol": "stillness", "order": 2 }
+  ],
+  "annotationLinks": [],
+  "musicCoTimeline": {
+    "schemaVersion": "0.1.0-annex",
+    "musicxmlRef": "fixtures/demo/score.musicxml",
+    "meiRef": null,
+    "anchors": [
+      { "motifItemId": "i1", "musicMeasure": "1", "tMs": 0 },
+      { "motifItemId": "i2", "musicMeasure": "2", "tMs": 2000 }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "0.4",
+  "profile": "urn:practice-relay:profile:work-record-package:0.4",
+  "workRecordId": "wr-demo-001",
+  "title": "Demo duet study - week 6",
+  "createdAt": "2026-07-16T12:00:00.000Z",
+  "preferredTakeId": "take-03",
+  "tracks": [
+    { "id": "tr-audio", "type": "audio", "label": "Reference audio", "ref": "media/ref.wav" },
+    { "id": "tr-video", "type": "video", "label": "Performance video", "ref": "media/take-03.mp4" },
+    { "id": "tr-music", "type": "music_notation", "label": "Record", "ref": "records/piece.musicxml" },
+    { "id": "tr-move", "type": "movement_annotation", "label": "Movement notes", "ref": "annotation/move-v0.json" },
+    { "id": "tr-cues", "type": "media_cues", "label": "Cues", "ref": "cues/cues.json" },
+    { "id": "tr-text", "type": "text", "label": "Reflection", "ref": "text/reflection.md" }
+  ],
+  "takes": [
+    { "id": "take-01", "label": "Run 1", "mediaPath": "media/take-01.mp4" },
+    { "id": "take-02", "label": "Run 2", "mediaPath": "media/take-02.mp4" },
+    { "id": "take-03", "label": "Run 3 (preferred)", "mediaPath": "media/take-03.mp4" }
+  ],
+  "consentSummary": {
+    "allTagged": true,
+    "purposes": ["course_assessment", "formative_feedback"],
+    "exportFiltered": true
+  },
+  "musicxmlRef": "records/piece.musicxml",
+  "mveiRef": null,
+  "files": [
+    { "path": "manifest.json", "role": "manifest" },
+    { "path": "media/take-03.mp4", "role": "preferred_take" },
+    { "path": "records/piece.musicxml", "role": "music_notation" }
+  ]
+}

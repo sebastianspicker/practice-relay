@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "practice-relay-lti-deployment-registration",
+  "status": "local-mock",
+  "disclaimer": "MOCK PLATFORM - not Canvas. Not IMS Global / 1EdTech certified. Lab registration fixture only.",
+  "platform": {
+    "name": "MOCK PLATFORM - not Canvas",
+    "issuer": "https://practice-relay.local/mock-platform",
+    "authLoginUrl": "http://localhost:8790/platform/auth",
+    "mockPlatformBaseUrl": "http://localhost:8790",
+    "note": "Simulates Canvas/Moodle admin + launch; does not install real Canvas."
+  },
+  "tool": {
+    "name": "Practice Relay",
+    "clientId": "practice-relay-tool",
+    "deploymentId": "practice-relay-lab-deploy-1",
+    "targetLinkUri": "http://localhost:8787/lti/launch",
+    "oidcLoginInitiationUrl": "http://localhost:8787/lti/login",
+    "redirectUris": ["http://localhost:8787/lti/launch"],
+    "jwksUrl": "http://localhost:8787/lti/jwks",
+    "agsTokenUrl": "http://localhost:8787/lti/oauth/token",
+    "agsScoreUrl": "http://localhost:8787/lti/ags/scores",
+    "scopes": [
+      "https://purl.imsglobal.org/spec/lti-ags/scope/lineitem",
+      "https://purl.imsglobal.org/spec/lti-ags/scope/score"
+    ],
+    "customFields": {
+      "asset_mode": "multi-asset",
+      "practice_relay_assignment": "embedded JSON claim at launch (singleVideoUrl always null)"
+    }
+  },
+  "oidcLoginInitiationParameters": {
+    "description": "LTI 1.3 OIDC third-party initiated login - platform → tool login URL",
+    "required": {
+      "iss": "Platform issuer URL (must match registration)",
+      "login_hint": "Opaque platform user hint",
+      "target_link_uri": "Tool launch URL (must match registration targetLinkUri)",
+      "client_id": "Tool client_id issued at registration",
+      "lti_deployment_id": "Deployment id for this course/tool install"
+    },
+    "optional": {
+      "lti_message_hint": "Opaque resource-link / message context",
+      "lti_message_hint_encoding": "platform-defined"
+    },
+    "toolAuthorizationRequestToPlatform": {
+      "scope": "openid",
+      "response_type": "id_token",
+      "response_mode": "form_post",
+      "prompt": "none",
+      "client_id": "same as registration",
+      "redirect_uri": "target_link_uri / registered redirect",
+      "login_hint": "echo from initiation",
+      "state": "CSRF state (tool-generated)",
+      "nonce": "replay protection (tool-generated)"
+    }
+  },
+  "assignmentContract": {
+    "kind": "practice-relay-multi-asset-assignment",
+    "assetMode": "multi-asset",
+    "singleVideoUrl": null,
+    "note": "Validators reject non-null singleVideoUrl - multi-asset package, not video-only LTI"
+  }
+}

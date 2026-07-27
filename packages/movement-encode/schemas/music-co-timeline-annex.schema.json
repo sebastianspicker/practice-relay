@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mac-research.local/schemas/mvei-music-co-timeline-annex/0.1.json",
+  "title": "MvEI Music Co-Timeline Annex v0",
+  "description": "Optional music co-timeline hooks for Motif/Laban documents. Beside MusicXML/MEI, not under video only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0-annex" },
+    "musicxmlRef": { "type": ["string", "null"] },
+    "meiRef": { "type": ["string", "null"] },
+    "anchors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["motifItemId"],
+        "properties": {
+          "motifItemId": { "type": "string", "minLength": 1 },
+          "musicMeasure": { "type": "string" },
+          "tMs": { "type": "number" },
+          "mediaFragment": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

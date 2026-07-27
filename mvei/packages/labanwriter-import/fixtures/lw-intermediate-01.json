@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "0.2.0-lw-intermediate",
+  "source": "labanwriter-intermediate",
+  "id": "lw-import-01",
+  "title": "LW intermediate sample A - walk",
+  "measures": [
+    { "id": "m0", "index": 0, "beats": 4 }
+  ],
+  "cells": [
+    {
+      "id": "c1",
+      "column": "support_right",
+      "measureId": "m0",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    },
+    {
+      "id": "c2",
+      "column": "support_left",
+      "measureId": "m0",
+      "symbolHint": "support",
+      "direction": "forward",
+      "level": "middle",
+      "durationBeats": 2,
+      "motifHint": "walk"
+    }
+  ],
+  "notes": ["Transcribed manually from legacy score sheet"]
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "0.1.0",
+  "kind": "movement_annotation",
+  "events": [
+    {
+      "id": "e1",
+      "regionId": "reg-intro",
+      "label": "Enter stage left",
+      "bodySegment": "full",
+      "space": "stage_left",
+      "motifId": null,
+      "quality": "rehearsal",
+      "source": "human"
+    },
+    {
+      "id": "e2",
+      "regionId": "reg-phrase-a",
+      "label": "Phrase A peak",
+      "quality": "performance",
+      "source": "human",
+      "motifId": "motif-a"
+    }
+  ]
+}

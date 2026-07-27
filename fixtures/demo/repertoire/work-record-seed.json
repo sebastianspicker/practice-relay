@@ -1,0 +1,18 @@
+{
+  "id": "score-repertoire-16",
+  "title": "Repertoire 16-measure co-timeline package",
+  "tracks": [
+    {
+      "id": "tr-music",
+      "type": "music_notation",
+      "ref": "fixtures/demo/repertoire/score.musicxml",
+      "label": "Repertoire MusicXML"
+    },
+    {
+      "id": "tr-mvei",
+      "type": "movement_notation",
+      "ref": "fixtures/demo/repertoire/motif.json",
+      "label": "Repertoire Motif"
+    }
+  ]
+}

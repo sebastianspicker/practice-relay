@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mac-research.local/schemas/time-core/v0.1.json",
+  "title": "TimeCore",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "mode", "durationMs"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "mode": {
+      "type": "string",
+      "enum": ["absolute", "hybrid"],
+      "description": "MVP uses absolute; hybrid adds meter later"
+    },
+    "durationMs": { "type": "number", "minimum": 0 },
+    "markers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/marker" }
+    },
+    "regions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/region" }
+    },
+    "meter": {
+      "type": "object",
+      "description": "Optional; required when mode=hybrid",
+      "properties": {
+        "tempoBpm": { "type": "number", "exclusiveMinimum": 0 },
+        "timeSignature": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "marker": {
+      "type": "object",
+      "required": ["id", "tMs", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "tMs": { "type": "number", "minimum": 0 },
+        "label": { "type": "string" }
+      }
+    },
+    "region": {
+      "type": "object",
+      "required": ["id", "startMs", "endMs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "startMs": { "type": "number", "minimum": 0 },
+        "endMs": { "type": "number", "minimum": 0 },
+        "label": { "type": "string" }
+      }
+    }
+  }
+}

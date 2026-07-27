@@ -1,0 +1,55 @@
+{
+  "kind": "practice-relay-ossia-hint",
+  "schemaVersion": "0.4.0",
+  "workRecordId": "ps-demo-week6-duet",
+  "title": "Week 6 duet study",
+  "note": "JSON receive-address map for ossia score - federate, do not replace ossia as show runtime. Create a scenario of durationMs; fire outbound or local OSC at each cue tMs.",
+  "durationMs": 60000,
+  "receiveAddresses": [
+    {
+      "address": "/practice-relay/ps-demo-week6-duet/region",
+      "args": ["regionId", "label", "endMs"],
+      "ossiaNodeHint": "scenario/interval → trigger or state at tMs",
+      "description": "Spine region marker (phrase, warmup, coda)"
+    },
+    {
+      "address": "/practice-relay/ps-demo-week6-duet/track",
+      "args": ["trackId", "type", "ref", "label"],
+      "ossiaNodeHint": "metadata node or device parameter (presence)",
+      "description": "Multi-domain track presence (video, audio, media_cues, …)"
+    },
+    {
+      "address": "/practice-relay/ps-demo-week6-duet/preferred_take",
+      "args": ["takeId"],
+      "ossiaNodeHint": "string parameter on document metadata device",
+      "description": "Preferred process take for critique / assessment"
+    }
+  ],
+  "cues": [
+    {
+      "tMs": 0,
+      "address": "/practice-relay/ps-demo-week6-duet/region",
+      "args": ["r-warmup", "warmup", 8000]
+    },
+    {
+      "tMs": 0,
+      "address": "/practice-relay/ps-demo-week6-duet/track",
+      "args": ["tr-video", "video", "media/cam-a.mp4", "Cam A"]
+    },
+    {
+      "tMs": 0,
+      "address": "/practice-relay/ps-demo-week6-duet/track",
+      "args": ["tr-cues", "media_cues", "cues.json", "Cues"]
+    },
+    {
+      "tMs": 0,
+      "address": "/practice-relay/ps-demo-week6-duet/preferred_take",
+      "args": ["take-pref"]
+    },
+    {
+      "tMs": 8000,
+      "address": "/practice-relay/ps-demo-week6-duet/region",
+      "args": ["r-phrase", "phrase-A", 25000]
+    }
+  ]
+}
