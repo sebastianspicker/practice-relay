@@ -6,6 +6,7 @@ import { escapeHtml } from "../html-escape.mjs";
 import { label } from "../data/workspace-record.mjs";
 import { formatDate } from "../ui/format.mjs";
 import { icon } from "../ui/icons.mjs";
+import { simulatedActionLabel } from "../demo-mode.mjs";
 import { DESTINATION, SOURCE_SYSTEMS_FOOTNOTE } from "../ui/copy.mjs";
 import { renderPathHtml } from "./path.mjs";
 
@@ -49,14 +50,15 @@ function usesPhotoThumb(artifact) {
  * @param {boolean} included Whether the artifact is in the package selection.
  * @returns {string}
  */
-function renderEvidenceItem(artifact, included) {
+function renderEvidenceItem(artifact, included, staticDemo = false) {
   const id = String(artifact?.id ?? "");
   const name = label(artifact, "Evidence item");
   const detail = artifact?.detail ?? artifact?.mediaType ?? "Retained evidence";
   const take = artifact?.preferredTake ? String(artifact.preferredTake) : "";
   const tickClass = included ? "tick" : "tick empty";
   const ariaPressed = included ? "true" : "false";
-  const ariaLabel = `${included ? "Exclude" : "Include"} ${name}`;
+  const actionLabel = `${included ? "Exclude" : "Include"} ${name}`;
+  const ariaLabel = staticDemo ? simulatedActionLabel(actionLabel) : actionLabel;
   const thumb = usesPhotoThumb(artifact)
     ? `<div class="thumb photo" role="img" aria-label=""></div>`
     : `<div class="thumb glyph" aria-hidden="true">${escapeHtml(glyphLabel(artifact))}</div>`;
@@ -65,12 +67,14 @@ function renderEvidenceItem(artifact, included) {
     : `<span class="take none">-</span>`;
   const outClass = included ? "" : ` class="out"`;
 
+  const simulationMarker = staticDemo ? `<span class="simulation-marker">Simulated</span>` : "";
+
   return `<li${outClass}>
       <button class="${tickClass}" type="button" data-action="toggle-evidence" data-artifact="${escapeHtml(id)}" aria-pressed="${ariaPressed}" aria-label="${escapeHtml(ariaLabel)}">${included ? icon("check") : ""}</button>
       ${thumb}
       <div class="item">
         <strong>${escapeHtml(name)}</strong>
-        <small>${escapeHtml(String(detail))}</small>
+        <small>${escapeHtml(String(detail))}${simulationMarker}</small>
       </div>
       ${takeHtml}
     </li>`;
@@ -81,7 +85,7 @@ function renderEvidenceItem(artifact, included) {
  * @param {object | null | undefined} record Workspace record, or falsy for empty state.
  * @returns {string} HTML string for the dossier column.
  */
-export function renderRecord(record) {
+export function renderRecord(record, options = {}) {
   if (!record) {
     return `<div class="empty"><h1 id="record-title">No record selected</h1><p>Choose a work record from the index, or refresh when the record service is reachable.</p></div>`;
   }
@@ -92,7 +96,11 @@ export function renderRecord(record) {
   const includedCount = artifacts.filter((artifact) => includedIds.includes(String(artifact.id))).length;
 
   const evidenceRows = artifacts
-    .map((artifact) => renderEvidenceItem(artifact, includedIds.includes(String(artifact.id))))
+    .map((artifact) => renderEvidenceItem(
+      artifact,
+      includedIds.includes(String(artifact.id)),
+      options.staticDemo === true,
+    ))
     .join("");
 
   return `<p class="kicker">

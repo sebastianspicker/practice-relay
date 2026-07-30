@@ -10,6 +10,7 @@ import {
   REVIEW_CONDITION,
 } from "../ui/copy.mjs";
 import { icon } from "../ui/icons.mjs";
+import { simulatedActionLabel } from "../demo-mode.mjs";
 
 /**
  * Render Quiet Dossier status list items from handoff checks.
@@ -30,11 +31,11 @@ function renderStatusList(checks) {
  * @param {{ label: string, complete: boolean }} incomplete First incomplete check.
  * @returns {string}
  */
-function renderHoldCard(incomplete) {
+function renderHoldCard(incomplete, staticDemo = false) {
   return `<div class="hold-card">
       <p>One condition before seal</p>
       <p class="detail">${escapeHtml(incomplete.label)}. No silent grant.</p>
-      <button class="primary" type="button" data-action="resolve">${escapeHtml(REVIEW_CONDITION)}</button>
+      <button class="primary" type="button" data-action="resolve">${escapeHtml(staticDemo ? simulatedActionLabel(REVIEW_CONDITION) : REVIEW_CONDITION)}</button>
     </div>`;
 }
 
@@ -43,10 +44,11 @@ function renderHoldCard(incomplete) {
  * @param {object | null | undefined} record Workspace record, or falsy for empty state.
  * @returns {string} HTML string for the decision column.
  */
-export function renderReadiness(record) {
+export function renderReadiness(record, options = {}) {
+  const staticDemo = options.staticDemo === true;
   if (!record) {
     return `<h2 id="readiness-heading">Handoff check</h2><p class="empty">Select a record to inspect its handoff state.</p>
-      <button type="button" data-action="export">${escapeHtml(PREPARE_EXPORT)}</button>`;
+      <button type="button" data-action="export">${escapeHtml(staticDemo ? simulatedActionLabel(PREPARE_EXPORT) : PREPARE_EXPORT)}</button>`;
   }
 
   const checks = handoffChecks(record);
@@ -54,17 +56,19 @@ export function renderReadiness(record) {
   const allComplete = !incomplete;
 
   const prepareExport = allComplete
-    ? `<button class="primary" type="button" data-action="export">${escapeHtml(PREPARE_EXPORT)}</button>`
-    : `<button type="button" class="quiet-link" data-action="export">${escapeHtml(PREPARE_EXPORT)}</button>`;
+    ? `<button class="primary" type="button" data-action="export">${escapeHtml(staticDemo ? simulatedActionLabel(PREPARE_EXPORT) : PREPARE_EXPORT)}</button>`
+    : `<button type="button" class="quiet-link" data-action="export">${escapeHtml(staticDemo ? simulatedActionLabel(PREPARE_EXPORT) : PREPARE_EXPORT)}</button>`;
 
-  const hold = incomplete ? renderHoldCard(incomplete) : "";
+  const hold = incomplete ? renderHoldCard(incomplete, staticDemo) : "";
 
   const packageSection = `<section class="package-summary" id="package-summary">
-      <button class="quiet-link" type="button" data-action="manifest">Package preview</button>
+      <button class="quiet-link" type="button" data-action="manifest">${escapeHtml(staticDemo ? simulatedActionLabel("Package preview") : "Package preview")}</button>
     </section>`;
 
   const motion = record.motion
-    ? `<p><a class="quiet-link" href="http://127.0.0.1:5175/" target="_blank" rel="noopener">Open in MvEI Workbench ${icon("external")}</a></p>`
+    ? staticDemo
+      ? `<p><button class="quiet-link" type="button" data-action="open-workbench">${escapeHtml(simulatedActionLabel("Open in MvEI Workbench"))} ${icon("external")}</button></p>`
+      : `<p><a class="quiet-link" href="http://127.0.0.1:5175/" target="_blank" rel="noopener">Open in MvEI Workbench ${icon("external")}</a></p>`
     : "";
 
   return `<div class="decision-inner">
