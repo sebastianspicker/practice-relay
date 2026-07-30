@@ -11,6 +11,8 @@ Practice Relay is separate from MvEI and MvEI Workbench. The applications share 
 
 ![Practice Relay web showing its labeled synthetic fallback](../docs/images/0.4.0-alpha.1/practice-relay-web.png)
 
+[Open the static Practice Relay demo](https://sebastianspicker.github.io/practice-relay/). It uses sanitized fixture data, and every command-capable action is visibly marked as simulated.
+
 ## Implemented surfaces
 
 | Layer | Path | Current capability |

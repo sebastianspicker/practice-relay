@@ -163,6 +163,24 @@ test("the Quiet Dossier handoff shell retains evidence, export, path, and local 
   );
 });
 
+test("the hosted static demo uses fixtures and visibly labels command-capable actions", () => {
+  assertIncludes(
+    surface,
+    [
+      "STATIC_DEMO",
+      "sanitized fixture data",
+      "Simulate:",
+      "Simulated",
+      'data-action="toggle-evidence"',
+      'data-action="resolve"',
+      'data-action="export"',
+      'data-action="manifest"',
+      'data-action="open-workbench"',
+    ],
+    "static demo boundary",
+  );
+});
+
 test("maturity gate literals remain in the entry module", () => {
   assertIncludes(
     entry,
