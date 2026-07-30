@@ -87,6 +87,27 @@ button:disabled {
   font-size: 0.875rem;
 }
 
+.demo-notice {
+  margin: 0;
+  padding: 9px 48px;
+  color: var(--ink);
+  background: oklch(0.965 0.025 70);
+  border-bottom: 1px solid oklch(0.88 0.035 70);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.simulation-marker {
+  display: inline-block;
+  margin-left: 8px;
+  color: var(--hold);
+  font-size: 9px;
+  font-weight: 550;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .scope-note h2,
 .scope-note p {
   margin: 0;

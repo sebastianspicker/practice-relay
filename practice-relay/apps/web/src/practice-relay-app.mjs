@@ -6,6 +6,7 @@
 import { escapeHtml } from "./html-escape.mjs";
 import { fallbackRecords } from "./data/fallback-records.mjs";
 import { toWorkspaceRecord, label } from "./data/workspace-record.mjs";
+import { STATIC_DEMO } from "./demo-mode.mjs";
 import { byId } from "./ui/format.mjs";
 import {
   LOADING,
@@ -41,8 +42,8 @@ let filterText = "";
 export function render() {
   byId("records").innerHTML = renderRecordIndexHtml(records, selectedId, filterText);
   const selected = records.find((record) => record.id === selectedId);
-  byId("detail").innerHTML = renderRecord(selected);
-  byId("readiness").innerHTML = renderReadiness(selected);
+  byId("detail").innerHTML = renderRecord(selected, { staticDemo: STATIC_DEMO });
+  byId("readiness").innerHTML = renderReadiness(selected, { staticDemo: STATIC_DEMO });
   byId("breadcrumb").textContent = selected?.id ?? selected?.title ?? "…";
   void EXPORT_ACTION_ATTR;
   void GATE.prepareExport;
@@ -63,7 +64,9 @@ function selectedRecord() {
 /** Open the local package preview dialog for the given record. */
 function showPackageDialog(record) {
   if (!record) return;
-  byId("dialog-title").textContent = `${record.title} package`;
+  byId("dialog-title").textContent = STATIC_DEMO
+    ? `Simulated package: ${record.title}`
+    : `${record.title} package`;
   byId("dialog-summary").textContent =
     `${record.includedIds.length} evidence items · ${record.snapshotLabel} · RO-Crate 1.3`;
   byId("dialog-manifest").innerHTML = record.artifacts
@@ -85,7 +88,7 @@ function toggleEvidence(artifactId) {
     : [...record.includedIds, artifactId];
   render();
   setStatus(
-    `Local package preview updated to ${record.includedIds.length} evidence items · no remote record changed.`,
+    `${STATIC_DEMO ? "Simulated package" : "Local package preview"} updated to ${record.includedIds.length} evidence items · no remote record changed.`,
     "success",
   );
 }
@@ -102,8 +105,15 @@ function handleWorkspaceAction(event) {
   }
   if (action === "resolve") {
     setStatus(
-      "Repository reuse needs manual review before a repository handoff · no remote record changed.",
+      `${STATIC_DEMO ? "Simulated review: " : ""}Repository reuse needs manual review before a repository handoff · no remote record changed.`,
       "warning",
+    );
+    return;
+  }
+  if (action === "open-workbench") {
+    setStatus(
+      "Simulated handoff to MvEI Workbench · no application was opened and no remote record changed.",
+      "success",
     );
     return;
   }
@@ -112,6 +122,13 @@ function handleWorkspaceAction(event) {
 
 /** Fetch the WorkRecord collection; retain an explicit local example only on failure. */
 export async function loadRecords() {
+  if (STATIC_DEMO) {
+    records = fallbackRecords.map(toWorkspaceRecord);
+    selectedId = records[0].id;
+    setStatus("Static demo · sanitized fixture data · no remote record changed.", "success");
+    render();
+    return;
+  }
   setStatus(LOADING);
   try {
     const response = await fetch(`${API_BASE}/work-records`);
@@ -145,6 +162,11 @@ export async function loadRecords() {
 byId("brand").innerHTML =
   `${practiceRelayMark()}<span>${escapeHtml(BRAND)}</span><span class="visually-hidden">${escapeHtml(TAGLINE)}</span>`;
 assertNoForbiddenCopy(document.documentElement.outerHTML);
+
+if (STATIC_DEMO) {
+  byId("demo-notice").hidden = false;
+  document.documentElement.classList.add("static-demo");
+}
 
 const filter = byId("record-filter");
 if (filter) {
