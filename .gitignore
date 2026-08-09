@@ -66,6 +66,7 @@ Thumbs.db
 .test-env/
 
 # Practice Relay durable lab data (PRACTICE_RELAY_DATA / media store)
+/docs/agent/
 /data/**
 !data/README.md
 
