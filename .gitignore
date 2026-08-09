@@ -43,10 +43,15 @@ Thumbs.db
 .cursor/
 .codacy/
 .codex/
+.repowise/
+.mcp.json
 .serena/
 /.scratch/
 /tmp/
 /release-artifacts/
+/AUDIT_LEDGER.md
+/work-in-progress/
+/wip/
 
 # Package manager
 .pnpm-store/

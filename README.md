@@ -2,14 +2,15 @@
 
 Practice Relay is the repository's main application for preparing policy-aware WorkRecord handoffs. It links evidence, revisions, participants, represented subjects, permitted uses, and export decisions while leaving authoring, assessment, portfolio, and repository systems responsible for their own records.
 
-Status: local `0.4.0-alpha.1` source candidate. Git and remote publication state
-are unavailable. The browser and API are suitable only for synthetic local
-evaluation. See [`../docs/ALPHA.md`](../docs/ALPHA.md) and
-[`../RELEASE_STATUS.md`](../RELEASE_STATUS.md).
+Status: local `0.4.0-alpha.1` source candidate. The configured Git origin is
+`https://github.com/sebastianspicker/practice-relay.git`. The browser and API
+are suitable only for synthetic local evaluation. See
+[`docs/ALPHA.md`](docs/ALPHA.md) and
+[`RELEASE_STATUS.md`](RELEASE_STATUS.md).
 
 Practice Relay is separate from MvEI and MvEI Workbench. The applications share contracts but are not one product.
 
-![Practice Relay web showing its labeled synthetic fallback](../docs/images/0.4.0-alpha.1/practice-relay-web.png)
+![Practice Relay web showing its labeled synthetic fallback](docs/images/0.4.0-alpha.1/practice-relay-web.png)
 
 [Open the static Practice Relay demo](https://sebastianspicker.github.io/practice-relay/). It uses sanitized fixture data, and every command-capable action is visibly marked as simulated.
 
@@ -66,12 +67,12 @@ pnpm test:lab-only-claims
 
 ## Documentation
 
-- [`IMPLEMENTATION.md`](IMPLEMENTATION.md): current implementation map
-- [`docs/ops.md`](docs/ops.md): local storage, secrets, backup, and restore
-- [`docs/package-vs-video.md`](docs/package-vs-video.md): package and video boundary
-- [`docs/lms-registration-preflight.md`](docs/lms-registration-preflight.md): external LMS preflight, not a delivered integration
-- [`docs/acceptance-criteria.md`](docs/acceptance-criteria.md): acceptance checks
-- [`../docs/EVIDENCE.md`](../docs/EVIDENCE.md): implementation evidence and claim limits
+- [`practice-relay/IMPLEMENTATION.md`](practice-relay/IMPLEMENTATION.md): current implementation map
+- [`practice-relay/docs/ops.md`](practice-relay/docs/ops.md): local storage, secrets, backup, and restore
+- [`practice-relay/docs/package-vs-video.md`](practice-relay/docs/package-vs-video.md): package and video boundary
+- [`practice-relay/docs/lms-registration-preflight.md`](practice-relay/docs/lms-registration-preflight.md): external LMS preflight, not a delivered integration
+- [`practice-relay/docs/acceptance-criteria.md`](practice-relay/docs/acceptance-criteria.md): acceptance checks
+- [`docs/EVIDENCE.md`](docs/EVIDENCE.md): implementation evidence and claim limits
 
 ## Current limitations
 
