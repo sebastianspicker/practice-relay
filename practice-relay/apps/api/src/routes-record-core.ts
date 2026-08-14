@@ -185,6 +185,36 @@ async function addRecordMember(
   sendJson(ctx.res, 200, persistRecord(ctx.runtime, recordId, next.value));
 }
 
+function sendRecordVersions(ctx: RequestContext, recordId: string): void {
+  const record = requireRecordForActor(ctx, recordId);
+  if (!record) return;
+  const events =
+    "listEvents" in ctx.runtime.recordStore
+      ? (
+          ctx.runtime.recordStore as {
+            listEvents: (id: string) => unknown[];
+          }
+        ).listEvents(recordId)
+      : [];
+  sendJson(ctx.res, 200, { versions: record.versions, events });
+}
+
+function sendRecordCollab(ctx: RequestContext, recordId: string): void {
+  const record = requireRecordForActor(ctx, recordId);
+  if (!record) return;
+  if (!collabEnabled()) {
+    sendJson(ctx.res, 200, { enabled: false, status: "off" });
+    return;
+  }
+  syncCollab(ctx.runtime, record);
+  const room = ctx.runtime.collabRooms.get(recordId)!;
+  sendJson(ctx.res, 200, {
+    enabled: true,
+    status: "document-yjs",
+    overlay: room.toRecordOverlay(),
+  });
+}
+
 /** Handle core actions for an already parsed generic record route. */
 export async function handleRecordCoreRoute(
   ctx: RequestContext,
@@ -205,34 +235,11 @@ export async function handleRecordCoreRoute(
     return "handled";
   }
   if (action === "versions" && ctx.method === "GET") {
-    const record = requireRecordForActor(ctx, recordId);
-    if (record) {
-      const events =
-        "listEvents" in ctx.runtime.recordStore
-          ? (
-              ctx.runtime.recordStore as {
-                listEvents: (id: string) => unknown[];
-              }
-            ).listEvents(recordId)
-          : [];
-      sendJson(ctx.res, 200, { versions: record.versions, events });
-    }
+    sendRecordVersions(ctx, recordId);
     return "handled";
   }
   if (action === "collab" && ctx.method === "GET") {
-    const record = requireRecordForActor(ctx, recordId);
-    if (!record) return "handled";
-    if (!collabEnabled()) {
-      sendJson(ctx.res, 200, { enabled: false, status: "off" });
-      return "handled";
-    }
-    syncCollab(ctx.runtime, record);
-    const room = ctx.runtime.collabRooms.get(recordId)!;
-    sendJson(ctx.res, 200, {
-      enabled: true,
-      status: "document-yjs",
-      overlay: room.toRecordOverlay(),
-    });
+    sendRecordCollab(ctx, recordId);
     return "handled";
   }
   return "unmatched";

@@ -2,7 +2,7 @@
  * In-memory WorkRecord store adapter.
  * Why: the core retains a deterministic revision-aware store without IO.
  */
-import type { WorkRecord } from "./index.ts";
+import type { WorkRecord } from "./types.ts";
 
 /** In-memory record store interface. */
 export interface RecordStore {

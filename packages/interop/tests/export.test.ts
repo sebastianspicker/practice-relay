@@ -115,6 +115,46 @@ describe("interop-io exporters", () => {
     }
   });
 
+  it("ignores invalid RationalTime values instead of inventing a duration", () => {
+    for (const value of [-1, Number.NaN, Number.POSITIVE_INFINITY]) {
+      const parts = importOtioToRecordParts({
+        tracks: {
+          children: [
+            {
+              children: [
+                {
+                  OTIO_SCHEMA: "Clip.1",
+                  source_range: { duration: { value, rate: 24 } },
+                },
+              ],
+            },
+          ],
+        },
+      });
+      assert.equal(parts.durationMs, 0, `invalid value ${String(value)}`);
+    }
+  });
+
+  it("ignores RationalTime durations that overflow milliseconds", () => {
+    const parts = importOtioToRecordParts({
+      tracks: {
+        children: [
+          {
+            children: [
+              {
+                OTIO_SCHEMA: "Clip.1",
+                source_range: {
+                  duration: { value: Number.MAX_VALUE, rate: 1 },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    });
+    assert.equal(parts.durationMs, 0);
+  });
+
   it("rejects deeply nested OTIO input without recursive stack overflow", () => {
     const depth = 15_000;
     const otio = `${'{"child":'.repeat(depth)}null${"}".repeat(depth)}`;

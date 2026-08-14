@@ -179,6 +179,18 @@ export function hasUnconfiguredConfidentialReporting(text) {
   return /\bconfidential reporting\b[^\n.]{0,40}\bnot configured\b/iu.test(text);
 }
 
+function isMissingLocalHtmlReference(target, sourcePath, root) {
+  const absolute = target.startsWith("/")
+    ? join(root, target.slice(1))
+    : resolve(dirname(sourcePath), target);
+  const relativeTarget = relative(root, absolute).replaceAll("\\", "/");
+  return (
+    relativeTarget === ".." ||
+    relativeTarget.startsWith("../") ||
+    !hasSafeRepositoryPath(root, absolute)
+  );
+}
+
 /** Find local HTML asset references that do not resolve inside the repository. */
 export function findMissingLocalHtmlReferences(html, sourcePath, root = repoRoot) {
   const missing = [];
@@ -195,15 +207,7 @@ export function findMissingLocalHtmlReferences(html, sourcePath, root = repoRoot
     }
     const target = reference.split(/[?#]/u, 1)[0];
     if (!target) continue;
-    const absolute = target.startsWith("/")
-      ? join(root, target.slice(1))
-      : resolve(dirname(sourcePath), target);
-    const relativeTarget = relative(root, absolute).replaceAll("\\", "/");
-    if (
-      relativeTarget === ".." ||
-      relativeTarget.startsWith("../") ||
-      !hasSafeRepositoryPath(root, absolute)
-    ) {
+    if (isMissingLocalHtmlReference(target, sourcePath, root)) {
       missing.push(reference);
     }
   }

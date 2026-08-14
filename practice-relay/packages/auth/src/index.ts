@@ -137,6 +137,17 @@ function validateConfiguredUsers(input: unknown): AuthUser[] {
   return input.map((candidate) => configuredAuthUser(candidate, ids));
 }
 
+function resolveConfiguredAuthUsersRaw(env: NodeJS.ProcessEnv): string | undefined {
+  const file = env.PRACTICE_RELAY_AUTH_USERS_FILE?.trim();
+  const json = env.PRACTICE_RELAY_AUTH_USERS_JSON?.trim();
+  if (!file) return json;
+  try {
+    return readFileSync(file, "utf8");
+  } catch {
+    throw new Error("configured auth users file could not be read");
+  }
+}
+
 /**
  * Load configured course users from a file or JSON environment value.
  * File configuration takes precedence. Strict mode never permits demo users.
@@ -147,33 +158,20 @@ export function loadConfiguredAuthUsers(
   const env = options.env ?? process.env;
   const requireConfigured =
     options.requireConfigured ?? env.PRACTICE_RELAY_REQUIRE_CONFIGURED_AUTH_USERS === "1";
-  const file = env.PRACTICE_RELAY_AUTH_USERS_FILE?.trim();
-  const json = env.PRACTICE_RELAY_AUTH_USERS_JSON?.trim();
-  let raw: string | undefined;
-
-  try {
-    if (file) raw = readFileSync(file, "utf8");
-    else if (json) raw = json;
-  } catch {
-    throw new Error("configured auth users file could not be read");
-  }
+  const raw = resolveConfiguredAuthUsersRaw(env);
 
   if (!raw || !raw.trim()) {
-    if (requireConfigured) {
-      throw new Error("configured auth users are required");
-    }
+    if (requireConfigured) throw new Error("configured auth users are required");
     return SEED_USERS;
   }
 
   try {
     return validateConfiguredUsers(JSON.parse(raw));
   } catch (error) {
-    if (requireConfigured) {
-      throw error instanceof Error
-        ? new Error(`configured auth users rejected: ${error.message}`)
-        : new Error("configured auth users rejected");
-    }
-    throw error;
+    if (!requireConfigured) throw error;
+    throw error instanceof Error
+      ? new Error(`configured auth users rejected: ${error.message}`)
+      : new Error("configured auth users rejected");
   }
 }
 

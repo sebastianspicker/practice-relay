@@ -16,6 +16,8 @@ import {
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const shellPath = "practice-relay/apps/web/src/shell.mjs";
 const corePath = "packages/work-record-core/src/index.ts";
+const coreTypesPath = "packages/work-record-core/src/types.ts";
+const coreRecordFactoryPath = "packages/work-record-core/src/record-factory.ts";
 const workbenchPath = "mvei/apps/workbench/src/shell.mjs";
 const scannedExtensions = new Set([
   ".cjs", ".css", ".html", ".js", ".json", ".md", ".mjs", ".mts",
@@ -29,7 +31,7 @@ const exemptFiles = new Set([
   "docs/EVIDENCE.md",
   "docs/positioning-kill-switches.md",
   shellPath,
-  corePath,
+  coreTypesPath,
   "scripts/assert-kill-switches.mjs",
 ]);
 const retiredPatterns = [
@@ -86,7 +88,9 @@ function requireText(relativePath, fragments) {
 }
 
 requireText(shellPath, ["Practice Relay", "FORBIDDEN_UI_STRINGS", "assertNoForbiddenCopy"]);
-requireText(corePath, ["WorkRecord", "FORBIDDEN_STRINGS", "annotationTrackLabel"]);
+requireText(corePath, ["WorkRecord"]);
+requireText(coreTypesPath, ["FORBIDDEN_STRINGS"]);
+requireText(coreRecordFactoryPath, ["annotationTrackLabel"]);
 requireText(workbenchPath, ["MvEI Workbench", "Movement Encoding Initiative"]);
 
 function main() {

@@ -2,7 +2,7 @@
  * WorkRecord notation, co-timeline, and analysis-track mutations.
  * Why: MvEI/music integration remains separate from generic record editing.
  */
-import type { Track, TrackType, WorkRecord } from "./index.ts";
+import type { Track, TrackType, WorkRecord } from "./types.ts";
 import { assertResourceId, assertTrack } from "./validation.ts";
 
 /** Attaches a real MvEI Motif reference as a movement-notation track. */

@@ -39,6 +39,24 @@ function renderHoldCard(incomplete, staticDemo = false) {
     </div>`;
 }
 
+/** Render the export control using its complete or blocked presentation. */
+function renderExportControl(allComplete, staticDemo) {
+  const attributes = allComplete
+    ? 'class="primary" type="button" data-action="export"'
+    : 'type="button" class="quiet-link" data-action="export"';
+  const label = staticDemo ? simulatedActionLabel(PREPARE_EXPORT) : PREPARE_EXPORT;
+  return `<button ${attributes}>${escapeHtml(label)}</button>`;
+}
+
+/** Render the optional MvEI handoff target for a record with motion data. */
+function renderMotionControl(motion, staticDemo) {
+  if (!motion) return "";
+  if (staticDemo) {
+    return `<p><button class="quiet-link" type="button" data-action="open-workbench">${escapeHtml(simulatedActionLabel("Open in MvEI Workbench"))} ${icon("external")}</button></p>`;
+  }
+  return `<p><a class="quiet-link" href="http://127.0.0.1:5175/" target="_blank" rel="noopener">Open in MvEI Workbench ${icon("external")}</a></p>`;
+}
+
 /**
  * Render the Quiet Dossier decision column (status, hold, prepare export, package, optional MvEI).
  * @param {object | null | undefined} record Workspace record, or falsy for empty state.
@@ -55,9 +73,7 @@ export function renderReadiness(record, options = {}) {
   const incomplete = checks.find((check) => !check.complete);
   const allComplete = !incomplete;
 
-  const prepareExport = allComplete
-    ? `<button class="primary" type="button" data-action="export">${escapeHtml(staticDemo ? simulatedActionLabel(PREPARE_EXPORT) : PREPARE_EXPORT)}</button>`
-    : `<button type="button" class="quiet-link" data-action="export">${escapeHtml(staticDemo ? simulatedActionLabel(PREPARE_EXPORT) : PREPARE_EXPORT)}</button>`;
+  const prepareExport = renderExportControl(allComplete, staticDemo);
 
   const hold = incomplete ? renderHoldCard(incomplete, staticDemo) : "";
 
@@ -65,11 +81,7 @@ export function renderReadiness(record, options = {}) {
       <button class="quiet-link" type="button" data-action="manifest">${escapeHtml(staticDemo ? simulatedActionLabel("Package preview") : "Package preview")}</button>
     </section>`;
 
-  const motion = record.motion
-    ? staticDemo
-      ? `<p><button class="quiet-link" type="button" data-action="open-workbench">${escapeHtml(simulatedActionLabel("Open in MvEI Workbench"))} ${icon("external")}</button></p>`
-      : `<p><a class="quiet-link" href="http://127.0.0.1:5175/" target="_blank" rel="noopener">Open in MvEI Workbench ${icon("external")}</a></p>`
-    : "";
+  const motion = renderMotionControl(record.motion, staticDemo);
 
   return `<div class="decision-inner">
       <h2 id="readiness-heading" class="visually-hidden">Handoff check</h2>

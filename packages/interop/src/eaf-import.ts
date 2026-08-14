@@ -91,77 +91,10 @@ function parseTierAnnotation(match: RegExpExecArray, tierId: string, context: { 
   return { id, startMs: context.slots.get(firstSlot) ?? 0, endMs: context.slots.get(secondSlot) ?? 0, value };
 }
 
-function overlappingRegionIndexes(
-  regions: ImportRegionsResult["regions"],
-  comments: ParsedAnnotation[],
-): Map<number, number> {
-  const ends = [...new Set(regions.map((region) => region.endMs))].sort(
-    (left, right) => left - right,
-  );
-  const treeSize = 1 << Math.ceil(Math.log2(Math.max(1, ends.length)));
-  const tree = new Array<number>(treeSize * 2).fill(Infinity);
-  const endIndex = new Map(ends.map((end, index) => [end, index]));
-  const regionsByStart = regions
-    .map((region, index) => ({ region, index }))
-    .sort(
-      (left, right) =>
-        left.region.startMs - right.region.startMs || left.index - right.index,
-    );
-  const commentsByStart = comments
-    .map((comment, index) => ({ comment, index }))
-    .sort(
-      (left, right) =>
-        left.comment.startMs - right.comment.startMs || left.index - right.index,
-    );
-  const result = new Map<number, number>();
-  let regionCursor = 0;
-  const lowerBound = (value: number): number => {
-    let low = 0;
-    let high = ends.length;
-    while (low < high) {
-      const middle = low + Math.floor((high - low) / 2);
-      if (ends[middle]! < value) low = middle + 1;
-      else high = middle;
-    }
-    return low;
-  };
-  const updateEnd = (end: number, index: number): void => {
-    let position = treeSize + endIndex.get(end)!;
-    tree[position] = Math.min(tree[position]!, index);
-    while (position > 1) {
-      position = Math.floor(position / 2);
-      tree[position] = Math.min(tree[position * 2]!, tree[position * 2 + 1]!);
-    }
-  };
-  const firstEndingAtOrAfter = (end: number): number | undefined => {
-    let left = treeSize + lowerBound(end);
-    let right = treeSize + ends.length;
-    let first = Infinity;
-    while (left < right) {
-      if (left % 2 === 1) first = Math.min(first, tree[left++]!);
-      if (right % 2 === 1) first = Math.min(first, tree[--right]!);
-      left = Math.floor(left / 2);
-      right = Math.floor(right / 2);
-    }
-    return Number.isFinite(first) ? first : undefined;
-  };
-  for (const { comment, index } of commentsByStart) {
-    while (
-      regionCursor < regionsByStart.length &&
-      regionsByStart[regionCursor]!.region.startMs <= comment.startMs
-    ) {
-      const next = regionsByStart[regionCursor++]!;
-      updateEnd(next.region.endMs, next.index);
-    }
-    const match = firstEndingAtOrAfter(comment.endMs);
-    if (match !== undefined) result.set(index, match);
-  }
-  return result;
-}
-
-/** Import ELAN-like EAF into bounded regions, comments, and stable warnings. */
-export function importEafToRecordParts(eafXml: string): ImportRegionsResult {
-  const warnings: ImportWarning[] = [];
+function collectEafPreflight(
+  eafXml: string,
+  warnings: ImportWarning[],
+): Map<string, number> {
   const slots = new Map<string, number>();
   const slotPattern =
     /<TIME_SLOT\s+TIME_SLOT_ID="([^"]+)"\s+TIME_VALUE="(\d+)"/g;
@@ -202,6 +135,179 @@ export function importEafToRecordParts(eafXml: string): ImportRegionsResult {
       "missing media: no MEDIA_FILE or MEDIA_DESCRIPTOR in HEADER",
     );
   }
+  return slots;
+}
+
+type IndexedRegion = {
+  region: ImportRegionsResult["regions"][number];
+  index: number;
+};
+
+type IndexedComment = { comment: ParsedAnnotation; index: number };
+
+type EndSearch = {
+  ends: number[];
+  treeSize: number;
+  tree: number[];
+  endIndex: Map<number, number>;
+};
+
+function createEndSearch(regions: ImportRegionsResult["regions"]): EndSearch {
+  const ends = [...new Set(regions.map((region) => region.endMs))].sort(
+    (left, right) => left - right,
+  );
+  const treeSize = 1 << Math.ceil(Math.log2(Math.max(1, ends.length)));
+  return {
+    ends,
+    treeSize,
+    tree: new Array<number>(treeSize * 2).fill(Infinity),
+    endIndex: new Map(ends.map((end, index) => [end, index])),
+  };
+}
+
+function orderRegionsByStart(
+  regions: ImportRegionsResult["regions"],
+): IndexedRegion[] {
+  return regions
+    .map((region, index) => ({ region, index }))
+    .sort(
+      (left, right) =>
+        left.region.startMs - right.region.startMs || left.index - right.index,
+    );
+}
+
+function orderCommentsByStart(comments: ParsedAnnotation[]): IndexedComment[] {
+  return comments
+    .map((comment, index) => ({ comment, index }))
+    .sort(
+      (left, right) =>
+        left.comment.startMs - right.comment.startMs || left.index - right.index,
+    );
+}
+
+function lowerBound(values: number[], value: number): number {
+  let low = 0;
+  let high = values.length;
+  while (low < high) {
+    const middle = low + Math.floor((high - low) / 2);
+    if (values[middle]! < value) low = middle + 1;
+    else high = middle;
+  }
+  return low;
+}
+
+function updateEndSearch(search: EndSearch, end: number, index: number): void {
+  let position = search.treeSize + search.endIndex.get(end)!;
+  search.tree[position] = Math.min(search.tree[position]!, index);
+  while (position > 1) {
+    position = Math.floor(position / 2);
+    search.tree[position] = Math.min(
+      search.tree[position * 2]!,
+      search.tree[position * 2 + 1]!,
+    );
+  }
+}
+
+function firstEndingAtOrAfter(search: EndSearch, end: number): number | undefined {
+  let left = search.treeSize + lowerBound(search.ends, end);
+  let right = search.treeSize + search.ends.length;
+  let first = Infinity;
+  while (left < right) {
+    if (left % 2 === 1) first = Math.min(first, search.tree[left++]!);
+    if (right % 2 === 1) first = Math.min(first, search.tree[--right]!);
+    left = Math.floor(left / 2);
+    right = Math.floor(right / 2);
+  }
+  return Number.isFinite(first) ? first : undefined;
+}
+
+function activateRegionsThrough(
+  regions: IndexedRegion[],
+  cursor: number,
+  commentStartMs: number,
+  search: EndSearch,
+): number {
+  while (
+    cursor < regions.length &&
+    regions[cursor]!.region.startMs <= commentStartMs
+  ) {
+    const next = regions[cursor++]!;
+    updateEndSearch(search, next.region.endMs, next.index);
+  }
+  return cursor;
+}
+
+function overlappingRegionIndexes(
+  regions: ImportRegionsResult["regions"],
+  comments: ParsedAnnotation[],
+): Map<number, number> {
+  const search = createEndSearch(regions);
+  const regionsByStart = orderRegionsByStart(regions);
+  const commentsByStart = orderCommentsByStart(comments);
+  const result = new Map<number, number>();
+  let regionCursor = 0;
+  for (const { comment, index } of commentsByStart) {
+    regionCursor = activateRegionsThrough(
+      regionsByStart,
+      regionCursor,
+      comment.startMs,
+      search,
+    );
+    const match = firstEndingAtOrAfter(search, comment.endMs);
+    if (match !== undefined) result.set(index, match);
+  }
+  return result;
+}
+
+function parseCommentValue(value: string): { authorId: string; body: string } {
+  const colon = value.indexOf(":");
+  const authorId =
+    colon >= 0 ? value.slice(0, colon).trim() || "imported" : "imported";
+  return {
+    authorId,
+    body: colon >= 0 ? value.slice(colon + 1).trim() : value,
+  };
+}
+
+function projectEafComments(
+  commentAnnotations: ParsedAnnotation[],
+  regions: ImportRegionsResult["regions"],
+  warnings: ImportWarning[],
+): ImportRegionsResult["comments"] {
+  const exactRegions = new Map<string, (typeof regions)[number]>();
+  for (const region of regions) {
+    const interval = `${region.startMs}:${region.endMs}`;
+    if (!exactRegions.has(interval)) exactRegions.set(interval, region);
+  }
+  const overlaps = overlappingRegionIndexes(regions, commentAnnotations);
+  return commentAnnotations
+    .filter((comment) => comment.value.trim())
+    .map((comment, index) => {
+      const { authorId, body } = parseCommentValue(comment.value);
+      const exact = exactRegions.get(`${comment.startMs}:${comment.endMs}`);
+      const region = exact ?? regions[overlaps.get(index) ?? -1];
+      if (!region) {
+        pushWarning(
+          warnings,
+          "ORPHAN_COMMENT",
+          "comment has no matching region; bound to synthetic region id",
+          comment.id,
+        );
+      }
+      return {
+        id: comment.id,
+        regionId: region?.id ?? `r-import-${index}`,
+        authorId,
+        body,
+        resolved: false,
+      };
+    });
+}
+
+/** Import ELAN-like EAF into bounded regions, comments, and stable warnings. */
+export function importEafToRecordParts(eafXml: string): ImportRegionsResult {
+  const warnings: ImportWarning[] = [];
+  const slots = collectEafPreflight(eafXml, warnings);
 
   const parseTier = tierParser({
     eafXml,
@@ -219,38 +325,7 @@ export function importEafToRecordParts(eafXml: string): ImportRegionsResult {
       label: region.value,
     }));
   const commentAnnotations = parseTier("comments");
-  const exactRegions = new Map<string, (typeof regions)[number]>();
-  for (const region of regions) {
-    const interval = `${region.startMs}:${region.endMs}`;
-    if (!exactRegions.has(interval)) exactRegions.set(interval, region);
-  }
-  const overlaps = overlappingRegionIndexes(regions, commentAnnotations);
-  const comments = commentAnnotations
-    .filter((comment) => comment.value.trim())
-    .map((comment, index) => {
-      const colon = comment.value.indexOf(":");
-      const authorId =
-        colon >= 0 ? comment.value.slice(0, colon).trim() : "imported";
-      const body =
-        colon >= 0 ? comment.value.slice(colon + 1).trim() : comment.value;
-      const exact = exactRegions.get(`${comment.startMs}:${comment.endMs}`);
-      const region = exact ?? regions[overlaps.get(index) ?? -1];
-      if (!region) {
-        pushWarning(
-          warnings,
-          "ORPHAN_COMMENT",
-          "comment has no matching region; bound to synthetic region id",
-          comment.id,
-        );
-      }
-      return {
-        id: comment.id,
-        regionId: region?.id ?? `r-import-${index}`,
-        authorId: authorId || "imported",
-        body,
-        resolved: false,
-      };
-    });
+  const comments = projectEafComments(commentAnnotations, regions, warnings);
   if (regions.length === 0 && comments.length === 0) {
     pushWarning(
       warnings,

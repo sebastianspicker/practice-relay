@@ -4,10 +4,8 @@
  * Why: export authorization and portable serialization form one boundary that
  * can be reviewed independently from record mutation behavior.
  */
-import {
-  type WorkRecord,
-  validateWorkRecord,
-} from "./index.ts";
+import { validateWorkRecord } from "./record-factory.ts";
+import type { WorkRecord } from "./types.ts";
 
 /** Requested export purpose and destination. */
 export interface ExportRequest {

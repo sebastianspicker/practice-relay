@@ -32,11 +32,18 @@ export interface OtioImportResult {
   warnings: ImportWarning[];
 }
 
+type OtioSchemaTraversal = {
+  seen: WeakSet<object>;
+  pending: Array<{ value: unknown; depth: number }>;
+  out: Set<string>;
+};
+
 function collectOtioSchemas(node: unknown, out: Set<string>): void {
   const pending: Array<{ value: unknown; depth: number }> = [
     { value: node, depth: 0 },
   ];
   const seen = new WeakSet<object>();
+  const traversal: OtioSchemaTraversal = { seen, pending, out };
   let nodeCount = 0;
   while (pending.length) {
     const { value, depth } = pending.pop()!;
@@ -47,17 +54,43 @@ function collectOtioSchemas(node: unknown, out: Set<string>): void {
     if (depth > MAX_OTIO_DEPTH) {
       throw inputLimitError("OTIO", `nesting depth (${MAX_OTIO_DEPTH})`);
     }
-    if (!value || typeof value !== "object" || seen.has(value)) continue;
-    seen.add(value);
-    if (Array.isArray(value)) {
-      for (const item of value) pending.push({ value: item, depth: depth + 1 });
-      continue;
-    }
-    const record = value as Record<string, unknown>;
-    if (typeof record.OTIO_SCHEMA === "string") out.add(record.OTIO_SCHEMA);
-    for (const child of Object.values(record)) {
-      pending.push({ value: child, depth: depth + 1 });
-    }
+    visitOtioSchemaNode(value, depth, traversal);
+  }
+}
+
+function visitOtioSchemaNode(
+  value: unknown,
+  depth: number,
+  traversal: OtioSchemaTraversal,
+): void {
+  if (!isUnvisitedOtioObject(value, traversal.seen)) return;
+  traversal.seen.add(value);
+  if (Array.isArray(value)) {
+    enqueueOtioChildren(value, depth, traversal);
+    return;
+  }
+  const record = value as Record<string, unknown>;
+  if (typeof record.OTIO_SCHEMA === "string") {
+    traversal.out.add(record.OTIO_SCHEMA);
+  }
+  enqueueOtioChildren(Object.values(record), depth, traversal);
+}
+
+function isUnvisitedOtioObject(
+  value: unknown,
+  seen: WeakSet<object>,
+): value is object {
+  if (!value || typeof value !== "object") return false;
+  return !seen.has(value);
+}
+
+function enqueueOtioChildren(
+  children: Iterable<unknown>,
+  depth: number,
+  traversal: OtioSchemaTraversal,
+): void {
+  for (const value of children) {
+    traversal.pending.push({ value, depth: depth + 1 });
   }
 }
 
@@ -66,20 +99,20 @@ function rationalTimeDurationMs(
 ): number | undefined {
   const value = duration?.value;
   const rate = duration?.rate;
-  if (
-    typeof value !== "number" ||
-    !Number.isFinite(value) ||
-    value < 0 ||
-    typeof rate !== "number" ||
-    !Number.isFinite(rate) ||
-    rate <= 0
-  ) {
-    return undefined;
-  }
+  if (!isValidRationalTimeValue(value)) return undefined;
+  if (!isValidRationalTimeRate(rate)) return undefined;
   const durationMs = (value / rate) * 1000;
   return Number.isFinite(durationMs) && durationMs >= 0
     ? durationMs
     : undefined;
+}
+
+function isValidRationalTimeValue(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
+}
+
+function isValidRationalTimeRate(rate: unknown): rate is number {
+  return typeof rate === "number" && Number.isFinite(rate) && rate > 0;
 }
 
 /** Import OTIO-like JSON into bounded takes/tracks and stable warnings. */

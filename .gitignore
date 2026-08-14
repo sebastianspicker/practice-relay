@@ -2,8 +2,20 @@
 node_modules/
 dist/
 build/
+.build/
+target/
+DerivedData/
+xcuserdata/
 .turbo/
 coverage/
+.coverage
+coverage.xml
+htmlcov/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .cache/
 .nyc_output/
 .eslintcache
@@ -18,6 +30,13 @@ yarn-error.log*
 .env
 .env.*
 !.env.example
+!.env.*.example
+!.env.sample
+!.env.template
+secrets.local.*
+credentials.local.*
+.netrc
+.npmrc.local
 deploy/secrets/local/
 deploy/secrets/*
 !deploy/secrets/README.md
@@ -30,12 +49,20 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+# Keep RepoWise's generated extension recommendation local in this checkout.
+/.vscode/extensions.json
 *.swp
 *~
 *.orig
 
 # Local analysis, automation, index, and session state
 /AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/AUDIT_LEDGER.md
+/remediation-ledger.md
+/plan.md
+/progress.md
 .codegraph/
 .grok/
 .agents/
@@ -44,6 +71,8 @@ Thumbs.db
 .codacy/
 .codex/
 .serena/
+.kilo/
+.repowise/
 /.scratch/
 /tmp/
 /release-artifacts/
@@ -57,6 +86,15 @@ Thumbs.db
 *.test.db
 *.test.sqlite
 *.test.sqlite3
+*.db-shm
+*.db-wal
+*.sqlite-shm
+*.sqlite-wal
+*.sqlite3-shm
+*.sqlite3-wal
+*.local.db
+*.local.sqlite
+*.local.sqlite3
 .test-cache/
 .test-env/
 
@@ -72,6 +110,8 @@ fixtures/demo/last-e2e-demo.txt
 playwright-report/
 test-results/
 blob-report/
+junit*.xml
+*.sarif
 /*.tgz
 /*.tar.gz
 
@@ -82,6 +122,11 @@ docker-compose.override.yml
 *.key
 *.p12
 *.pfx
+*.jks
+*.keystore
+*.kdbx
+*.ppk
+*.mobileprovision
 *.cer
 *.crt
 !deploy/**/*.example

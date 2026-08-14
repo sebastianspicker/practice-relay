@@ -43,6 +43,30 @@ const hasValidMediaShape = (meta: Partial<MediaBlobMeta>): boolean => {
   return hasMediaIdentity(meta) && hasMediaSize(meta) && hasOptionalMediaNames(meta);
 }
 
+const forbiddenStorageSegments = new Set(["", ".", ".."]);
+
+const hasForbiddenStorageSegment = (storageKey: string): boolean => {
+  return storageKey.split("/").some((segment) => forbiddenStorageSegments.has(segment));
+}
+
+const assertPortableRelativeStorageKey = (storageKey: string): void => {
+  if (!storageKey) {
+    throw new Error("media storageKey must be a safe relative path");
+  }
+  if (storageKey.includes("\0")) {
+    throw new Error("media storageKey must be a safe relative path");
+  }
+  if (storageKey.includes("\\")) {
+    throw new Error("media storageKey must be a safe relative path");
+  }
+  if (path.isAbsolute(storageKey)) {
+    throw new Error("media storageKey must be a safe relative path");
+  }
+  if (path.win32.isAbsolute(storageKey)) {
+    throw new Error("media storageKey must be a safe relative path");
+  }
+}
+
 const hasSafeStorageKey = (meta: Partial<MediaBlobMeta>): boolean => {
   try {
     assertSafeStorageKey(meta.storageKey!);
@@ -50,6 +74,14 @@ const hasSafeStorageKey = (meta: Partial<MediaBlobMeta>): boolean => {
   } catch {
     return false;
   }
+}
+
+const matchesRequestedStorageKey = (
+  meta: Partial<MediaBlobMeta>,
+  requestedKey: string | undefined,
+): boolean => {
+  if (requestedKey === undefined) return true;
+  return meta.storageKey === requestedKey;
 }
 
 /** Ensure a media storage directory exists before writing beneath it. */
@@ -67,17 +99,8 @@ export function safeId(id: string): string {
 
 /** Reject keys that are not relative, portable media-object paths. */
 export function assertSafeStorageKey(storageKey: string): void {
-  if (
-    !storageKey ||
-    storageKey.includes("\0") ||
-    storageKey.includes("\\") ||
-    path.isAbsolute(storageKey) ||
-    path.win32.isAbsolute(storageKey)
-  ) {
-    throw new Error("media storageKey must be a safe relative path");
-  }
-  const segments = storageKey.split("/");
-  if (segments.some((segment) => !segment || segment === "." || segment === "..")) {
+  assertPortableRelativeStorageKey(storageKey);
+  if (hasForbiddenStorageSegment(storageKey)) {
     throw new Error("media storageKey must not contain traversal segments");
   }
 }
@@ -113,12 +136,8 @@ export function parseMediaMeta(raw: string, requestedKey?: string): MediaBlobMet
   const value = parseJsonValue(raw);
   if (!value || typeof value !== "object") return undefined;
   const meta = value as Partial<MediaBlobMeta>;
-  if (
-    !hasValidMediaShape(meta) ||
-    !hasSafeStorageKey(meta) ||
-    (requestedKey !== undefined && meta.storageKey !== requestedKey)
-  ) {
-    return undefined;
-  }
+  if (!hasValidMediaShape(meta)) return undefined;
+  if (!hasSafeStorageKey(meta)) return undefined;
+  if (!matchesRequestedStorageKey(meta, requestedKey)) return undefined;
   return meta as MediaBlobMeta;
 }

@@ -2,7 +2,7 @@
  * WorkRecord role permissions and comment-resolution mutations.
  * Why: access policy stays pure and portable across application boundaries.
  */
-import type { Role, WorkRecord } from "./index.ts";
+import type { Role, WorkRecord } from "./types.ts";
 
 /** Mutations that can be gated by record membership role. */
 export type RecordMutation =
