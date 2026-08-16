@@ -92,9 +92,9 @@ function assertMetricsBody(body) {
       `metrics must include ${name}`,
     );
   }
-  // never leak lab default secrets
-  assert.equal(body.includes("practice-relay-lab-dev-secret"), false);
-  assert.equal(body.includes("practice-relay-lti-lab-secret"), false);
+  // Metrics must never expose credential configuration or values.
+  assert.equal(body.includes("PRACTICE_RELAY_AUTH_SECRET"), false);
+  assert.equal(body.includes("PRACTICE_RELAY_LTI_SECRET"), false);
 }
 
 /** Parse the required probe mode so ambient variables cannot select live I/O. */

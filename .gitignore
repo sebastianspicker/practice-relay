@@ -68,7 +68,10 @@ Thumbs.db
 .agents/
 .claude/
 .cursor/
-.codacy/
+/.codacy/*
+!/.codacy/codacy.config.json
+!/.codacy/codacy.yaml
+!/.codacy/codacy.yml
 .codex/
 .serena/
 .kilo/

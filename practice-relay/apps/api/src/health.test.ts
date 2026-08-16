@@ -6,7 +6,7 @@ import packageMetadata from "../../../../package.json" with { type: "json" };
 import {
   AGS_SCORE_SCOPE,
   LTI_DEFAULT_LAUNCH_URL,
-  LTI_DEFAULT_SECRET,
+  resolveLtiSecret,
 } from "../../lti/src/index.mjs";
 import { createMemoryRecordStore } from "@practice-relay/record-store";
 import { createMemoryMediaStore, type MediaStoreAdapter } from "@practice-relay/media-store";
@@ -192,8 +192,9 @@ test("GET /metrics returns Prometheus text exposition", async () => {
   assert.match(body, /path="\/other"/);
   assert.match(body, /path="\/work-records\/:id\/\*"/);
   assert.doesNotMatch(body, /attacker-controlled-cardinality/);
-  // no secret values in body
-  assert.equal(body.includes("practice-relay-lab-dev-secret"), false);
+  // No configured secret names or values may enter metrics output.
+  assert.equal(body.includes("PRACTICE_RELAY_AUTH_SECRET"), false);
+  assert.equal(body.includes(resolveLtiSecret()), false);
 });
 
 test("GET /lti/jwks returns keys document", async () => {
@@ -272,7 +273,7 @@ test("AGS token endpoint validates grant, client, secret, and scope", async () =
   const clientSecret =
     process.env.PRACTICE_RELAY_LTI_CLIENT_SECRET ??
     process.env.PRACTICE_RELAY_LTI_SECRET ??
-    LTI_DEFAULT_SECRET;
+    resolveLtiSecret();
   const requestToken = async (body: Record<string, unknown>) => {
     const res = mockRes();
     await handleRequest(
@@ -316,7 +317,7 @@ test("AGS oauth token + record POST with Bearer service token", async () => {
       client_secret:
         process.env.PRACTICE_RELAY_LTI_CLIENT_SECRET ??
         process.env.PRACTICE_RELAY_LTI_SECRET ??
-        LTI_DEFAULT_SECRET,
+        resolveLtiSecret(),
     }),
     tokenRes as unknown as ServerResponse,
   );

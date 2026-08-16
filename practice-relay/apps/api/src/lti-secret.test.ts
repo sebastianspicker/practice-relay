@@ -4,12 +4,13 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { randomBytes } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  LTI_DEFAULT_SECRET,
   buildLtiResourceLinkLaunch,
+  resolveLtiSecret,
   verifyHs256Jwt,
   verifyLtiJwt,
 } from "../../lti/src/index.mjs";
@@ -38,14 +39,15 @@ test("API source modules wire opsSecrets.ltiSecret into LTI launch and verify", 
 });
 
 test("opsSecrets.ltiSecret from PRACTICE_RELAY_LTI_SECRET signs launch and rejects default secret", () => {
-  const custom = "api-wired-lti-secret-xyz";
+  const custom = randomBytes(32).toString("base64url");
   const secrets = resolveOpsSecrets({
     PRACTICE_RELAY_AUTH_SECRET: "auth-x",
     PRACTICE_RELAY_LTI_SECRET: custom,
   } as NodeJS.ProcessEnv);
   assert.equal(secrets.ltiSecret, custom);
   assert.equal(secrets.usingDevDefaults, false);
-  assert.notEqual(secrets.ltiSecret, LTI_DEFAULT_SECRET);
+  const unrelatedEphemeralSecret = resolveLtiSecret(undefined, {});
+  assert.notEqual(secrets.ltiSecret, unrelatedEphemeralSecret);
   assert.equal(secrets.secretSource, "env");
 
   const score = {
@@ -72,8 +74,8 @@ test("opsSecrets.ltiSecret from PRACTICE_RELAY_LTI_SECRET signs launch and rejec
     claims["https://purl.imsglobal.org/spec/lti/claim/message_type"],
     "LtiResourceLinkRequest",
   );
-  // LTI must actually use ltiSecret (not lab default).
-  assert.equal(verifyHs256Jwt(launch.idToken, LTI_DEFAULT_SECRET), null);
+  // LTI must actually use ltiSecret, not unrelated process-ephemeral material.
+  assert.equal(verifyHs256Jwt(launch.idToken, unrelatedEphemeralSecret), null);
 });
 
 test("health secretsDevDefaults is true only when either secret missing", () => {

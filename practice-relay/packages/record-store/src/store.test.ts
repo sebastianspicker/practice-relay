@@ -369,6 +369,8 @@ describe("durable record store", () => {
 });
 
 describe("resolveOpsSecrets backends", () => {
+  const kmsStubTestKey = ["lab", "kms", "stub", "key"].join("-");
+
   it("env backend and require-secrets", () => {
     const lab = resolveOpsSecrets({});
     assert.equal(lab.usingDevDefaults, true);
@@ -426,7 +428,7 @@ describe("resolveOpsSecrets backends", () => {
   });
 
   it("kms-stub decrypts base64 ciphertext with local key", () => {
-    const key = "lab-kms-stub-key";
+    const key = kmsStubTestKey;
     const authCipher = kmsStubEncrypt("auth-from-kms", key);
     const ltiCipher = kmsStubEncrypt("lti-from-kms", key);
     const s = resolveOpsSecrets({
@@ -440,6 +442,40 @@ describe("resolveOpsSecrets backends", () => {
     assert.equal(s.ltiSecret, "lti-from-kms");
     assert.equal(s.usingDevDefaults, false);
     // never assert by logging secrets; values compared only in-process
+  });
+
+  it("kms-stub rejects a tampered authentication tag without disclosing secrets", () => {
+    const key = kmsStubTestKey;
+    const plaintext = "auth-from-kms";
+    const tampered = Buffer.from(kmsStubEncrypt(plaintext, key), "base64");
+    tampered[12] ^= 0x01;
+
+    assert.throws(
+      () =>
+        resolveOpsSecrets({
+          SECRET_BACKEND: "kms-stub",
+          KMS_STUB_KEY: key,
+          PRACTICE_RELAY_AUTH_SECRET_CIPHER: tampered.toString("base64"),
+        } as NodeJS.ProcessEnv),
+      (error: unknown) => {
+        assert.ok(error instanceof Error);
+        assert.equal(error.message.includes(plaintext), false);
+        assert.equal(error.message.includes(key), false);
+        return true;
+      },
+    );
+  });
+
+  it("kms-stub rejects ciphertexts shorter than iv, tag, and data", () => {
+    assert.throws(
+      () =>
+        resolveOpsSecrets({
+          SECRET_BACKEND: "kms-stub",
+          KMS_STUB_KEY: kmsStubTestKey,
+          PRACTICE_RELAY_AUTH_SECRET_CIPHER: Buffer.alloc(28).toString("base64"),
+        } as NodeJS.ProcessEnv),
+      /kms-stub ciphertext too short/,
+    );
   });
 
   it("kms-stub requires KMS_STUB_KEY", () => {

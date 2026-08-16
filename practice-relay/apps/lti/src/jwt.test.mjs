@@ -1,11 +1,14 @@
 /** LTI focused protocol tests. Why: keep protocol regressions independently runnable. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { randomBytes } from "node:crypto";
 import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { LTI_DEFAULT_SECRET, LTI_LAB_KID, buildLtiResourceLinkLaunch, verifyHs256Jwt, verifyLtiJwt, verifyRs256Jwt, signHs256Jwt, signRs256Jwt, resolveLtiSecret, resolveLabRsaKeys, generateLabPlatformKeys, exportPlatformJwks, publicKeyToJwk, issueAgsServiceToken, verifyAgsServiceToken } from "./index.mjs";
+import { LTI_LAB_KID, buildLtiResourceLinkLaunch, verifyHs256Jwt, verifyLtiJwt, verifyRs256Jwt, signHs256Jwt, signRs256Jwt, resolveLtiSecret, resolveLabRsaKeys, generateLabPlatformKeys, exportPlatformJwks, publicKeyToJwk, issueAgsServiceToken, verifyAgsServiceToken } from "./index.mjs";
 import { scoreFromDemoSeed } from "./test-fixtures.mjs";
+
+const randomTestSecret = () => randomBytes(32).toString("base64url");
 
 test("LTI resource link launch JWT round-trip embeds multi-asset custom claim", () => {
   const score = scoreFromDemoSeed();
@@ -66,7 +69,7 @@ test("RS256 launch + JWKS export + verifyLtiJwt", () => {
   assert.ok(claims);
   assert.equal(claims.sub, "teacher-1");
   // HS256 path must not accept RS256 token with secret alone
-  assert.equal(verifyLtiJwt(idToken, { secret: LTI_DEFAULT_SECRET }), null);
+  assert.equal(verifyLtiJwt(idToken, { secret: resolveLtiSecret(undefined, {}) }), null);
   assert.ok(verifyRs256Jwt(idToken, keys.publicKey));
 });
 
@@ -90,7 +93,7 @@ test("resolveLabRsaKeys loads/generates from KEYS_DIR", () => {
 });
 
 test("LTI launch tokens and AGS service tokens are not interchangeable", () => {
-  const secret = "lti-token-separation-secret";
+  const secret = randomTestSecret();
   const launch = buildLtiResourceLinkLaunch(scoreFromDemoSeed(), {
     userId: "teacher-1",
     secret,
@@ -111,7 +114,7 @@ test("LTI launch tokens and AGS service tokens are not interchangeable", () => {
 });
 
 test("LTI validation rejects wrong issuer, nonce, and expired launches", () => {
-  const secret = "lti-claim-validation-secret";
+  const secret = randomTestSecret();
   const launch = buildLtiResourceLinkLaunch(scoreFromDemoSeed(), {
     secret,
     nonce: "expected-nonce",
@@ -140,11 +143,12 @@ test("LTI validation rejects wrong issuer, nonce, and expired launches", () => {
   );
 });
 
-test("custom PRACTICE_RELAY_LTI_SECRET signs and verifies; default secret rejects", () => {
-  const custom = "unit-test-lti-secret-not-default";
-  assert.notEqual(custom, LTI_DEFAULT_SECRET);
+test("custom PRACTICE_RELAY_LTI_SECRET signs and verifies; ephemeral fallback rejects", () => {
+  const custom = randomTestSecret();
+  const ephemeral = resolveLtiSecret(undefined, {});
+  assert.notEqual(custom, ephemeral);
   assert.equal(resolveLtiSecret(custom), custom);
-  assert.equal(resolveLtiSecret(undefined, {}), LTI_DEFAULT_SECRET);
+  assert.equal(resolveLtiSecret(undefined, {}), ephemeral);
   assert.equal(
     resolveLtiSecret(undefined, { PRACTICE_RELAY_LTI_SECRET: custom }),
     custom,
@@ -159,11 +163,11 @@ test("custom PRACTICE_RELAY_LTI_SECRET signs and verifies; default secret reject
   const ok = verifyHs256Jwt(idToken, custom);
   assert.ok(ok);
   assert.equal(ok.sub, "teacher-1");
-  // Wrong secret (lab default) must not accept tokens signed with custom secret
-  assert.equal(verifyHs256Jwt(idToken, LTI_DEFAULT_SECRET), null);
-  // Sign/verify pair with default still works when secret omitted
-  const labToken = signHs256Jwt({ sub: "lab", exp: 9e12 }, LTI_DEFAULT_SECRET);
-  assert.ok(verifyHs256Jwt(labToken, LTI_DEFAULT_SECRET));
+  // Wrong process-ephemeral secret must not accept tokens signed with custom secret.
+  assert.equal(verifyHs256Jwt(idToken, ephemeral), null);
+  // The process-local fallback remains stable for isolated mock calls.
+  const labToken = signHs256Jwt({ sub: "lab", exp: 9e12 }, ephemeral);
+  assert.ok(verifyHs256Jwt(labToken, ephemeral));
   assert.equal(verifyHs256Jwt(labToken, custom), null);
   // RS256 helper still signs arbitrary claims
   const keys = generateLabPlatformKeys();

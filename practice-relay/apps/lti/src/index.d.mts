@@ -21,9 +21,6 @@ export const AGS_SCORE_SCOPE: string;
 /** Registered local-mock tool launch URL; never derived from OIDC input. */
 export const LTI_DEFAULT_LAUNCH_URL: "http://localhost:8787/lti/launch";
 
-/** Insecure fallback retained only for explicitly labelled local-mock tests. */
-export const LTI_DEFAULT_SECRET: string;
-
 /** Track projection embedded in a multi-asset assignment. */
 export interface MultiAssetAssignmentTrack {
   id: string;
@@ -95,7 +92,7 @@ export function buildLtiResourceLinkLaunch(
   alg: "HS256" | "RS256";
 };
 
-/** Resolve the explicit or environment-backed HMAC secret for local-mock flows. */
+/** Resolve an explicit, environment-backed, or process-ephemeral local-mock HMAC secret. */
 export function resolveLtiSecret(
   explicit?: string | null,
   env?: NodeJS.ProcessEnv,

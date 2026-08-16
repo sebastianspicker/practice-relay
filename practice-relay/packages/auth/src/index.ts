@@ -204,12 +204,14 @@ function equalText(left: string, right: string): boolean {
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
+const ephemeralAuthSecret = randomBytes(32).toString("base64url");
+
 /**
  * Create course-local auth service.
  * @param secret HMAC secret (use PRACTICE_RELAY_AUTH_SECRET in production labs)
  */
 export function createAuthService(
-  secret = process.env.PRACTICE_RELAY_AUTH_SECRET ?? "practice-relay-lab-dev-secret",
+  secret = process.env.PRACTICE_RELAY_AUTH_SECRET ?? ephemeralAuthSecret,
   users?: AuthUser[],
 ): AuthService {
   const configuredUsers = users ?? loadConfiguredAuthUsers();

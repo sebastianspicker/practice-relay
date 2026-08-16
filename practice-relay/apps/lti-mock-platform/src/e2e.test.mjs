@@ -25,7 +25,7 @@ import {
 import {
   parseOidcLoginInitiation,
   validateMultiAssetAssignmentPayload,
-  LTI_DEFAULT_SECRET,
+  resolveLtiSecret,
   LTI_STATUS,
 } from "../../lti/src/index.mjs";
 
@@ -180,7 +180,7 @@ test("E2E: JWKS → launch issue/accept → AGS Bearer score", async () => {
   const tokenRes = await api("/lti/oauth/token", "POST", {
     grant_type: "client_credentials",
     client_id: "practice-relay-tool",
-    client_secret: LTI_DEFAULT_SECRET,
+    client_secret: resolveLtiSecret(),
   });
   assert.equal(tokenRes.status, 200);
   assert.equal(tokenRes.json.token_type, "Bearer");
