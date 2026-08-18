@@ -76,6 +76,7 @@ Thumbs.db
 .serena/
 .kilo/
 .repowise/
+/.mcp.json
 /.scratch/
 /tmp/
 /release-artifacts/
