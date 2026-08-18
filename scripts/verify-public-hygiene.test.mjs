@@ -1,6 +1,6 @@
 /** Public-hygiene unit tests keep local path and skip boundaries fail-closed. */
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -124,7 +124,7 @@ test("workspace package metadata rejects version, license, privacy, and scope dr
   );
 });
 
-test("HTML snapshot references remain inside the repository and resolve", (context) => {
+test("HTML snapshot local references resolve from the repository root or source file", (context) => {
   const root = mkdtempSync(join(tmpdir(), "practice-relay-html-refs-"));
   context.after(() => rmSync(root, { recursive: true, force: true }));
   const gallery = join(root, "docs/images/release");
@@ -134,18 +134,53 @@ test("HTML snapshot references remain inside the repository and resolve", (conte
   writeFileSync(join(root, "assets/app.mjs"), "export {};\n", "utf8");
   assert.deepEqual(
     findMissingLocalHtmlReferences(
-      '<a href="#main">Skip</a><script src="../../../assets/app.mjs"></script>',
+      '<a href="#main">Skip</a><img src="//cdn.example/app.png"><a href="mailto:team@example.test">Contact</a><link href="/assets/app.mjs?cache=1#bundle"><script src="../../../assets/app.mjs"></script>',
       source,
       root,
     ),
     [],
   );
+});
+
+test("HTML snapshot references reject missing and out-of-root local targets", (context) => {
+  const root = mkdtempSync(join(tmpdir(), "practice-relay-html-refs-"));
+  const prefixSibling = `${root}-outside`;
+  context.after(() => {
+    rmSync(root, { recursive: true, force: true });
+    rmSync(prefixSibling, { recursive: true, force: true });
+  });
+  const gallery = join(root, "docs/images/release");
+  const source = join(gallery, "surface.html");
+  mkdirSync(gallery, { recursive: true });
+  mkdirSync(prefixSibling, { recursive: true });
+  writeFileSync(join(prefixSibling, "outside.png"), "outside\n", "utf8");
+  symlinkSync(join(prefixSibling, "outside.png"), join(gallery, "linked.png"));
   assert.deepEqual(
     findMissingLocalHtmlReferences(
-      '<link href="./missing.css"><img src="../../../../outside.png">',
+      '<link href="./missing.css"><img src="../../../../outside.png"><script src="/../outside.mjs"><img src="../../../../' +
+        `${prefixSibling.split("/").at(-1)}/outside.png` +
+        '"><img src="./linked.png">',
       source,
       root,
     ),
-    ["./missing.css", "../../../../outside.png"],
+    [
+      "./missing.css",
+      "../../../../outside.png",
+      "/../outside.mjs",
+      `../../../../${prefixSibling.split("/").at(-1)}/outside.png`,
+      "./linked.png",
+    ],
+  );
+});
+
+test("HTML snapshot references preserve root and raw percent-encoded path behavior", (context) => {
+  const root = mkdtempSync(join(tmpdir(), "practice-relay-html-refs-"));
+  context.after(() => rmSync(root, { recursive: true, force: true }));
+  const source = join(root, "surface.html");
+  writeFileSync(join(root, "%2e%2e.css"), "literal path\n", "utf8");
+
+  assert.deepEqual(
+    findMissingLocalHtmlReferences('<a href="/"></a><link href="./%2e%2e.css">', source, root),
+    [],
   );
 });

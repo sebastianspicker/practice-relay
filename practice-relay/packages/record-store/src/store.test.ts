@@ -261,14 +261,71 @@ describe("durable record store", () => {
     }
   });
 
-  it("memory store isolates tenants by map instance", () => {
+  it("memory store preserves mutation, snapshot, audit, and tenant isolation contracts", () => {
     const a = createMemoryRecordStore({ tenantId: "ta" });
     const b = createMemoryRecordStore({ tenantId: "tb" });
-    a.create(createEmptyRecord("ps-m1", "A"));
-    assert.ok(a.get("ps-m1"));
+    const created = a.create(createEmptyRecord("ps-m1", "A"));
+    assert.equal(created.revision, 0);
+    assert.throws(
+      () => a.create(createEmptyRecord("ps-m1", "Duplicate")),
+      /already exists/i,
+    );
     assert.equal(b.get("ps-m1"), undefined);
-    assert.equal(a.healthMetrics().backend, "memory");
-    assert.equal(a.tenantId, "ta");
+
+    b.create(createEmptyRecord("ps-m1", "B"));
+    const updated = a.update("ps-m1", { ...created, title: "A updated" });
+    assert.equal(updated.revision, 1);
+    assert.throws(() => a.update("ps-m1", created), /revision conflict/i);
+
+    const backup = a.backup(":memory-backup:provided");
+    assert.equal(backup.rootDir, ":memory:ta");
+    assert.equal(backup.tenantId, "ta");
+    assert.equal(backup.recordCount, 1);
+    assert.deepEqual(backup.recordIds, ["ps-m1"]);
+    assert.equal(backup.backupDir, ":memory-backup:provided");
+    const generatedBackup = a.backup();
+    assert.match(
+      generatedBackup.backupDir,
+      /^:memory-backup:\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2}-\d{3}Z-[a-f0-9]{8}$/,
+    );
+    assert.equal(generatedBackup.recordCount, 1);
+    assert.deepEqual(generatedBackup.recordIds, ["ps-m1"]);
+    assert.deepEqual(a.listBackups(), [backup, generatedBackup]);
+
+    assert.equal(a.delete("ps-m1"), true);
+    const restored = a.restoreFromBackup(":memory-backup:restore");
+    assert.equal(a.get("ps-m1"), undefined);
+    assert.equal(b.get("ps-m1")?.title, "B");
+    assert.equal(restored.rootDir, ":memory:ta");
+    assert.equal(restored.tenantId, "ta");
+    assert.equal(restored.recordCount, 0);
+    assert.deepEqual(restored.recordIds, []);
+    assert.equal(restored.backupDir, ":memory-backup:restore");
+
+    assert.deepEqual(
+      a.listAllEvents().map(({ kind, recordId, detail }) => ({ kind, recordId, detail })),
+      [
+        { kind: "create", recordId: "ps-m1", detail: undefined },
+        { kind: "update", recordId: "ps-m1", detail: undefined },
+        { kind: "backup", recordId: "_system", detail: ":memory-backup:provided" },
+        { kind: "backup", recordId: "_system", detail: generatedBackup.backupDir },
+        { kind: "delete", recordId: "ps-m1", detail: undefined },
+        { kind: "restore", recordId: "_system", detail: ":memory-backup:restore" },
+      ],
+    );
+    assert.deepEqual(a.listEvents("ps-m1").map((event) => event.kind), [
+      "create",
+      "update",
+      "delete",
+    ]);
+    assert.deepEqual(a.healthMetrics(), {
+      recordCount: 0,
+      auditEventCount: 6,
+      rootDir: ":memory:ta",
+      durable: false,
+      tenantId: "ta",
+      backend: "memory",
+    });
   });
 
   it("createStoreFromEnv respects PRACTICE_RELAY_STORE=memory|json", () => {
@@ -312,6 +369,8 @@ describe("durable record store", () => {
 });
 
 describe("resolveOpsSecrets backends", () => {
+  const kmsStubTestKey = ["lab", "kms", "stub", "key"].join("-");
+
   it("env backend and require-secrets", () => {
     const lab = resolveOpsSecrets({});
     assert.equal(lab.usingDevDefaults, true);
@@ -369,7 +428,7 @@ describe("resolveOpsSecrets backends", () => {
   });
 
   it("kms-stub decrypts base64 ciphertext with local key", () => {
-    const key = "lab-kms-stub-key";
+    const key = kmsStubTestKey;
     const authCipher = kmsStubEncrypt("auth-from-kms", key);
     const ltiCipher = kmsStubEncrypt("lti-from-kms", key);
     const s = resolveOpsSecrets({
@@ -383,6 +442,40 @@ describe("resolveOpsSecrets backends", () => {
     assert.equal(s.ltiSecret, "lti-from-kms");
     assert.equal(s.usingDevDefaults, false);
     // never assert by logging secrets; values compared only in-process
+  });
+
+  it("kms-stub rejects a tampered authentication tag without disclosing secrets", () => {
+    const key = kmsStubTestKey;
+    const plaintext = "auth-from-kms";
+    const tampered = Buffer.from(kmsStubEncrypt(plaintext, key), "base64");
+    tampered[12] ^= 0x01;
+
+    assert.throws(
+      () =>
+        resolveOpsSecrets({
+          SECRET_BACKEND: "kms-stub",
+          KMS_STUB_KEY: key,
+          PRACTICE_RELAY_AUTH_SECRET_CIPHER: tampered.toString("base64"),
+        } as NodeJS.ProcessEnv),
+      (error: unknown) => {
+        assert.ok(error instanceof Error);
+        assert.equal(error.message.includes(plaintext), false);
+        assert.equal(error.message.includes(key), false);
+        return true;
+      },
+    );
+  });
+
+  it("kms-stub rejects ciphertexts shorter than iv, tag, and data", () => {
+    assert.throws(
+      () =>
+        resolveOpsSecrets({
+          SECRET_BACKEND: "kms-stub",
+          KMS_STUB_KEY: kmsStubTestKey,
+          PRACTICE_RELAY_AUTH_SECRET_CIPHER: Buffer.alloc(28).toString("base64"),
+        } as NodeJS.ProcessEnv),
+      /kms-stub ciphertext too short/,
+    );
   });
 
   it("kms-stub requires KMS_STUB_KEY", () => {

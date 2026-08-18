@@ -18,12 +18,8 @@ export function hasStrongWebShellExport(primaryAction, html) {
   return primaryAction === "Prepare export" && html.includes("Prepare export");
 }
 
-/** Run the bounded functional probes that can elevate scorecard rows to strong. */
-export function runFunctionalGates({ root, scripts }) {
-  const rootScript = (script) => runRootScript({ root, scripts, script });
-  const tsx = (code) => runTsx({ root, code });
-  const fx = {};
-  fx.multiAsset = detail(tsx(`
+function probeMultiAsset(tsx) {
+  return detail(tsx(`
 import {
   buildMultiAssetAssignmentPayload,
   validateMultiAssetAssignmentPayload,
@@ -68,9 +64,10 @@ console.log(
   "multi-asset+lti-crypto strong tracks=" + p.trackTypes.length + " jwks=" + jwks.keys.length,
 );
 `));
-  fx.opsRestore = detail(rootScript("test:ops-restore"), "ops-restore exit 0");
-  fx.opsSlo = detail(rootScript("test:ops-slo"), "ops-slo exit 0");
-  fx.webShell = detail(tsx(`
+}
+
+function probeWebShell(tsx) {
+  return detail(tsx(`
 import { assertNoForbiddenCopy } from "./practice-relay/apps/web/src/shell.mjs";
 import { hasStrongWebShellExport } from "./scripts/maturity-functional-gates.mjs";
 import { readRepositoryText } from "./scripts/repository-files.mjs";
@@ -83,8 +80,10 @@ if (!html.includes("aria-live") || !html.includes("focus-visible")) process.exit
 if (!app.includes("No work records") || !app.includes("Showing an explicit local example")) process.exit(3);
 console.log("practice-relay-web-strong states+a11y+export");
 `));
-  fx.schemas = detail(rootScript("validate:schemas"), "validate:schemas exit 0");
-  fx.tripleImpl = detail(tsx(`
+}
+
+function probeTripleImpl(tsx) {
+  return detail(tsx(`
 import { validateMveiDocument } from "./mvei/packages/validator/src/cli.ts";
 import {
   renderMotifToSvg,
@@ -120,7 +119,10 @@ if (
 
 console.log("triple-impl-strong validate+engrave+read items=" + s.itemCount);
 `));
-  fx.mveiWorkbenchSync = detail(tsx(`
+}
+
+function probeMveiWorkbenchSync(tsx) {
+  return detail(tsx(`
 import { createHistory } from "./mvei/apps/workbench/src/history.mjs";
 import { createSketchMotif, addItem } from "./mvei/apps/workbench/src/motif.mjs";
 import * as sync from "./mvei/apps/workbench/src/session-sync.mjs";
@@ -139,7 +141,10 @@ if (sync.resolveSyncMode && !sync.resolveSyncMode({ MVEI_WORKBENCH_COLLAB: "memo
 
 console.log("mveiWorkbench-strong history+sync-api ok");
 `));
-  fx.federation = detail(tsx(`
+}
+
+function probeFederation(tsx) {
+  return detail(tsx(`
 import {
   importEafToRecordParts,
   importOtioToRecordParts,
@@ -178,15 +183,9 @@ console.log(
   "export-ok",
 );
 `));
-  fx.osc = detail(rootScript("test:osc-stage"), "osc-stage exit 0");
-  const pilot = rootScript("demo:pilot-dry-run");
-  fx.pilotDryRun = {
-    ok: pilot.ok && /checklist:\s*10\/10|dry-run ready/i.test(pilot.out),
-    detail: pilot.ok ? "pilot-dry-run complete" : pilot.out.slice(0, 280),
-  };
-  fx.publish = detail(rootScript("publish:dry-run"), "publish:dry-run exit 0");
-  fx.labOnly = detail(rootScript("test:lab-only-claims"), "lab-only-claims exit 0");
-  fx.killSwitches = detail(rootScript("test:kill-switches"), "kill-switches exit 0");
+}
+
+function probeContracts(tsx) {
   const contracts = tsx(`
 import {
   createEmptyRecord,
@@ -235,11 +234,36 @@ if (!denied) process.exit(2);
 assertCanMutate(s, "teacher-1", "edit_members");
 console.log("work-record-core-contracts-strong ok core+media-index+movement-encode");
 `);
-  fx.contracts = {
+  return {
     ok: contracts.ok,
     detail: contracts.ok
       ? contracts.out || "work-record-core-contracts-strong ok"
       : (contracts.out || `contracts exit ${contracts.status}`).slice(0, 280),
   };
+}
+
+/** Run the bounded functional probes that can elevate scorecard rows to strong. */
+export function runFunctionalGates({ root, scripts }) {
+  const rootScript = (script) => runRootScript({ root, scripts, script });
+  const tsx = (code) => runTsx({ root, code });
+  const fx = {};
+  fx.multiAsset = probeMultiAsset(tsx);
+  fx.opsRestore = detail(rootScript("test:ops-restore"), "ops-restore exit 0");
+  fx.opsSlo = detail(rootScript("test:ops-slo"), "ops-slo exit 0");
+  fx.webShell = probeWebShell(tsx);
+  fx.schemas = detail(rootScript("validate:schemas"), "validate:schemas exit 0");
+  fx.tripleImpl = probeTripleImpl(tsx);
+  fx.mveiWorkbenchSync = probeMveiWorkbenchSync(tsx);
+  fx.federation = probeFederation(tsx);
+  fx.osc = detail(rootScript("test:osc-stage"), "osc-stage exit 0");
+  const pilot = rootScript("demo:pilot-dry-run");
+  fx.pilotDryRun = {
+    ok: pilot.ok && /checklist:\s*10\/10|dry-run ready/i.test(pilot.out),
+    detail: pilot.ok ? "pilot-dry-run complete" : pilot.out.slice(0, 280),
+  };
+  fx.publish = detail(rootScript("publish:dry-run"), "publish:dry-run exit 0");
+  fx.labOnly = detail(rootScript("test:lab-only-claims"), "lab-only-claims exit 0");
+  fx.killSwitches = detail(rootScript("test:kill-switches"), "kill-switches exit 0");
+  fx.contracts = probeContracts(tsx);
   return fx;
 }

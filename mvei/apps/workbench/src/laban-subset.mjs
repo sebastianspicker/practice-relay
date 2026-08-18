@@ -5,6 +5,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadValidatedDocument } from "./document-validation.mjs";
 import { escapeHtml } from "./html-escape.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -38,24 +39,6 @@ export const LABAN_SUBSET_CORPUS_PATH = join(
  * }} LabanSubsetDocument
  */
 
-/**
- * @param {string | object} jsonStringOrObject
- * @returns {LabanSubsetDocument}
- */
-export function loadLabanSubset(jsonStringOrObject) {
-  const doc = parseLabanSubsetObject(jsonStringOrObject);
-  validateLabanSubsetProfile(doc);
-  validateLabanSubsetStructure(doc);
-  return /** @type {LabanSubsetDocument} */ (doc);
-}
-
-/** Parse and reject non-object Laban subset input before inspecting its fields. */
-function parseLabanSubsetObject(jsonStringOrObject) {
-  const doc = typeof jsonStringOrObject === "string" ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
-  if (doc === null || typeof doc !== "object" || Array.isArray(doc)) throw new TypeError("laban-subset document must be a JSON object");
-  return doc;
-}
-
 /** Check the fixed profile and schema identity for the Workbench subset. */
 function validateLabanSubsetProfile(doc) {
   if (doc.profile !== "mvei-laban-subset") {
@@ -74,6 +57,22 @@ function validateLabanSubsetProfile(doc) {
 function validateLabanSubsetStructure(doc) {
   if (typeof doc.id !== "string" || !doc.id) throw new Error("laban-subset requires non-empty id");
   if (!Array.isArray(doc.measures) || !Array.isArray(doc.symbols)) throw new Error("laban-subset requires measures and symbols arrays");
+}
+
+const labanSubsetDocumentValidation = {
+  objectErrorMessage: "laban-subset document must be a JSON object",
+  validateIdentity: validateLabanSubsetProfile,
+  validateRequiredFields: validateLabanSubsetStructure,
+};
+
+/**
+ * @param {string | object} jsonStringOrObject
+ * @returns {LabanSubsetDocument}
+ */
+export function loadLabanSubset(jsonStringOrObject) {
+  return /** @type {LabanSubsetDocument} */ (
+    loadValidatedDocument(jsonStringOrObject, labanSubsetDocumentValidation)
+  );
 }
 
 /**

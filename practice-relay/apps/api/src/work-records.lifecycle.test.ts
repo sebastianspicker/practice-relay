@@ -126,3 +126,57 @@ test("WorkRecord collections require authentication and expose only memberships"
   assert.equal(response.status, 200);
   assert.deepEqual((response.json as Array<{ id: string }>).map(({ id }) => id), ["design-studio-1"]);
 });
+
+test("record collaboration authorizes before room access and mirrors saved mutations", async () => {
+  const previousCollab = process.env.COLLAB;
+  const runtime = createApiRuntime();
+  const id = "collab-lifecycle-1";
+  try {
+    delete process.env.COLLAB;
+    const unauthorized = await api(runtime, "GET", `/work-records/${id}/collab`);
+    assert.equal(unauthorized.status, 401);
+    assert.doesNotMatch(JSON.stringify(unauthorized.json), /"(?:enabled|overlay)"/);
+    assert.equal(runtime.collabRooms.size, 0);
+
+    const bearer = await login(runtime);
+    const missing = await api(runtime, "GET", `/work-records/${id}-missing/collab`, { bearer });
+    assert.equal(missing.status, 404);
+    assert.doesNotMatch(JSON.stringify(missing.json), /"(?:enabled|overlay)"/);
+    assert.equal(runtime.collabRooms.size, 0);
+
+    assert.equal(
+      (await api(runtime, "POST", "/work-records", {
+        body: { id, title: "Collaboration" }, bearer,
+      })).status,
+      201,
+    );
+    const updated = await api(runtime, "POST", `/work-records/${id}/tracks`, {
+      body: { id: "collab-track", type: "video", ref: "media/collab.mp4" }, bearer,
+    });
+    assert.equal(updated.status, 200);
+
+    const disabled = await api(runtime, "GET", `/work-records/${id}/collab`, { bearer });
+    assert.equal(disabled.status, 200);
+    assert.deepEqual(disabled.json, { enabled: false, status: "off" });
+    assert.equal(runtime.collabRooms.size, 0);
+
+    process.env.COLLAB = "1";
+    const enabled = await api(runtime, "GET", `/work-records/${id}/collab`, { bearer });
+    assert.equal(enabled.status, 200);
+    assert.deepEqual(enabled.json, {
+      enabled: true,
+      status: "document-yjs",
+      overlay: {
+        tracks: (updated.json as { tracks: unknown[] }).tracks,
+        regions: [],
+        comments: [],
+      },
+    });
+    assert.equal(runtime.collabRooms.size, 1);
+  } finally {
+    if (previousCollab === undefined) delete process.env.COLLAB;
+    else process.env.COLLAB = previousCollab;
+    for (const room of runtime.collabRooms.values()) room.destroy();
+    runtime.collabRooms.clear();
+  }
+});

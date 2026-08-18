@@ -46,6 +46,51 @@ async function loginAsFaculty(): Promise<void> {
   bearer = `Bearer ${(loggedIn.json as { token: string }).token}`;
 }
 
+test("versions expose saved versions with an empty event fallback and no unauthenticated leak", async () => {
+  const store = createRecordStore();
+  __setStoreForTests(store);
+  try {
+    await loginAsFaculty();
+    const id = `ps-versions-${randomUUID()}`;
+    assert.equal(
+      (await api("POST", "/work-records", { id, title: "Versions" })).status,
+      201,
+    );
+    const submitted = await api("POST", `/work-records/${id}/submit`, {
+      name: "version-1",
+    });
+    assert.equal(submitted.status, 200);
+
+    const versions = await api("GET", `/work-records/${id}/versions`);
+    assert.equal(versions.status, 200);
+    assert.deepEqual(versions.json, {
+      versions: (submitted.json as { versions: unknown[] }).versions,
+      events: [],
+    });
+
+    let eventLookups = 0;
+    Object.defineProperty(store, "listEvents", {
+      value: () => {
+        eventLookups += 1;
+        return [];
+      },
+    });
+    const missing = await api("GET", `/work-records/${id}-missing/versions`);
+    assert.equal(missing.status, 404);
+    assert.equal(eventLookups, 0);
+    assert.doesNotMatch(JSON.stringify(missing.json), /"(?:versions|events)"/);
+
+    bearer = "";
+    const unauthorized = await api("GET", `/work-records/${id}/versions`);
+    assert.equal(unauthorized.status, 401);
+    assert.equal(eventLookups, 0);
+    assert.doesNotMatch(JSON.stringify(unauthorized.json), new RegExp(id));
+  } finally {
+    bearer = "";
+    __setStoreForTests(createRecordStore());
+  }
+});
+
 test("lifecycle: create→tracks→preferred→comment→export consent gate→submit immutability", async () => {
   await loginAsFaculty();
   const id = `ps-life-${randomUUID()}`;

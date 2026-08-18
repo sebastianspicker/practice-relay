@@ -1,6 +1,6 @@
 # Testing
 
-The repository has 72 active test source files. `pnpm test` runs the complete
+The repository has 73 active test source files. `pnpm test` runs the complete
 active suite, including repository tooling, maturity checks, capture conversion,
 workspace packages, cross-package acceptance, restore behavior, and unit SLO
 checks.
@@ -21,7 +21,8 @@ workspaces belong in `tests/acceptance/`.
 
 ## Active suite
 
-All 72 retained test sources are active and are included by `pnpm test`.
+All 73 retained test sources are active and are included by `pnpm test` or the
+ordered `pnpm test:repository-tools` gate.
 No retained test source is classified as obsolete, duplicated, incomplete,
 generated, experimental, or no longer relevant.
 

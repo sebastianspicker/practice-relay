@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { escapeHtml } from "./html-escape.mjs";
 import {
   BRAND,
@@ -14,6 +15,9 @@ import {
   announceToLiveRegion,
   MVEI_WORKBENCH_STATUS,
   DEMO_MOTIF_PATH,
+  CORPUS_SKETCH_PATH,
+  CORPUS_PARTIAL_PATH,
+  roundTrip,
 } from "./shell.mjs";
 
 const styles = readFileSync(new URL("./workbench.css", import.meta.url), "utf8");
@@ -58,6 +62,33 @@ test("loadCorpusSketch returns sketch Motif from shared corpus", () => {
   assert.equal(doc.completeness, "sketch");
   assert.ok(Array.isArray(doc.items));
   assert.ok(doc.items.length > 0);
+});
+
+test("shell corpus exports retain stable paths and roundTrip reparses Motif JSON", () => {
+  assert.equal(
+    CORPUS_SKETCH_PATH,
+    fileURLToPath(
+      new URL(
+        "../../../../packages/movement-encode/fixtures/corpus/motif-sketch-01.json",
+        import.meta.url,
+      ),
+    ),
+  );
+  assert.equal(
+    CORPUS_PARTIAL_PATH,
+    fileURLToPath(
+      new URL(
+        "../../../../packages/movement-encode/fixtures/corpus/motif-partial-02.json",
+        import.meta.url,
+      ),
+    ),
+  );
+
+  const original = loadCorpusSketch();
+  const reloaded = roundTrip(original);
+  assert.deepEqual(reloaded, original);
+  assert.notStrictEqual(reloaded, original);
+  assert.notStrictEqual(reloaded.items, original.items);
 });
 
 test("loadDemoMotif loads fixtures/demo Motif through loadMotif", () => {

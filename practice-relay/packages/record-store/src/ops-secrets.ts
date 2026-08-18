@@ -32,11 +32,12 @@ const readSecretFile = (filePath: string): string => {
 const insecureConfiguredSecret = (secret: string): boolean => {
   return (
     secret.length < 32 ||
-    /(?:replace|change[-_ ]?me|placeholder|example|dev[-_ ]?only)/i.test(secret) ||
-    secret === "practice-relay-lab-dev-secret" ||
-    secret === "practice-relay-lti-lab-secret"
+    /(?:replace|change[-_ ]?me|placeholder|example|dev[-_ ]?only)/i.test(secret)
   );
 }
+
+const ephemeralAuthSecret = randomBytes(32).toString("base64url");
+const ephemeralLtiSecret = randomBytes(32).toString("base64url");
 
 const kmsStubDecrypt = (ciphertextB64: string, localKey: string): string => {
   const raw = Buffer.from(ciphertextB64, "base64");
@@ -47,7 +48,7 @@ const kmsStubDecrypt = (ciphertextB64: string, localKey: string): string => {
   const tag = raw.subarray(12, 28);
   const data = raw.subarray(28);
   const key = createHash("sha256").update(localKey).digest();
-  const decipher = createDecipheriv("aes-256-gcm", key, iv);
+  const decipher = createDecipheriv("aes-256-gcm", key, iv, { authTagLength: 16 });
   decipher.setAuthTag(tag);
   return Buffer.concat([decipher.update(data), decipher.final()]).toString("utf8");
 }
@@ -128,7 +129,7 @@ const assertRequiredSecrets = (
 export function kmsStubEncrypt(plaintext: string, localKey: string): string {
   const key = createHash("sha256").update(localKey).digest();
   const iv = randomBytes(12);
-  const cipher = createCipheriv("aes-256-gcm", key, iv);
+  const cipher = createCipheriv("aes-256-gcm", key, iv, { authTagLength: 16 });
   const enc = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
   const tag = cipher.getAuthTag();
   return Buffer.concat([iv, tag, enc]).toString("base64");
@@ -152,8 +153,8 @@ export function resolveOpsSecrets(
   let [authSecret, ltiSecret] = secretsForBackend(env, secretBackend);
 
   const usingDevDefaults = !authSecret || !ltiSecret;
-  if (!authSecret) authSecret = "practice-relay-lab-dev-secret";
-  if (!ltiSecret) ltiSecret = "practice-relay-lti-lab-secret";
+  if (!authSecret) authSecret = ephemeralAuthSecret;
+  if (!ltiSecret) ltiSecret = ephemeralLtiSecret;
   assertRequiredSecrets(env, authSecret, ltiSecret, usingDevDefaults);
   const secretSource = env.SECRET_SOURCE?.trim() || secretBackend;
 

@@ -1,7 +1,8 @@
 /** LTI focused protocol tests. Why: keep protocol regressions independently runnable. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { AGS_SCORE_SCOPE, LTI_DEFAULT_SECRET, simulateAgsScorePassback, issueAgsServiceToken, verifyAgsServiceToken, processAgsScoreWithServiceToken } from "./index.mjs";
+import { randomBytes } from "node:crypto";
+import { AGS_SCORE_SCOPE, simulateAgsScorePassback, issueAgsServiceToken, verifyAgsServiceToken, processAgsScoreWithServiceToken, resolveLtiSecret } from "./index.mjs";
 
 test("AGS score passback simulation", () => {
   const result = simulateAgsScorePassback({
@@ -32,7 +33,7 @@ test("AGS score passback simulation", () => {
 });
 
 test("AGS client-credentials service token issues and authorizes score POST", () => {
-  const custom = "ags-service-secret-xyz";
+  const custom = randomBytes(32).toString("base64url");
   const issued = issueAgsServiceToken({
     clientId: "practice-relay-tool",
     secret: custom,
@@ -73,7 +74,7 @@ test("AGS client-credentials service token issues and authorizes score POST", ()
 
   // Wrong secret rejects
   assert.equal(
-    verifyAgsServiceToken(issued.access_token, LTI_DEFAULT_SECRET),
+    verifyAgsServiceToken(issued.access_token, resolveLtiSecret(undefined, {})),
     null,
   );
 });

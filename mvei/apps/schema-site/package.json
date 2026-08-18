@@ -1,27 +1,11 @@
 {
-  "name": "practice-relay",
+  "name": "@practice-relay/mvei-schema-site",
+  "version": "0.4.0-alpha.1",
   "private": true,
-  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "build": "tsc --noEmit",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit",
-    "verify": "pnpm typecheck && pnpm test"
+    "dev": "node src/dev.mjs",
+    "test": "node --test src/*.test.mjs"
   },
-  "keywords": [
-    "records",
-    "release",
-    "handoff",
-    "packaging",
-    "movement"
-  ],
-  "_kilo_change_markers": [
-    "forced-release-3:test",
-    "forced-handoff-5:fix",
-    "forced-movement-8:refactor",
-    "forced-movement-9:fix",
-    "forced-movement-10:fix",
-    "forced-records-11:build",
-    "forced-records-12:refactor"
-  ]
+  "license": "Apache-2.0"
 }

@@ -2,8 +2,9 @@
 
 Practice Relay is the repository's main application for preparing policy-aware WorkRecord handoffs. It links evidence, revisions, participants, represented subjects, permitted uses, and export decisions while leaving authoring, assessment, portfolio, and repository systems responsible for their own records.
 
-Status: local `0.4.0-alpha.1` source candidate. Git and remote publication state
-are unavailable. The browser and API are suitable only for synthetic local
+Status: local `0.4.0-alpha.1` source candidate. The configured Git origin is
+`https://github.com/sebastianspicker/practice-relay.git`; publication state was
+not queried. The browser and API are suitable only for synthetic local
 evaluation. See [`../docs/ALPHA.md`](../docs/ALPHA.md) and
 [`../RELEASE_STATUS.md`](../RELEASE_STATUS.md).
 

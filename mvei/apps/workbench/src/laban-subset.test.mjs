@@ -20,6 +20,121 @@ import {
 } from "./laban-subset.mjs";
 import { createHistory } from "./history.mjs";
 
+function assertExactError(thunk, ExpectedError, message) {
+  let error;
+  try {
+    thunk();
+  } catch (caught) {
+    error = caught;
+  }
+  assert.ok(error instanceof Error, "expected function to throw");
+  assert.equal(error.constructor, ExpectedError);
+  assert.equal(error.message, message);
+}
+
+test("loadLabanSubset preserves parse, validation, and record identity semantics", () => {
+  const valid = {
+    schemaVersion: "0.2.0",
+    profile: "mvei-laban-subset",
+    id: "laban-validation",
+    completeness: "sketch",
+    measures: [],
+    symbols: [],
+  };
+
+  for (const input of [null, [], 1]) {
+    assertExactError(
+      () => loadLabanSubset(input),
+      TypeError,
+      "laban-subset document must be a JSON object",
+    );
+  }
+  assert.deepEqual(loadLabanSubset(JSON.stringify(valid)), valid);
+  assert.strictEqual(loadLabanSubset(valid), valid);
+
+  const invalidJson = "{not-json";
+  let expectedParseError;
+  let actualParseError;
+  try {
+    JSON.parse(invalidJson);
+  } catch (error) {
+    expectedParseError = error;
+  }
+  try {
+    loadLabanSubset(invalidJson);
+  } catch (error) {
+    actualParseError = error;
+  }
+  assert.equal(actualParseError.constructor, expectedParseError.constructor);
+  assert.equal(actualParseError.message, expectedParseError.message);
+
+  assertExactError(
+    () => loadLabanSubset({ ...valid, profile: "other" }),
+    Error,
+    'Expected profile "mvei-laban-subset", got "other"',
+  );
+  assertExactError(
+    () => loadLabanSubset({ ...valid, schemaVersion: "other" }),
+    Error,
+    'Expected schemaVersion 0.2.0, got "other"',
+  );
+  assertExactError(
+    () => loadLabanSubset({ ...valid, id: "" }),
+    Error,
+    "laban-subset requires non-empty id",
+  );
+  assertExactError(
+    () => loadLabanSubset({ ...valid, id: 1 }),
+    Error,
+    "laban-subset requires non-empty id",
+  );
+  assertExactError(
+    () => loadLabanSubset({ ...valid, measures: {} }),
+    Error,
+    "laban-subset requires measures and symbols arrays",
+  );
+  assertExactError(
+    () => loadLabanSubset({ ...valid, symbols: {} }),
+    Error,
+    "laban-subset requires measures and symbols arrays",
+  );
+
+  const frozen = Object.freeze({ ...valid, measures: Object.freeze([]), symbols: Object.freeze([]) });
+  assert.strictEqual(loadLabanSubset(frozen), frozen);
+
+  let profileReads = 0;
+  const profileAccessor = {
+    ...valid,
+    get profile() {
+      profileReads += 1;
+      return profileReads === 1 ? "other" : "later";
+    },
+  };
+  assertExactError(
+    () => loadLabanSubset(profileAccessor),
+    Error,
+    'Expected profile "mvei-laban-subset", got "later"',
+  );
+  assert.equal(profileReads, 2);
+
+  let symbolsRead = false;
+  const measuresFirst = new Proxy(
+    { ...valid, measures: {} },
+    {
+      get(target, property, receiver) {
+        if (property === "symbols") symbolsRead = true;
+        return Reflect.get(target, property, receiver);
+      },
+    },
+  );
+  assertExactError(
+    () => loadLabanSubset(measuresFirst),
+    Error,
+    "laban-subset requires measures and symbols arrays",
+  );
+  assert.equal(symbolsRead, false);
+});
+
 test("load corpus laban-subset-04 and render multi-staff HTML", () => {
   const doc = loadCorpusLabanSubset();
   assert.equal(doc.profile, "mvei-laban-subset");

@@ -2,6 +2,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   loadMotif,
   emitMotif,
@@ -12,11 +14,132 @@ import {
   reorderItems,
 } from "./motif.mjs";
 import { validateMotifAgainstSchema } from "./validate-motif.mjs";
-import {
-  CORPUS_SKETCH_PATH,
-  CORPUS_PARTIAL_PATH,
-  roundTrip,
-} from "./shell.mjs";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const CORPUS_SKETCH_PATH = join(
+  __dirname,
+  "../../../../packages/movement-encode/fixtures/corpus/motif-sketch-01.json",
+);
+const CORPUS_PARTIAL_PATH = join(
+  __dirname,
+  "../../../../packages/movement-encode/fixtures/corpus/motif-partial-02.json",
+);
+
+function roundTrip(doc) {
+  return loadMotif(emitMotif(doc));
+}
+
+function assertExactError(thunk, ExpectedError, message) {
+  let error;
+  try {
+    thunk();
+  } catch (caught) {
+    error = caught;
+  }
+  assert.ok(error instanceof Error, "expected function to throw");
+  assert.equal(error.constructor, ExpectedError);
+  assert.equal(error.message, message);
+}
+
+test("loadMotif preserves parse, validation, and record identity semantics", () => {
+  const valid = {
+    schemaVersion: "0.2.0",
+    profile: "mvei-motif",
+    id: "motif-validation",
+    completeness: "sketch",
+    items: [],
+  };
+
+  for (const input of [null, [], 1]) {
+    assertExactError(
+      () => loadMotif(input),
+      TypeError,
+      "Motif document must be a JSON object",
+    );
+  }
+  assert.deepEqual(loadMotif(JSON.stringify(valid)), valid);
+  assert.strictEqual(loadMotif(valid), valid);
+
+  const invalidJson = "{not-json";
+  let expectedParseError;
+  let actualParseError;
+  try {
+    JSON.parse(invalidJson);
+  } catch (error) {
+    expectedParseError = error;
+  }
+  try {
+    loadMotif(invalidJson);
+  } catch (error) {
+    actualParseError = error;
+  }
+  assert.equal(actualParseError.constructor, expectedParseError.constructor);
+  assert.equal(actualParseError.message, expectedParseError.message);
+
+  assertExactError(
+    () => loadMotif({ ...valid, profile: "other" }),
+    Error,
+    'Expected profile "mvei-motif", got "other"',
+  );
+  assertExactError(
+    () => loadMotif({ ...valid, schemaVersion: "other" }),
+    Error,
+    'Expected schemaVersion 0.1.0-stub|0.2.0, got "other"',
+  );
+  assertExactError(
+    () => loadMotif({ ...valid, id: "" }),
+    Error,
+    "Motif document requires non-empty string id",
+  );
+  assertExactError(
+    () => loadMotif({ ...valid, id: 1 }),
+    Error,
+    "Motif document requires non-empty string id",
+  );
+  assertExactError(
+    () => loadMotif({ ...valid, completeness: "other" }),
+    Error,
+    'completeness must be sketch|partial|complete, got "other"',
+  );
+  assertExactError(
+    () => loadMotif({ ...valid, items: {} }),
+    Error,
+    "Motif document requires items array",
+  );
+
+  const frozen = Object.freeze({ ...valid, items: Object.freeze([]) });
+  assert.strictEqual(loadMotif(frozen), frozen);
+
+  let profileReads = 0;
+  const profileAccessor = {
+    ...valid,
+    get profile() {
+      profileReads += 1;
+      return profileReads === 1 ? "other" : "later";
+    },
+  };
+  assertExactError(
+    () => loadMotif(profileAccessor),
+    Error,
+    'Expected profile "mvei-motif", got "later"',
+  );
+  assert.equal(profileReads, 2);
+
+  let completenessReads = 0;
+  const completenessAccessor = {
+    ...valid,
+    get completeness() {
+      completenessReads += 1;
+      return completenessReads === 1 ? "sketch" : "other";
+    },
+  };
+  assertExactError(
+    () => loadMotif(completenessAccessor),
+    Error,
+    'completeness must be sketch|partial|complete, got "other"',
+  );
+  assert.equal(completenessReads, 3);
+});
 
 test("createSketchMotif → validateMotifAgainstSchema ok", () => {
   const doc = createSketchMotif("motif-new-sketch", "Empty sketch");

@@ -8,30 +8,12 @@
  * Item ops (add / update / remove / reorder) are immutable pure transforms
  * so emit → shared-schema validate → load stays honest for sketch/partial.
  */
+import { loadValidatedDocument } from "./document-validation.mjs";
 
 /** @typedef {{ id: string, symbol: string, order: number, durationHint?: string, timeAnchor?: { tMs?: number, musicMeasure?: string, mediaFragment?: string } }} MotifItem */
 /** @typedef {{ schemaVersion: "0.1.0-stub"|"0.2.0", profile: "mvei-motif", id: string, title?: string, completeness: "sketch"|"partial"|"complete", items: MotifItem[], annotationLinks?: Array<{ system?: string, uri?: string }> }} MotifDocument */
 
 const MOTIF_SCHEMA_VERSIONS = new Set(["0.1.0-stub", "0.2.0"]);
-
-/**
- * Parse and basic-shape-check a Motif document.
- * @param {string | object} jsonStringOrObject
- * @returns {MotifDocument}
- */
-export function loadMotif(jsonStringOrObject) {
-  const doc = parseMotifObject(jsonStringOrObject);
-  validateMotifIdentity(doc);
-  validateMotifContent(doc);
-  return /** @type {MotifDocument} */ (doc);
-}
-
-/** Parse Motif JSON and establish the object boundary before field validation. */
-function parseMotifObject(jsonStringOrObject) {
-  const doc = typeof jsonStringOrObject === "string" ? JSON.parse(jsonStringOrObject) : jsonStringOrObject;
-  if (doc === null || typeof doc !== "object" || Array.isArray(doc)) throw new TypeError("Motif document must be a JSON object");
-  return doc;
-}
 
 /** Validate profile, schema version, and identifier shared by every Motif consumer. */
 function validateMotifIdentity(doc) {
@@ -59,6 +41,23 @@ function validateMotifContent(doc) {
     throw new Error(`completeness must be sketch|partial|complete, got ${JSON.stringify(doc.completeness)}`);
   }
   if (!Array.isArray(doc.items)) throw new Error("Motif document requires items array");
+}
+
+const motifDocumentValidation = {
+  objectErrorMessage: "Motif document must be a JSON object",
+  validateIdentity: validateMotifIdentity,
+  validateRequiredFields: validateMotifContent,
+};
+
+/**
+ * Parse and basic-shape-check a Motif document.
+ * @param {string | object} jsonStringOrObject
+ * @returns {MotifDocument}
+ */
+export function loadMotif(jsonStringOrObject) {
+  return /** @type {MotifDocument} */ (
+    loadValidatedDocument(jsonStringOrObject, motifDocumentValidation)
+  );
 }
 
 /**

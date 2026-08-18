@@ -9,6 +9,7 @@ import {
   createSign,
   createVerify,
   generateKeyPairSync,
+  randomBytes,
   randomUUID,
   timingSafeEqual,
 } from "node:crypto";
@@ -22,11 +23,11 @@ import {
   validateMultiAssetAssignmentPayload,
 } from "./assignment.mjs";
 
-/** Dev default only - production labs must set PRACTICE_RELAY_LTI_SECRET. */
-export const LTI_DEFAULT_SECRET = "practice-relay-lti-lab-secret";
+/** Process-local fallback for isolated mocks; shared labs must inject one secret. */
+const EPHEMERAL_LTI_SECRET = randomBytes(32).toString("base64url");
 
 /**
- * Resolve LTI HMAC secret: explicit arg → PRACTICE_RELAY_LTI_SECRET → lab default.
+ * Resolve LTI HMAC secret: explicit arg → PRACTICE_RELAY_LTI_SECRET → process-local fallback.
  * @param {string | undefined | null} [explicit]
  * @param {NodeJS.ProcessEnv} [env]
  */
@@ -35,7 +36,7 @@ export function resolveLtiSecret(explicit, env = process.env) {
   if (fromArg) return fromArg;
   const fromEnv = env.PRACTICE_RELAY_LTI_SECRET?.trim();
   if (fromEnv) return fromEnv;
-  return LTI_DEFAULT_SECRET;
+  return EPHEMERAL_LTI_SECRET;
 }
 
 /**

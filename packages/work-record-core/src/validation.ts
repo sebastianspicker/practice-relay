@@ -2,7 +2,7 @@
  * Runtime validation shared by WorkRecord mutation modules.
  * Why: public mutations must enforce the same portable IDs and closed unions.
  */
-import type { Role, Track, TrackType } from "./index.ts";
+import type { Role, Track, TrackType } from "./types.ts";
 
 const RESOURCE_ID = /^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$/;
 const ROLES: ReadonlySet<Role> = new Set<Role>(["student", "faculty", "admin", "guest"]);

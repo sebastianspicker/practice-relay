@@ -117,7 +117,7 @@ These are the real LMS steps operators would follow when moving beyond lab; the 
 ### Canvas AGS token exchange (production shape)
 
 1. Tool obtains platform access token via client credentials against Canvas token URL.
-2. Lab mock: `POST /lti/oauth/token` with `{ "grant_type": "client_credentials", "client_id": "practice-relay-tool", "client_secret": "<configured mock credential>" }`. The credential defaults to the injected `PRACTICE_RELAY_LTI_SECRET`; do not use the checked-in development fallback on a shared host.
+2. Lab mock: `POST /lti/oauth/token` with `{ "grant_type": "client_credentials", "client_id": "practice-relay-tool", "client_secret": "<configured mock credential>" }`. Inject the same `PRACTICE_RELAY_LTI_SECRET` into the API and mock platform; isolated processes otherwise use unrelated ephemeral secrets and cannot interoperate.
 3. `POST` score results with `Authorization: Bearer <access_token>` (lab: `/lti/ags/scores`).
 
 ## Moodle (External tool / LTI 1.3 Advantage) - target steps

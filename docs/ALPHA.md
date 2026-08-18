@@ -1,7 +1,9 @@
 # Practice Relay public alpha
 
-Status: local `0.4.0-alpha.1` source candidate. Git and remote publication state
-are unavailable.
+Status: local `0.4.0-alpha.1` source candidate on branch `main` at
+`c4b446d623cdb00b1eb6a54a065ef0bc02b5200d`. The configured origin is
+`https://github.com/sebastianspicker/practice-relay.git`; publication state was
+not queried.
 License: Apache-2.0 ([`LICENSE`](../LICENSE))
 Candidate date: 2026-07-19
 

@@ -128,7 +128,7 @@ services:
       - |
         set -euo pipefail
         test -s /run/secrets/practice-relay_lti
-        if grep -qE 'REPLACE(_WITH)?|CHANGE_ME|change-me|dev-only|practice-relay-lti-lab-secret' /run/secrets/practice-relay_lti; then
+        if grep -qEi 'replace([_-]?with)?|change[_-]?me|placeholder|example|dev[_-]?only' /run/secrets/practice-relay_lti; then
           echo "refusing placeholder or default campus-lab LTI secret file" >&2
           exit 1
         fi

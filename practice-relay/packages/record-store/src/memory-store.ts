@@ -9,6 +9,22 @@ import type { BackupManifest, RecordEvent, RecordStoreAdapter } from "./types.js
 import { withNextRecordRevision } from "./record-revision.js";
 import { safePathSegment } from "./store-safety.js";
 
+function createMemorySnapshot(
+  rootDir: string,
+  tenantId: string | undefined,
+  backupDir: string,
+  records: WorkRecord[],
+): BackupManifest {
+  return {
+    createdAt: new Date().toISOString(),
+    rootDir,
+    recordCount: records.length,
+    recordIds: records.map((record) => record.id),
+    backupDir,
+    tenantId,
+  };
+}
+
 /** Create an isolated non-durable record store for tests and explicit memory mode. */
 export function createMemoryRecordStore(opts?: {
   tenantId?: string;
@@ -80,16 +96,14 @@ export function createMemoryRecordStore(opts?: {
     backup(backupRoot?) {
       const records = this.list();
       const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const manifest: BackupManifest = {
-        createdAt: new Date().toISOString(),
-        rootDir: this.rootDir,
-        recordCount: records.length,
-        recordIds: records.map((s) => s.id),
-        backupDir:
-          backupRoot ??
-          `:memory-backup:${stamp}-${randomBytes(4).toString("hex")}`,
+      const backupDir =
+        backupRoot ?? `:memory-backup:${stamp}-${randomBytes(4).toString("hex")}`;
+      const manifest = createMemorySnapshot(
+        this.rootDir,
         tenantId,
-      };
+        backupDir,
+        records,
+      );
       backups.push(manifest);
       this.appendEvent("_system", "backup", manifest.backupDir);
       return manifest;
@@ -100,14 +114,7 @@ export function createMemoryRecordStore(opts?: {
     restoreFromBackup(backupDir: string) {
       // Memory restore is a no-op beyond audit; real restore is JSON/fs path.
       this.appendEvent("_system", "restore", backupDir);
-      return {
-        createdAt: new Date().toISOString(),
-        rootDir: this.rootDir,
-        recordCount: this.list().length,
-        recordIds: this.list().map((s) => s.id),
-        backupDir,
-        tenantId,
-      };
+      return createMemorySnapshot(this.rootDir, tenantId, backupDir, this.list());
     },
     healthMetrics() {
       return {
