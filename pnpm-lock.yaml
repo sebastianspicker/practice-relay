@@ -23,9 +23,6 @@ importers:
       ajv-formats:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.20.0)
-      playwright:
-        specifier: 1.55.1
-        version: 1.55.1
       tsx:
         specifier: ^4.19.2
         version: 4.23.1
@@ -143,25 +140,6 @@ importers:
       '@practice-relay/work-record-core':
         specifier: workspace:*
         version: link:../../../packages/work-record-core
-
-  tests/acceptance:
-    dependencies:
-      '@practice-relay/api':
-        specifier: workspace:*
-        version: link:../../practice-relay/apps/api
-      '@practice-relay/movement-encode':
-        specifier: workspace:*
-        version: link:../../packages/movement-encode
-      '@practice-relay/work-record-core':
-        specifier: workspace:*
-        version: link:../../packages/work-record-core
-      '@practice-relay/work-record-package':
-        specifier: workspace:*
-        version: link:../../packages/work-record-package
-    devDependencies:
-      tsx:
-        specifier: ^4.19.2
-        version: 4.23.1
 
 packages:
 
@@ -346,11 +324,6 @@ packages:
   fast-uri@3.1.5:
     resolution: {integrity: sha512-gHwA1O9LDIcKunMKhObS/HimwtehO1nPUECKAu5TpKgaO19fcWEl4bliWe1jWxVFvIXztJjjQ4L8XQ1EU9f7Jw==}
 
-  fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -365,16 +338,6 @@ packages:
   lib0@0.2.117:
     resolution: {integrity: sha512-DeXj9X5xDCjgKLU/7RR+/HQEVzuuEUiwldwOGsHK/sfAfELGWEyTcf0x+uOvCvK3O2zPmZePXWL85vtia6GyZw==}
     engines: {node: '>=16'}
-    hasBin: true
-
-  playwright-core@1.55.1:
-    resolution: {integrity: sha512-Z6Mh9mkwX+zxSlHqdr5AOcJnfp+xUWLCt9uKV18fhzA8eyxUd8NUWzAjxUh55RZKSYwDGX0cfaySdhZJGMoJ+w==}
-    engines: {node: '>=18'}
-    hasBin: true
-
-  playwright@1.55.1:
-    resolution: {integrity: sha512-cJW4Xd/G3v5ovXtJJ52MAOclqeac9S/aGGgRzLabuF8TnIb6xHvMzKIa6JmrRzUkeXJgfL1MhukP0NK6l39h3A==}
-    engines: {node: '>=18'}
     hasBin: true
 
   require-from-string@2.0.2:
@@ -526,9 +489,6 @@ snapshots:
 
   fast-uri@3.1.5: {}
 
-  fsevents@2.3.2:
-    optional: true
-
   fsevents@2.3.3:
     optional: true
 
@@ -539,14 +499,6 @@ snapshots:
   lib0@0.2.117:
     dependencies:
       isomorphic.js: 0.2.5
-
-  playwright-core@1.55.1: {}
-
-  playwright@1.55.1:
-    dependencies:
-      playwright-core: 1.55.1
-    optionalDependencies:
-      fsevents: 2.3.2
 
   require-from-string@2.0.2: {}
 

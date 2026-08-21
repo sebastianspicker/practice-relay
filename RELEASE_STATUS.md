@@ -2,7 +2,7 @@
 
 Candidate identity: `0.4.0-alpha.1`
 
-Validation date: 2026-08-09
+Validation date: 2026-08-20
 
 Local checkout: branch `main` at `c4b446d623cdb00b1eb6a54a065ef0bc02b5200d`, with origin configured as `https://github.com/sebastianspicker/practice-relay.git`. The worktree is intentionally dirty for the remediation recorded in [`AUDIT_LEDGER.md`](AUDIT_LEDGER.md). No remote, package registry, release, deployment, or public endpoint state was queried or changed.
 
@@ -10,21 +10,16 @@ Local checkout: branch `main` at `c4b446d623cdb00b1eb6a54a065ef0bc02b5200d`, wit
 
 | Command or check | Result |
 | --- | --- |
-| Manifest and CI command resolution | Passed; root has 32 scripts and all 15 CI-invoked scripts resolve |
-| Schema-site focused suite | Passed, 14 tests |
-| Recursive workspace tests | Passed across 24 of 25 workspace projects; the private root project is the coordinator |
-| `pnpm test:repository-tools` | Passed, 53 tests |
+| Manifest and CI command resolution | Passed; CI invokes the root release gate |
+| Recursive workspace tests | Passed across 23 of 24 workspace projects; the private root project is the coordinator |
 | `pnpm validate:schemas` | Passed, 10 corpus fixtures plus the WorkRecord package fixture |
-| `pnpm validate:docs` | Passed, 218 relative links across 94 Markdown files |
+| `pnpm validate:docs` | Passed for maintained Markdown links |
 | `pnpm validate:evidence` | Passed, 7 required files and 4 entrypoint links |
-| `pnpm test:lab-only-claims` | Passed, 34 bounded surface files scanned |
-| `pnpm test:ops-restore` | Passed, unit drill only |
-| `pnpm test:ops-slo` | Passed, network-disabled unit mode |
-| Container entrypoint checks | Passed ShellCheck, Bash syntax, and 4 behavior tests |
 | `pnpm verify:public-hygiene` | Passed candidate mode with the documented confidential-reporting warning |
 | `pnpm typecheck` | Passed |
-| `pnpm quality:check` | Passed; 237 maintainable files, no exact files or clone blocks |
-| `pnpm release:check` | Passed, including alpha/beta gates, publication dry-run, OSC stage, and pilot dry-run |
+| `pnpm build` | Passed across every buildable workspace package |
+| `pnpm quality:check` | Passed; maintained files remain within the repository limits |
+| `pnpm release:check` | Passed locally across source, package, documentation, evidence, contract, and public-hygiene checks |
 
 No standalone formatter script is defined. The repository quality command includes source and documentation checks.
 

@@ -61,8 +61,6 @@ const SKIP_DIRS = new Set([
   "coverage",
   "dist",
   "node_modules",
-  "playwright-report",
-  "test-results",
   "tmp",
 ]);
 const TEXT_EXTENSIONS = new Set([
@@ -90,7 +88,6 @@ const TEXT_EXTENSIONS = new Set([
 ]);
 const EXCLUDED_SCANNER_FILES = new Set([
   "scripts/verify-public-hygiene.mjs",
-  "scripts/verify-public-hygiene.test.mjs",
 ]);
 const REQUIRED_IGNORE_RULES = [
   "/AGENTS.md",
@@ -105,7 +102,6 @@ const REQUIRED_IGNORE_RULES = [
   ".codex/",
   ".serena/",
   "/data/**",
-  "playwright-report/",
   "*.pem",
   "*.key",
   "*.p12",
@@ -339,7 +335,6 @@ function verifyCandidateResidue(root, errors) {
     "docs/images/0.4.0-alpha.1/practice-relay-concept.png",
     "docs/images/0.4.0-alpha.1/mvei-workbench-concept.png",
     "docs/images/archive/0.2.7-alpha.1",
-    "fixtures/demo/last-e2e-demo.log",
     "docs/pilot-pack/preference-survey.md",
     "practice-relay/docs/mvp.md",
     "practice-relay/docs/prd.md",

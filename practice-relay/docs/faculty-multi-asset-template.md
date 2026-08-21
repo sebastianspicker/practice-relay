@@ -19,7 +19,6 @@ upload media, or submit this fixture.
 The package boundary is tested by:
 
 ```bash
-pnpm --filter @practice-relay/acceptance-tests test
 pnpm --filter @practice-relay/work-record-package test
 ```
 

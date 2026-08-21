@@ -46,8 +46,7 @@ boundary and the limits of repository evidence.
 
 ```bash
 pnpm --filter @practice-relay/api test
-pnpm --filter @practice-relay/web test
-pnpm demo:e2e
+pnpm --filter @practice-relay/work-record-core test
 pnpm validate:schemas
 ```
 

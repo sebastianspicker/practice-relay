@@ -12,14 +12,16 @@ Practice Relay’s PNG captures the Quiet Dossier shell (sparse three-column han
 | MvEI corpus catalogue | [`mvei-corpus-site.png`](mvei-corpus-site.png) | [`../../../packages/movement-encode/fixtures/corpus/site/index.html`](../../../packages/movement-encode/fixtures/corpus/site/index.html) |
 | LTI mock admin (lab only) | [`lti-mock-admin.png`](lti-mock-admin.png) | Rendered by `renderUi()` |
 
-Refresh both forms from the repository root:
+Refresh the portable HTML snapshots from the repository root:
 
 ```bash
 pnpm demo:render-html
-pnpm demo:screenshots
 ```
 
-`demo:screenshots` starts loopback servers, loads all five surfaces with Playwright and a locally installed Chrome or Chromium executable, waits for meaningful state, verifies primary controls and fixture links, checks for mobile horizontal overflow, and writes the PNG files. The Practice Relay request is deterministically answered with `401` so the captured image shows the current labeled synthetic fallback instead of depending on an ambient API process. The LTI screenshot remains an explicitly local lab mock and does not contact a real LMS.
+The PNGs are curated release snapshots retained for product documentation; the
+repository does not automate browser capture. The Practice Relay image shows a
+labeled synthetic fallback, and the LTI image remains an explicitly local lab
+mock rather than evidence of a real LMS connection.
 
 The screenshots contain only synthetic repository fixtures. They do not show
 real participants or remote services.

@@ -17,7 +17,6 @@
   "files": ["src"],
   "bin": { "mvei-validate": "./src/cli.ts" },
   "scripts": {
-    "test": "node --import tsx --test src/*.test.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {

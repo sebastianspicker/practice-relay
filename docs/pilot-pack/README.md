@@ -16,9 +16,9 @@ evidence of adoption, a completed pilot, or product preference.
 | [evaluation-rubric.md](evaluation-rubric.md) | Apply the documented evidence thresholds and kill gates |
 | [decision-log.md](decision-log.md) | Record proceed, narrow, or stop decisions and evidence |
 
-The [synthetic repository dry-run](dry-run-protocol.md) and
-[capture bridge demo](capture-lab.md) exercise fixture paths only. They are not
-participant protocols and do not satisfy an institutional study review.
+Synthetic repository examples and capture-bridge inputs are implementation
+samples only. They are not participant protocols and do not satisfy an
+institutional study review.
 
 ## Boundary
 

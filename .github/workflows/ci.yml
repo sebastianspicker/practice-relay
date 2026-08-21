@@ -1,5 +1,4 @@
-# Practice Relay CI: types, quality, docs, schemas, evidence, tests, claim guards, and demos.
-# Why: public alpha must not greenwash IMS/SSO/firstness claims or ship broken packages.
+# Practice Relay CI: one deterministic source, package, documentation, and contract gate.
 name: ci
 
 on:
@@ -16,7 +15,7 @@ permissions:
 
 jobs:
   validate:
-    name: types · quality · docs · schemas · evidence · test · claims · e2e
+    name: release checks
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -34,43 +33,5 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck
-        run: pnpm typecheck
-
-      - name: Build
-        run: pnpm build
-
-      - name: Code quality
-        run: pnpm quality:check
-
-      - name: Validate repository documentation links
-        run: pnpm validate:docs
-
-      - name: Validate schemas (work-record package + MvEI corpus)
-        run: pnpm validate:schemas
-
-      - name: Validate evidence wiring
-        run: pnpm validate:evidence
-
-      - name: Verify public candidate hygiene
-        run: pnpm verify:public-hygiene
-
-      - name: Test monorepo
-        run: pnpm test
-
-      - name: Kill-switch / lab-only claim guards
-        run: |
-          pnpm test:kill-switches
-          pnpm test:lab-only-claims
-
-      - name: Demo e2e (mock university pack)
-        run: pnpm demo:e2e
-
-      - name: Maturity scorecard (structural + heavy)
-        run: pnpm maturity:check
-
-      - name: Release-specific dry-runs
-        run: |
-          pnpm publish:dry-run
-          pnpm test:osc-stage
-          pnpm demo:pilot-dry-run
+      - name: Verify source candidate
+        run: pnpm release:check

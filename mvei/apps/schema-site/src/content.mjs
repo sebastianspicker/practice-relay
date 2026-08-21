@@ -3,7 +3,7 @@
  *
  * Why: MEI-pattern residual is governance + honesty (profiles, corpus, neighbours),
  * not another LabanLab-class motion demo. This module is the source of truth;
- * buildPageHtml() regenerates index.html; tests assert both module and HTML.
+ * buildPageHtml() regenerates index.html.
  *
  * Acceptance: MvEI Q6 neighbours, Q7 capture, Q10 profiles/corpus; plus
  * consortium, migration, and co-timeline documentation surfaces.
@@ -222,7 +222,7 @@ export function hasConsortiumSeed() {
 
 /**
  * Render full schema-site HTML from structured content.
- * Used to regenerate index.html and for snapshot-style unit tests.
+ * Used to regenerate index.html.
  */
 export function buildPageHtml() {
   const pageLists = buildPageLists();

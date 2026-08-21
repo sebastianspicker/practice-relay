@@ -32,8 +32,8 @@ Secret values belong in process environment or protected files and must never be
 The mock platform can exercise registration-shaped configuration, local OIDC launch, JWKS, a multi-asset assignment claim, and AGS-shaped score requests. This is protocol test coverage, not external LMS registration.
 
 The mock UI must remain labeled `MOCK PLATFORM - not Canvas`. The repository
-does not claim IMS Global or 1EdTech certification. Run
-`pnpm test:lab-only-claims` to check these boundaries.
+does not claim IMS Global or 1EdTech certification. The focused LTI contracts
+exercise signing, verification, OIDC redirects, and token separation.
 
 See [`lti-lms-registration.md`](lti-lms-registration.md),
 [`lms-registration-preflight.md`](lms-registration-preflight.md), and

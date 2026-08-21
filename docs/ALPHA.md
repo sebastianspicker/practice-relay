@@ -69,7 +69,6 @@ pnpm install --frozen-lockfile
 pnpm validate:schemas
 pnpm validate:evidence
 pnpm test
-pnpm demo:e2e
 ```
 
 Repeat the frozen-lockfile install in a clean canonical checkout before
@@ -93,9 +92,7 @@ pnpm release:check
 ```
 
 `release:check` runs local checks only. It does not create a package, tag,
-release, deployment, or publication. It refreshes the staged OSC and capture
-fixture outputs under `test-results/generated-fixtures/osc/` and
-`test-results/generated-fixtures/capture-lab/`.
+release, deployment, or publication.
 
 ## Further reading
 

@@ -40,8 +40,8 @@ Simulates Canvas-like register external tool + launch against Practice Relay API
 ```bash
 PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1 pnpm --filter @practice-relay/api start
 pnpm --filter @practice-relay/lti-mock-platform start
-# scripted E2E (no browser / no live ports for API side):
-pnpm --filter @practice-relay/lti-mock-platform test
+# focused protocol contracts:
+pnpm --filter @practice-relay/lti test
 ```
 
 The UI banner remains `MOCK PLATFORM - not Canvas` so local protocol tests

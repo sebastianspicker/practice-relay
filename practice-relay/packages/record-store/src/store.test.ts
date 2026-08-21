@@ -1,10 +1,4 @@
-/**
- * Tests - store.test.ts
- *
- * Why: guard shipped behaviour for technical reviewers; drive real modules,
- * not a re-implementation of domain/export/validate logic.
- */
-
+/** Critical durable storage and secret-boundary contracts. */
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
@@ -211,7 +205,6 @@ describe("durable record store", () => {
       assert.equal(b.get("ps-shared-id"), undefined);
       assert.equal(b.list().length, 0);
       assert.equal(a.list().length, 1);
-      // paths under data/{tenant}/work-records
       assert.ok(a.rootDir.endsWith(path.join("tenant-a")) || a.rootDir.includes("tenant-a"));
       assert.ok(existsSync(path.join(root, "tenant-a", "records", "ps-shared-id.json")));
       assert.equal(
@@ -441,7 +434,6 @@ describe("resolveOpsSecrets backends", () => {
     assert.equal(s.authSecret, "auth-from-kms");
     assert.equal(s.ltiSecret, "lti-from-kms");
     assert.equal(s.usingDevDefaults, false);
-    // never assert by logging secrets; values compared only in-process
   });
 
   it("kms-stub rejects a tampered authentication tag without disclosing secrets", () => {

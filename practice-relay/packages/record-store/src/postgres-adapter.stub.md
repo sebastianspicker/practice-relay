@@ -20,7 +20,7 @@ JSON path namespace: `PRACTICE_RELAY_TENANT_ID` prefixes durable paths as
 `{root}/{tenant}/records`, `events`, `audit`, and `backups`. The caller selects
 the value, so this is not an authorization or managed multi-tenant boundary.
 
-Backup SLO drill (no Docker): `pnpm test:ops-restore` → `scripts/ops-restore-drill.mjs`.
+No automated backup SLO drill is shipped in this public tree.
 
 ## Interface to implement
 

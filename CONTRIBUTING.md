@@ -51,25 +51,17 @@ pnpm test
 pnpm validate:schemas
 pnpm validate:docs
 pnpm validate:evidence
-pnpm test:kill-switches
-pnpm test:lab-only-claims
 pnpm verify:public-hygiene
 ```
 
-For user-interface changes, also run:
+For user-interface changes, regenerate the portable HTML snapshots and inspect
+the affected surface locally:
 
 ```bash
 pnpm demo:render-html
-pnpm demo:screenshots
 ```
 
-Inspect each PNG for clipping, incorrect state, private data, and claims that are not supported by the current code. The screenshot command also exercises primary controls and checks mobile horizontal overflow.
-
 Document failed, skipped, unavailable, and environment-blocked checks separately. Do not suppress a check solely to obtain a passing result.
-
-`pnpm maturity:check` and `pnpm release:check` refresh the staged OSC and capture
-fixture outputs. Review `test-results/generated-fixtures/osc/` and
-`test-results/generated-fixtures/capture-lab/` after running either command.
 
 ## Documentation and release changes
 

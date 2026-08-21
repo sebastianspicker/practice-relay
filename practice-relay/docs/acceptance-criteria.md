@@ -20,4 +20,6 @@
 | Q16 | No automated feedback homepage | Route inventory test |
 | Q17 | Faculty multi-asset template | File under docs or seed data |
 
-Alpha status: Q1 to Q17 are covered by tests in `tests/acceptance/q-gates.test.ts` against the shipped domain, API, documentation, and web modules.
+Alpha status: Q1 to Q17 remain the review rubric. Retained package, API, and
+LTI contracts exercise component boundaries, but this public surface does not
+ship a single aggregate Q-gate suite.

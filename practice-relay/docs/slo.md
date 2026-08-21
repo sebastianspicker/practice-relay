@@ -9,7 +9,10 @@ Status: planning objectives for a single-host lab evaluation. They are not measu
 | Recovery point objective | 24 hours | Assumes a daily external backup of record JSON and media |
 | Recovery time objective | 4 hours | Assumes an operator can restore record JSON and reattach the media volume on one lab host |
 
-`pnpm test:ops-restore` exercises backup, deletion, restore, and tenant isolation in a temporary directory. Its elapsed time is unit-test evidence only. It does not validate these operational targets.
+This public source tree retains the backup and restore routes but does not ship
+an automated backup, restore, or SLO drill. Any result against these objectives
+must come from an operator-controlled environment and does not establish the
+planning targets by itself.
 
 ## Signals
 
@@ -24,20 +27,9 @@ The metrics endpoint requires an administrator session and must not expose secre
 
 ## Checks
 
-```bash
-pnpm test:ops-slo
-pnpm test:ops-restore
-```
-
-The default SLO check uses the API handler directly, forces in-memory stores, removes ambient application and secret-file settings, and disables network access. A live check is a separate, explicit command and also requires `PRACTICE_RELAY_ADMIN_SESSION`:
-
-```bash
-PRACTICE_RELAY_API_URL=http://127.0.0.1:8787 \
-PRACTICE_RELAY_ADMIN_SESSION=<admin-session> \
-pnpm test:ops-slo:live
-```
-
-Do not put a real session value in tracked documentation, shell history intended for sharing, or issue output.
+Use the authenticated routes and the operator restore drill below. Do not put a
+real session value in tracked documentation, shared shell history, or issue
+output.
 
 ## Restore drill
 

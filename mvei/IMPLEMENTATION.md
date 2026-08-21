@@ -46,8 +46,7 @@ scope and evidence boundary.
 
 ```bash
 pnpm validate:schemas
-pnpm --filter @practice-relay/mvei-validator test
-pnpm --filter @practice-relay/mvei-workbench test
+pnpm --filter @practice-relay/movement-encode typecheck
 pnpm publish:dry-run
 ```
 

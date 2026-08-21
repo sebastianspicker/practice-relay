@@ -178,8 +178,9 @@ These files are shaped for real registration fields. They are not proof of a com
 - IMS / 1EdTech certification paperwork
 - Treating local mock results as evidence of an external LMS registration
 
-Enforcement: `pnpm test:lab-only-claims` and
-[lab-only-tier.md](./lab-only-tier.md).
+The governing boundary is documented in
+[lab-only-tier.md](./lab-only-tier.md) and exercised by the retained LTI token,
+OIDC, and API authorization contracts.
 
 ---
 

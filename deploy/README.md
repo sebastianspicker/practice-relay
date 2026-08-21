@@ -78,17 +78,9 @@ for the implemented routes and restore constraints.
 
 ## Local validation without Docker
 
-These commands exercise the record-store and API operations paths without
-starting Docker or MinIO:
-
-```bash
-pnpm test:ops-restore
-pnpm test:ops-slo
-```
-
-The repository audit did not execute the Compose stack. Treat Docker startup,
-volume recovery, and MinIO interoperability as deployment checks that still
-require an operator-controlled environment.
+The repository does not ship automated record-store or API operations drills.
+Treat Docker startup, volume recovery, and MinIO interoperability as deployment
+checks that require an operator-controlled environment.
 
 ## Network access
 

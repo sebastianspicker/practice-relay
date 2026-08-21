@@ -4,7 +4,7 @@
 # tenant-prefixed JSON store + MinIO S3-compatible media + file-mounted secrets.
 #
 # CI must never require this compose file or a running MinIO.
-# Zero-native unit/ops scripts: pnpm test:ops-slo · pnpm test:ops-restore
+# No automated backup or SLO drill is included in this public tree.
 #
 # Usage: see deploy/README.md
 

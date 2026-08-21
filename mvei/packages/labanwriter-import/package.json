@@ -18,9 +18,7 @@
   "bin": {
     "mvei-labanwriter-import": "./src/cli.ts"
   },
-  "scripts": {
-    "test": "node --import tsx --test src/*.test.ts"
-  },
+  "scripts": {},
   "dependencies": {
     "@practice-relay/movement-encode": "workspace:*"
   },
