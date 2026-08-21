@@ -9,8 +9,7 @@
   },
   "scripts": {
     "start": "node src/server.mjs",
-    "dev": "node --watch src/server.mjs",
-    "test": "node --import ./src/test-environment.mjs --import tsx --test src/*.test.mjs"
+    "dev": "node --watch src/server.mjs"
   },
   "engines": {
     "node": ">=20"

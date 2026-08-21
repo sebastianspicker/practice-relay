@@ -110,15 +110,9 @@ Do not use the in-memory adapter when durable backup behavior is required. Its
 backup metadata exists only in process memory and restore does not reconstruct
 records.
 
-Run the repository's local recovery checks with:
-
-```bash
-pnpm test:ops-restore
-pnpm test:ops-slo
-```
-
-The measured local targets and remaining evidence limits are recorded in
-[slo.md](slo.md).
+The repository does not ship automated recovery or SLO drills. The planning
+targets and remaining evidence limits are recorded in [slo.md](slo.md); validate
+them only in an operator-controlled environment.
 
 ## Media storage
 

@@ -29,8 +29,6 @@ const DEFAULT_SKIPPED_DIRECTORIES = new Set([
   "coverage",
   "dist",
   "node_modules",
-  "playwright-report",
-  "test-results",
   "tmp",
 ]);
 

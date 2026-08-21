@@ -10,7 +10,7 @@ These rules prevent the current software from being described as a replacement f
 |---|---|
 | Practice Relay product boundary | [`../PRODUCT.md`](../PRODUCT.md) |
 | MvEI encoding boundary | [`../mvei/docs/scope.md`](../mvei/docs/scope.md) |
-| Repository-wide names and forbidden claims | This document and `pnpm test:kill-switches` |
+| Repository-wide names and forbidden claims | This document and maintained product copy |
 | Package and video distinction | [`../practice-relay/docs/package-vs-video.md`](../practice-relay/docs/package-vs-video.md) |
 
 Practice Relay is a bounded WorkRecord handoff application. MvEI is movement-encoding infrastructure. MvEI Workbench is the separate MvEI authoring application. WorkRecord Core is a shared domain package, not a user-facing product.
@@ -68,12 +68,9 @@ The web guard is `FORBIDDEN_UI_STRINGS` plus `assertNoForbiddenCopy` in `practic
 
 | Command or test | Contract checked |
 |---|---|
-| `tests/acceptance/q-gates.test.ts` | Practice Relay Q1 to Q17 |
-| `practice-relay/apps/web/src/practice-relay-app.test.mjs` | Forbidden strings, visible states, accessible hooks, and handoff actions |
 | `packages/work-record-core` tests | Domain forbidden strings and movement-annotation label |
-| `pnpm test:kill-switches` | Retired names, prohibited claims, and product separation across current surfaces |
 | `pnpm validate:evidence` | Required evidence and product-boundary links |
-| `pnpm release:check` | Local build, test, evidence, maturity, dry-run, and pilot checks |
+| `pnpm release:check` | Local type, build, quality, schema, documentation, evidence, contract, and public-hygiene checks |
 
 Current entrypoints must use the maintained names and must not present rejected
 directions as implemented behavior.

@@ -15,7 +15,25 @@ import {
   importOtioToRecordParts,
   buildOscDeepLinkProjection,
 } from "../src/index.ts";
-import { interopSample as sample } from "./fixtures.ts";
+
+const sample = {
+  id: "ps-io",
+  title: "Interop sample",
+  preferredTakeId: "t1",
+  tracks: [
+    { id: "v", type: "video", ref: "media/a.mp4" },
+    { id: "m", type: "music_notation", ref: "score.musicxml" },
+    { id: "c", type: "media_cues", ref: "cues.json" },
+  ],
+  spine: {
+    durationMs: 10_000,
+    regions: [
+      { id: "r1", startMs: 0, endMs: 2_000, label: "intro" },
+      { id: "r2", startMs: 2_000, endMs: 5_000, label: "phrase" },
+    ],
+  },
+  comments: [{ id: "c1", regionId: "r1", authorId: "teacher-1", body: "Watch timing" }],
+};
 
 describe("interop-io exporters", () => {
   it("describeExport", () => {

@@ -22,11 +22,11 @@ contracts through the workspace packages. The naming rules are in
 | Claim | Source and checks |
 |---|---|
 | WorkRecord lifecycle and policy checks | [`../packages/work-record-core/src`](../packages/work-record-core/src), package tests, and `pnpm --filter @practice-relay/work-record-core test` |
-| WorkRecord package and RO-Crate 1.3 output | [`../packages/work-record-package`](../packages/work-record-package) and `pnpm demo:e2e` |
-| API routing, storage, media, auth, and local LTI | [`../practice-relay/apps/api`](../practice-relay/apps/api), package tests, and acceptance tests |
+| WorkRecord package and RO-Crate 1.3 output | [`../packages/work-record-package`](../packages/work-record-package) and its direct package tests |
+| API routing, storage, media, auth, and local LTI | [`../practice-relay/apps/api`](../practice-relay/apps/api) and the focused service/package contracts |
 | Motif and pedagogical laban-subset validation | [`../packages/movement-encode`](../packages/movement-encode), MvEI package tests, and `pnpm validate:schemas` |
-| MvEI Workbench local editing | [`../mvei/apps/workbench`](../mvei/apps/workbench) and its package tests |
-| Product wording and separation rules | `pnpm test:kill-switches` and `pnpm test:lab-only-claims` |
+| MvEI Workbench local editing | [`../mvei/apps/workbench`](../mvei/apps/workbench) and the generated HTML snapshot |
+| Product wording and separation rules | Maintained product documentation and `pnpm validate:evidence` |
 
 ## Limits on the evidence
 

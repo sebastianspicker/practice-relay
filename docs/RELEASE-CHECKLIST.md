@@ -22,19 +22,15 @@ pnpm release:check
 - [ ] No production dependency was added without approval.
 - [ ] Maintained source satisfies the repository line, parameter, complexity, and duplication checks.
 
-## Runtime images
+## Runtime surfaces
 
 ```bash
 pnpm demo:render-html
-pnpm demo:screenshots
 ```
 
-- [ ] All five current PNGs and the three maintained application source snapshots are refreshed.
-- [ ] The Practice Relay image shows the labeled synthetic fallback accurately.
-- [ ] Primary Practice Relay and MvEI Workbench controls respond in the capture check.
-- [ ] Mobile overflow checks pass.
-- [ ] Images contain no personal data, private URLs, credentials, internal hostnames, or unrelated desktop content.
-- [ ] Images contain no obsolete labels or unsupported capabilities.
+- [ ] The maintained HTML snapshots are refreshed and the affected surfaces are inspected locally.
+- [ ] Visible fallback states and primary controls match the current implementation.
+- [ ] Curated images contain no personal data, private URLs, credentials, internal hostnames, unrelated desktop content, obsolete labels, or unsupported capabilities.
 
 ## Repository and legal hygiene
 

@@ -106,13 +106,8 @@ Thumbs.db
 /data/**
 !data/README.md
 
-# Demo pack ephemeral fixtures / last run log
+# Demo pack ephemeral input
 fixtures/demo/.invalid*.json
-fixtures/demo/last-e2e-demo.txt
-
-# Playwright browsers (install on demand)
-playwright-report/
-test-results/
 blob-report/
 junit*.xml
 *.sarif
@@ -134,3 +129,16 @@ docker-compose.override.yml
 *.cer
 *.crt
 !deploy/**/*.example
+
+# Generated test and coverage output (local only)
+/coverage/
+/htmlcov/
+/.coverage
+/.coverage.*
+/.pytest_cache/
+/test-results/
+/playwright-report/
+/blob-report/
+/coverage.xml
+/junit.xml
+/junit-*.xml

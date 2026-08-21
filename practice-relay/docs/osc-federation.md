@@ -94,11 +94,10 @@ supplies the projected message data.
 
 ```bash
 pnpm --filter @practice-relay/interop test
-pnpm test:osc-stage
 ```
 
-The staging harness loads the synthetic demo WorkRecord, writes current adapter
-outputs under `test-results/generated-fixtures/osc/`, and verifies:
+The direct interoperability contracts construct a synthetic WorkRecord in
+memory and verify:
 
 1. At least two tracks and two track types are represented.
 2. Every address is non-empty and begins with `/practice-relay/`.

@@ -57,10 +57,9 @@ only when an authenticated browser client exists.
 ```bash
 pnpm --filter @practice-relay/work-record-core test
 pnpm --filter @practice-relay/api test
-pnpm --filter @practice-relay/web test
-pnpm --filter @practice-relay/acceptance-tests test
-pnpm demo:e2e
-pnpm test:lab-only-claims
+pnpm --filter @practice-relay/interop test
+pnpm --filter @practice-relay/use-policy test
+pnpm test
 ```
 
 ## Documentation

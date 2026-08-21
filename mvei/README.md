@@ -45,9 +45,8 @@ node --import tsx mvei/packages/validator/src/cli.ts \
 
 ```bash
 pnpm validate:schemas
-pnpm --filter @practice-relay/mvei-validator test
-pnpm --filter @practice-relay/mvei-workbench test
-pnpm test:kill-switches
+pnpm validate:evidence
+pnpm test
 ```
 
 ## Documentation

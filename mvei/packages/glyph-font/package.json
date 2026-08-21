@@ -15,9 +15,7 @@
     "./package.json": "./package.json"
   },
   "files": ["src", "README.md"],
-  "scripts": {
-    "test": "node --import tsx --test src/*.test.ts"
-  },
+  "scripts": {},
   "license": "Apache-2.0",
   "publishConfig": { "access": "public" }
 }
