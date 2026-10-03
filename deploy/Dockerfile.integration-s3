@@ -1,0 +1,8 @@
+# Disposable integration service, built from the upstream security-fix release.
+FROM golang:1.24-bookworm AS build
+RUN go install github.com/minio/minio@RELEASE.2025-10-15T17-29-55Z
+FROM debian:bookworm-slim
+COPY --from=build /go/bin/minio /usr/local/bin/minio
+RUN useradd --uid 10001 --user-group --create-home --shell /usr/sbin/nologin minio
+USER minio:minio
+ENTRYPOINT ["minio"]

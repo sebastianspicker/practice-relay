@@ -6,8 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please read [docs/ALPHA.md](../../docs/ALPHA.md) and product scope docs first.
-        Production campus LTI, invented pilot outcomes, and a Practice Relay/MvEI Workbench product merge are out of alpha scope.
+        Please read [docs/ALPHA.md](../../docs/ALPHA.md) and the product scope docs first.
+        Production campus LTI, invented pilot outcomes, and a Practice Relay / MvEI Workbench product merge are out of alpha scope.
   - type: dropdown
     id: product
     attributes:
@@ -16,7 +16,7 @@ body:
         - Practice Relay
         - MvEI
         - MvEI Workbench
-        - WorkRecord Core and shared packages
+        - WorkRecord contracts and shared packages
     validations:
       required: true
   - type: textarea

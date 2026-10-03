@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:work-record:schema:use-policy-snapshot:0.1",
+  "title": "UsePolicySnapshot",
+  "description": "A record-level release decision for whole-record handoff. It does not grant purpose- and destination-specific evidence reuse.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "subjectId", "purposes", "createdAt"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$" },
+    "subjectId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$" },
+    "purposes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "exportAllowed": { "type": "boolean" },
+    "createdAt": { "type": "string", "minLength": 1 }
+  }
+}

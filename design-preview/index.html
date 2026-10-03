@@ -1,0 +1,383 @@
+<!doctype html>
+<!-- Retained standalone design reference; styles are in preview.css. -->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Practice Relay — 2026 design preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,450;14..32,500;14..32,600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./preview.css">
+</head>
+<body>
+
+<!-- preview chrome only: not part of the product UI -->
+<div class="preview-bar">
+  <span><strong>Design preview</strong> “Ledger” direction · Practice Relay 2026</span>
+  <span class="sep"></span>
+  <button type="button" data-state="ready" aria-pressed="true">Ready</button>
+  <button type="button" data-state="loading" aria-pressed="false">Loading</button>
+  <button type="button" data-state="empty" aria-pressed="false">Empty</button>
+  <button type="button" id="theme-toggle" aria-pressed="false">Dark</button>
+</div>
+
+<header class="app-header">
+  <div class="wordmark">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+      <path d="M2 8h6M5 5l3 3-3 3"/><path d="M14 8H8M11 5l3 3-3 3" opacity="0.45"/>
+    </svg>
+    Practice Relay
+  </div>
+  <div class="header-meta">
+    <span class="rid" id="crumb">WR-2026-042</span>
+    <span class="user">Ada M.</span>
+  </div>
+</header>
+
+<div class="shell">
+
+  <!-- record index -->
+  <aside class="index" aria-label="Work records">
+    <div class="index-head"><h2>Records</h2><span>4</span></div>
+    <label class="filter">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+      <input type="search" placeholder="Filter records" autocomplete="off">
+    </label>
+    <ul class="records" id="records"></ul>
+    <p class="index-foot">Local workspace. Source systems remain authoritative for the work itself.</p>
+  </aside>
+
+  <!-- dossier -->
+  <main class="workspace" id="workspace" tabindex="-1" aria-labelledby="record-title">
+    <div class="dossier" id="dossier"></div>
+  </main>
+
+  <!-- decision rail -->
+  <aside class="rail" aria-label="Handoff decision">
+    <div class="rail-inner" id="rail"></div>
+  </aside>
+</div>
+
+<footer class="scope">
+  <strong>Current scope</strong>
+  <span>Practice Relay prepares WorkRecord handoffs. It does not replace authoring, video critique, show-control, portfolio, or repository systems.</span>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<dialog id="pkg" aria-labelledby="dlg-title">
+  <div class="dlg-head">
+    <div>
+      <h2 id="dlg-title">Package preview</h2>
+      <p>Local manifest · nothing sent · integrity-checked on seal</p>
+    </div>
+    <button class="dlg-close" id="dlg-close" aria-label="Close package preview">×</button>
+  </div>
+  <div class="dlg-body">
+    <h3>Manifest · 5 artifacts</h3>
+    <ul class="manifest">
+      <li><span class="m-name">Performance video · MP4</span><span class="m-hash">sha256:9f2c…a41d</span></li>
+      <li><span class="m-name">Reference audio · WAV</span><span class="m-hash">sha256:71be…08f2</span></li>
+      <li><span class="m-name">MusicXML score · 8 pages</span><span class="m-hash">sha256:c30a…77e9</span></li>
+      <li><span class="m-name">Student reflection · MD</span><span class="m-hash">sha256:4dd1…b650</span></li>
+      <li><span class="m-name">Movement annotation · JSON</span><span class="m-hash">sha256:aa07…3c1e</span></li>
+    </ul>
+    <p class="dlg-warn">Repository reuse still needs manual review. This preview does not change a remote record.</p>
+  </div>
+</dialog>
+
+<script>
+const CHECK = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 8.5 3.2 3L13 4.5"/></svg>';
+const DOT   = '<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3.2"/></svg>';
+const EXT   = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3 7.5 8.5"/></svg>';
+
+const RECORDS = [
+  {
+    id: "WR-2026-042", title: "Week 6 duet study", profile: "Performing arts",
+    rev: "Revision 05", date: "18 Jul 2026", state: "hold",
+    snapshot: "snapshot-04", source: "Specialist source systems",
+    evidence: [
+      { id: "video",      name: "Performance video",   detail: "MP4 · 1080p · 02:34",  glyph: "MP4",  photo: true,  take: "Studio run 2", included: true },
+      { id: "audio",      name: "Reference audio",     detail: "WAV · 48 kHz · 02:34", glyph: "WAV",  take: "Studio run 2", included: true },
+      { id: "score",      name: "MusicXML score",      detail: "MusicXML · 8 pages",   glyph: "XML",  included: true },
+      { id: "reflection", name: "Student reflection",  detail: "Markdown · 1.2 KB",    glyph: "MD",   included: true },
+      { id: "movement",   name: "Movement annotation", detail: "JSON · 256 KB · MvEI", glyph: "JSON", photo: true, take: "Studio run 2", included: true },
+      { id: "cues",       name: "Media cues",          detail: "JSON · 6 cues",        glyph: "JSON", included: false },
+    ],
+    decisions: [
+      { purpose: "Assessment", detail: "Lee S. → <b>Studio Practice 2</b>", granted: true,  date: "18 Jul 2026" },
+      { purpose: "Archive",    detail: "Partner archive → <b>Partner archive</b>", granted: false, date: "18 Jul 2026" },
+    ],
+    people: [
+      { init: "AM", name: "Ada M.",   role: "Student" },
+      { init: "EP", name: "E. Patel", role: "Faculty" },
+      { init: "LS", name: "Lee S.",   role: "Represented subject" },
+    ],
+    checks: [
+      { label: "Intended version selected", ok: true },
+      { label: "Evidence set reviewed", ok: true },
+      { label: "Responsible roles named", ok: true },
+      { label: "Assessment use permitted", ok: true },
+      { label: "Repository reuse needs review", ok: false },
+    ],
+    pathNow: 2,
+  },
+  {
+    id: "WR-2026-038", title: "Site recording: river transect", profile: "Field study",
+    rev: "Revision 02", date: "11 Jul 2026", state: "ok",
+    snapshot: "snapshot-02", source: "Field kit uploader",
+    evidence: [
+      { id: "notes", name: "Field notes",        detail: "Markdown · 4.8 KB",       glyph: "MD",  included: true },
+      { id: "audio", name: "Ambient audio log",  detail: "WAV · 48 kHz · 14:02",    glyph: "WAV", included: true },
+      { id: "geo",   name: "Transect waypoints", detail: "GeoJSON · 18 points",     glyph: "GEO", included: true },
+      { id: "photo", name: "Site photographs",   detail: "JPEG · 24 frames",        glyph: "IMG", photo: true, included: true },
+    ],
+    decisions: [
+      { purpose: "Assessment", detail: "Field cohort → <b>Landscape Methods</b>", granted: true, date: "11 Jul 2026" },
+      { purpose: "Repository", detail: "Departmental archive", granted: true, date: "11 Jul 2026" },
+    ],
+    people: [
+      { init: "AM", name: "Ada M.",  role: "Student" },
+      { init: "RN", name: "R. Novak", role: "Supervisor" },
+    ],
+    checks: [
+      { label: "Intended version selected", ok: true },
+      { label: "Evidence set reviewed", ok: true },
+      { label: "Responsible roles named", ok: true },
+      { label: "Assessment use permitted", ok: true },
+      { label: "Repository reuse permitted", ok: true },
+    ],
+    pathNow: 4,
+  },
+  {
+    id: "WR-2026-031", title: "Chair prototype, second iteration", profile: "Design studio",
+    rev: "Revision 07", date: "02 Jul 2026", state: "idle",
+    snapshot: "snapshot-06", source: "Studio CAD export",
+    evidence: [
+      { id: "cad",   name: "Parametric model",    detail: "STEP · 3.1 MB",      glyph: "STP", included: true },
+      { id: "rend",  name: "Review renders",      detail: "PNG · 6 views",      glyph: "IMG", photo: true, included: true },
+      { id: "brief", name: "Iteration brief",     detail: "PDF · 2 pages",      glyph: "PDF", included: false },
+    ],
+    decisions: [
+      { purpose: "Assessment", detail: "Studio crit → <b>Design Studio 3</b>", granted: true, date: "02 Jul 2026" },
+    ],
+    people: [
+      { init: "JT", name: "J. Tan", role: "Student" },
+    ],
+    checks: [
+      { label: "Intended version selected", ok: true },
+      { label: "Evidence set reviewed", ok: false },
+      { label: "Responsible roles named", ok: true },
+      { label: "Assessment use permitted", ok: true },
+      { label: "Repository reuse needs review", ok: false },
+    ],
+    pathNow: 1,
+  },
+  {
+    id: "WR-2026-027", title: "Solo phrase, cameras A/B", profile: "Performing arts",
+    rev: "Revision 01", date: "24 Jun 2026", state: "hold",
+    snapshot: "snapshot-01", source: "Specialist source systems",
+    evidence: [
+      { id: "a", name: "Camera A — wide",  detail: "MP4 · 4K · 01:12",   glyph: "MP4", photo: true, included: true },
+      { id: "b", name: "Camera B — close", detail: "MP4 · 1080p · 01:12", glyph: "MP4", photo: true, included: false },
+    ],
+    decisions: [],
+    people: [ { init: "AM", name: "Ada M.", role: "Student" } ],
+    checks: [
+      { label: "Intended version selected", ok: true },
+      { label: "Evidence set reviewed", ok: false },
+      { label: "Responsible roles named", ok: true },
+      { label: "Assessment use permitted", ok: false },
+      { label: "Repository reuse needs review", ok: false },
+    ],
+    pathNow: 1,
+  },
+];
+
+const PATH_STEPS = ["Version", "Evidence", "Conditions", "Recipient", "Seal"];
+
+let current = 0;
+
+function renderIndex() {
+  document.getElementById("records").innerHTML = RECORDS.map((r, i) => `
+    <li><button type="button" data-i="${i}" aria-current="${i === current}">
+      <span class="r-title">${r.title}</span>
+      <span class="r-sub"><span class="r-state"><span class="dot ${r.state}"></span>${r.rev}</span><span>·</span><span>${r.profile}</span></span>
+    </button></li>`).join("");
+}
+
+function renderDossier(r) {
+  const included = r.evidence.filter(e => e.included).length;
+  const path = PATH_STEPS.map((s, i) => {
+    const cls = i < r.pathNow ? "done" : i === r.pathNow ? "now" : "";
+    return `<li class="${cls}"><span class="step-dot">${i < r.pathNow ? CHECK : ""}</span>${s}</li>`;
+  }).join("");
+
+  const evidence = r.evidence.map(e => `
+    <li class="${e.included ? "" : "out"}" data-e="${e.id}">
+      <button class="tick ${e.included ? "" : "empty"}" type="button" aria-pressed="${e.included}"
+        aria-label="${e.included ? "Exclude" : "Include"} ${e.name}">${e.included ? CHECK : ""}</button>
+      <div class="thumb ${e.photo ? "photo" : ""}" aria-hidden="true">${e.photo ? "" : e.glyph}</div>
+      <div class="e-item"><strong>${e.name}</strong><small>${e.detail}</small></div>
+      <span class="e-take">${e.take ?? ""}</span>
+    </li>`).join("");
+
+  const decisions = r.decisions.length ? `
+    <section class="block">
+      <div class="block-head"><h2>Use decisions</h2><span class="hint">${r.decisions.length} recorded</span></div>
+      <ul class="decisions">
+        ${r.decisions.map(d => `
+          <li>
+            <div>
+              <div class="d-purpose">${d.purpose}</div>
+              <div class="d-detail">${d.detail} · ${d.date}</div>
+            </div>
+            <span class="state-pill ${d.granted ? "granted" : "denied"}">
+              ${d.granted
+                ? '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m3 8.5 3.2 3L13 4.5"/></svg>Granted'
+                : '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="m4 4 8 8M12 4l-8 8"/></svg>Denied'}
+            </span>
+          </li>`).join("")}
+      </ul>
+    </section>` : "";
+
+  document.getElementById("dossier").innerHTML = `
+    <p class="kicker"><span class="profile">${r.profile}</span><span class="sep">/</span><span>${r.rev}</span></p>
+    <h1 id="record-title">${r.title}</h1>
+    <p class="destination">For <em>Faculty assessment · Studio Practice 2</em></p>
+
+    <dl class="meta-strip">
+      <div><dt>Submitted</dt><dd>${r.date}</dd></div>
+      <div><dt>Snapshot</dt><dd class="mono">${r.snapshot}</dd></div>
+      <div><dt>Source</dt><dd>${r.source}</dd></div>
+      <div><dt>Record</dt><dd class="mono">${r.id}</dd></div>
+    </dl>
+
+    <ol class="path" aria-label="Handoff progress">${path}</ol>
+
+    <section class="block" style="margin-top:0">
+      <div class="block-head"><h2>Evidence</h2><span class="hint" id="incount">${included} of ${r.evidence.length} included</span></div>
+      <ul class="evidence">${evidence}</ul>
+    </section>
+
+    ${decisions}
+
+    <section class="block">
+      <div class="block-head"><h2>Participants</h2></div>
+      <div class="people">
+        ${r.people.map(p => `
+          <div class="person">
+            <span class="avatar" aria-hidden="true">${p.init}</span>
+            <span><span class="p-name">${p.name}</span><br><span class="p-role">${p.role}</span></span>
+          </div>`).join("")}
+      </div>
+    </section>
+
+    <p class="footnote">Source systems stay authoritative. This record only carries selection, version, and permitted uses.</p>`;
+}
+
+function renderRail(r) {
+  const incomplete = r.checks.find(c => !c.ok);
+  document.getElementById("rail").innerHTML = `
+    <h2>Handoff check</h2>
+    <ul class="checks">
+      ${r.checks.map(c => `<li class="${c.ok ? "ok" : "block"}"><span class="c-icon">${c.ok ? CHECK : DOT}</span>${c.label}</li>`).join("")}
+    </ul>
+    ${incomplete ? `
+      <div class="hold-note">
+        <h3>One condition before seal</h3>
+        <p>${incomplete.label}. No silent grant — the decision stays with the record.</p>
+        <div class="btn-row"><button class="btn primary" id="resolve">Review condition</button></div>
+      </div>` : ""}
+    <div class="btn-row" style="margin-top:${incomplete ? "0" : "var(--s4)"}">
+      <button class="btn ${incomplete ? "secondary" : "primary"}" id="export" ${incomplete ? "disabled" : ""}>Prepare export</button>
+      <button class="btn secondary" id="manifest">Package preview</button>
+    </div>
+    <div class="rail-links">
+      <a href="#" onclick="return false">Open in MvEI Workbench ${EXT}</a>
+      <a href="#" onclick="return false">View revision history ${EXT}</a>
+    </div>
+    <p class="alpha-note">Snapshot, export, and review controls remain local-only in this alpha.</p>`;
+
+  document.getElementById("manifest").addEventListener("click", () => document.getElementById("pkg").showModal());
+  const res = document.getElementById("resolve");
+  if (res) res.addEventListener("click", () => toast("Condition review is simulated in this preview."));
+  const exp = document.getElementById("export");
+  if (exp && !exp.disabled) exp.addEventListener("click", () => toast("Export preparation is simulated in this preview."));
+}
+
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.innerHTML = CHECK + msg;
+  t.classList.add("show");
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+function select(i) {
+  current = i;
+  document.getElementById("crumb").textContent = RECORDS[i].id;
+  renderIndex(); renderDossier(RECORDS[i]); renderRail(RECORDS[i]);
+}
+
+document.getElementById("records").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-i]");
+  if (b) select(Number(b.dataset.i));
+});
+
+document.getElementById("dossier").addEventListener("click", (e) => {
+  const t = e.target.closest(".tick");
+  if (!t) return;
+  const li = t.closest("li[data-e]");
+  const rec = RECORDS[current];
+  const art = rec.evidence.find(a => a.id === li.dataset.e);
+  art.included = !art.included;
+  renderDossier(rec);
+  toast(`${art.included ? "Included" : "Excluded"} “${art.name}” in the package selection.`);
+});
+
+document.getElementById("dlg-close").addEventListener("click", () => document.getElementById("pkg").close());
+
+document.getElementById("theme-toggle").addEventListener("click", (e) => {
+  const dark = document.documentElement.dataset.theme !== "dark";
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  e.currentTarget.textContent = dark ? "Light" : "Dark";
+  e.currentTarget.setAttribute("aria-pressed", String(dark));
+});
+
+/* preview states */
+document.querySelector(".preview-bar").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-state]");
+  if (!b) return;
+  document.querySelectorAll(".preview-bar button[data-state]").forEach(x => x.setAttribute("aria-pressed", "false"));
+  b.setAttribute("aria-pressed", "true");
+  const dossier = document.getElementById("dossier");
+  if (b.dataset.state === "loading") {
+    dossier.innerHTML = `
+      <div class="skel" style="width:120px;height:12px;margin:4px 0 20px"></div>
+      <div class="skel" style="width:340px;height:40px;margin-bottom:16px"></div>
+      <div class="skel" style="width:240px;height:14px;margin-bottom:40px"></div>
+      ${[1,2,3,4,5].map(() => '<div class="skel" style="height:58px;margin-bottom:8px"></div>').join("")}`;
+  } else if (b.dataset.state === "empty") {
+    dossier.innerHTML = `
+      <div class="empty-state">
+        <p class="kicker"><span class="profile">Workspace</span></p>
+        <h1 id="record-title">No record selected</h1>
+        <p>Choose a work record from the index, or refresh when the record service is reachable. Nothing here changes a remote record.</p>
+      </div>`;
+  } else {
+    select(current);
+  }
+});
+
+if (location.search.includes("dark")) {
+  document.documentElement.dataset.theme = "dark";
+  const t = document.getElementById("theme-toggle");
+  t.textContent = "Light"; t.setAttribute("aria-pressed", "true");
+}
+
+select(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<!-- Shared movement and evidence workspace; domain authority remains in the API. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Practice Relay / MvEI</title>
+  <link rel="icon" href="./assets/practice-relay-mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./app.css">
+  <style>:focus-visible { outline: 2px solid #68537f; outline-offset: 4px; }</style>
+  <script type="importmap">{"imports":{"@practice-relay/movement/browser/authoring":"./packages/movement/browser/authoring.mjs","@practice-relay/movement/browser/parser":"./packages/movement/browser/parser.mjs","@practice-relay/movement/browser/vocabulary":"./packages/movement/browser/vocabulary.mjs","@practice-relay/movement/browser/transforms":"./packages/movement/browser/transforms.mjs"}}</script>
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to workspace</a>
+  <header class="app-header">
+    <a class="wordmark" href="./" aria-label="Practice Relay and MvEI">practice relay <span>/ mvei</span></a>
+    <div class="account-controls"><button id="choose-record" type="button">Records</button><button id="account" type="button"><span id="session-user">Sign in</span><span id="session-role"></span></button></div>
+  </header>
+  <main id="workspace" class="studio" tabindex="-1" aria-labelledby="project-title">
+    <header class="project-header">
+      <div class="project-identity"><h1 id="project-title">A space for movement and evidence</h1><p id="project-subtitle">Open a work record to begin.</p></div>
+      <nav class="project-tabs" aria-label="Project workspace"><button data-tab="movement" aria-current="page">Movement</button><button data-tab="evidence">Evidence</button><button data-tab="handoff">Handoff</button></nav>
+      <button class="primary" id="use-in-handoff" type="button" disabled>Use in handoff <span aria-hidden="true">→</span></button>
+    </header>
+    <section id="movement-panel" aria-label="Movement workspace">
+      <div class="movement-layout"><section id="reference-media" aria-label="Reference media"></section><section id="movement-editor" aria-label="Motif editor"></section></div>
+    </section>
+    <section id="evidence-panel-view" aria-label="Evidence workspace" hidden><div class="evidence-layout"><div id="detail"></div><aside id="readiness" aria-label="Local package preview"></aside></div></section>
+    <section id="handoff-panel" aria-label="Prepare a handoff" hidden></section>
+    <p id="status" class="workspace-status" role="status" aria-live="polite">Sign in to load your work records, or explore the synthetic demo.</p>
+  </main>
+  <footer class="document-bar"><div class="document-identity"><span class="document-icon" aria-hidden="true">▧</span><span id="document-name">No movement document</span></div><span id="document-status" role="status"></span><p id="demo-notice" hidden>Synthetic demo · local changes only · nothing sent</p><span id="workspace-scope">Practice Relay / MvEI · local workspace</span></footer>
+  <dialog id="account-dialog" aria-labelledby="account-title"><div class="dialog-header"><h2 id="account-title">Workspace access</h2><button type="button" data-close="account-dialog" aria-label="Close workspace access">×</button></div><form id="login-form"><label>User ID<input id="login-user" name="username" autocomplete="username" required></label><label>Password<input id="login-password" name="password" type="password" autocomplete="current-password" required></label><button class="primary" type="submit">Sign in</button></form><p id="account-error" role="alert"></p><p class="field-help">Download any drafts you need before signing out or switching to the demo. These actions clear private drafts.</p><div class="dialog-actions"><button id="open-demo" type="button">Open synthetic demo</button><button id="logout" type="button" hidden>Sign out</button></div></dialog>
+  <dialog id="records-dialog" aria-labelledby="records-title"><div class="dialog-header"><h2 id="records-title">Work records <span id="record-count">0</span></h2><button type="button" data-close="records-dialog" aria-label="Close work records">×</button></div><label class="filter">Filter work records<input id="record-filter" type="search" placeholder="Filter records" autocomplete="off"></label><ul id="records"></ul><button id="load-more" type="button" hidden>Load more records</button><button id="refresh-records" type="button">Refresh records</button></dialog>
+  <dialog id="package-dialog" aria-labelledby="dialog-title"><div class="dialog-header"><h2 id="dialog-title">Local package preview</h2><button type="button" data-close="package-dialog" id="dialog-close" aria-label="Close package preview">×</button></div><p id="dialog-summary"></p><ul id="dialog-manifest"></ul><p>This selection is a local preview. Evidence export evaluates every artifact in the record.</p></dialog>
+  <dialog id="attach-dialog" aria-labelledby="attach-title"><div class="dialog-header"><h2 id="attach-title">Use movement in this handoff</h2><button type="button" data-close="attach-dialog" aria-label="Close movement handoff">×</button></div><p>Save this version as a movement reference and evidence. Earlier versions remain in the record.</p><form id="attach-form"><label>Document filename<input name="filename" required maxlength="120" value="movement.motif.json"></label><fieldset><legend>Who or what is represented in this document?</legend><div id="attach-subjects"></div></fieldset><p id="attach-error" role="alert"></p><button class="primary" type="submit">Save reference and continue</button></form></dialog>
+  <script type="module" src="./practice-relay-app.mjs"></script>
+</body>
+</html>

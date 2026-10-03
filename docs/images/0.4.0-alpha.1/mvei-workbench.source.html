@@ -5,7 +5,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MvEI Workbench: MvEI (Movement Encoding Initiative) Motif editor</title>
-  <link rel="stylesheet" href="../../../mvei/apps/workbench/src/workbench.css" />
+  <link rel="stylesheet" href="../../../apps/movement-workbench/src/workbench.css" />
+  <script type="importmap">{"imports":{"@practice-relay/movement/browser":"/packages/movement/browser/index.mjs"}}</script>
 </head>
 <body>
   <div id="mvei-workbench-live" class="workbench-status" role="status" aria-live="polite" aria-atomic="true">Editor mode: Motif canvas. Sequence tiles with controlled vocabulary.</div>
@@ -98,7 +99,7 @@
     <section id="honesty" aria-labelledby="honesty-heading">
       <h2 id="honesty-heading">Current scope</h2>
       <ul>
-        <li>Partial Motif must validate against @practice-relay/movement-encode.</li>
+        <li>Partial Motif must validate against @practice-relay/movement.</li>
         <li>Practice Relay is a separate handoff application that can carry MvEI references.</li>
         <li>MvEI Workbench is the focused authoring surface for the MvEI stack.</li>
       </ul>
@@ -109,6 +110,6 @@
       <p>MvEI Workbench · MvEI (Movement Encoding Initiative) · local Motif editing · session localStorage</p>
     </footer>
   </main>
-  <script type="module" src="../../../mvei/apps/workbench/src/workbench-client.mjs"></script>
+  <script type="module" src="../../../apps/movement-workbench/src/workbench-client.mjs"></script>
 </body>
 </html>

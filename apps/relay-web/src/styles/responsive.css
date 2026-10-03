@@ -1,0 +1,44 @@
+/** Ledger collapse preserves the record index as a horizontal selector on small screens. */
+@media (max-width: 1100px) {
+  .app-header { padding-inline: 28px; }
+  .shell { grid-template-columns: 220px minmax(0, 1fr); }
+  .handoff-column, .decision { grid-column: 1 / -1; padding: 40px 28px; border-top: 1px solid var(--line); border-left: 0; }
+  .decision-inner, .handoff-column #readiness { position: static; }
+  .workspace { padding: 40px 48px 56px; }
+}
+
+@media (max-width: 760px) {
+  :root { --header-height: 56px; }
+  html { scroll-behavior: auto; }
+  .app-header { position: sticky; top: 0; padding-inline: var(--s4); gap: var(--s3); }
+  .meta-bar .user { display: none; }
+  .demo-notice { padding-inline: var(--s4); text-align: left; }
+  .shell { display: block; min-height: 0; }
+  .record-index { gap: var(--s3); padding: var(--s4); border-right: 0; border-bottom: 1px solid var(--line); }
+  #records { display: flex; overflow-x: auto; padding-bottom: 2px; }
+  #records li { flex: 0 0 min(220px, 72vw); }
+  .index-foot { display: none; }
+  .workspace { padding: var(--s6) var(--s5) 40px; }
+  .workspace h1, #record-title { font-size: 32px; }
+  .meta-strip { grid-template-columns: repeat(2, auto); gap: var(--s4) var(--s6); }
+  .path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin-bottom: var(--s6); }
+  .path li { position: relative; display: grid; min-width: 0; justify-items: center; gap: 6px; text-align: center; font-size: 10.5px; }
+  .path li + li::before { position: absolute; z-index: 0; top: 8px; right: 50%; width: 100%; margin: 0; }
+  .path .step-dot { z-index: 1; background: var(--paper); }
+  .path .done .step-dot { background: var(--ink); }
+  .evidence li { grid-template-columns: 20px 40px minmax(0, 1fr); gap: var(--s3); padding: 14px 0; }
+  .thumb { width: 40px; height: 28px; }.take { display: none; }
+  .decisions li { padding-inline: 0; }.d-detail { line-height: 1.45; }
+  .people { gap: var(--s4); }
+  .handoff-column, .decision { padding: var(--s6) var(--s5) 40px; }
+  .primary { width: 100%; }
+  .scope-note { display: block; padding: var(--s4) var(--s5); }.scope-note h2 { margin-bottom: var(--s2); }
+  #package-dialog { width: calc(100vw - 24px); max-height: calc(100vh - 24px); }
+  .toast { right: var(--s3); bottom: var(--s3); }
+}
+
+@media (max-width: 760px) {
+  .decision-actions { display: flex; flex-direction: column; align-items: stretch; }
+  .decision-actions button { width: 100%; white-space: normal; }
+  .session-panel { padding-inline: var(--s4); }
+}

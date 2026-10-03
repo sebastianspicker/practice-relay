@@ -6,7 +6,7 @@
 # defaults: missing, blank, or placeholder secret files stop the relevant
 # service before it accepts traffic.
 #
-# Usage (from monorepo root, after pnpm install on host OR first-run inside containers):
+# Usage (from monorepo root; containers own their Linux dependency volume):
 #   docker compose -f docker-compose.campus-lab.yml up
 #   docker compose -f docker-compose.campus-lab.yml --profile minio up
 #
@@ -17,7 +17,7 @@
 #   http://127.0.0.1:9001 - MinIO console (profile: minio; loopback only)
 #
 # This stack provides local protocol tests, not an external LMS registration.
-# See practice-relay/docs/lab-only-tier.md and practice-relay/docs/lms-registration-preflight.md.
+# See docs/relay/operations.md and docs/relay/api-and-contracts.md.
 
 name: practice-relay-campus-lab
 
@@ -27,6 +27,7 @@ services:
     working_dir: /workspace
     volumes:
       - .:/workspace
+      - practice-relay-node-modules:/workspace/node_modules
       - practice-relay-data:/data/practice-relay
       - practice-relay-media:/data/media
       - practice-relay-lti-keys:/data/lti-keys
@@ -76,7 +77,7 @@ services:
             exit 1
           fi
         done
-        node -e 'const fs=require("fs"); const users=JSON.parse(fs.readFileSync("/run/secrets/practice-relay_users","utf8")); if (!Array.isArray(users) || !users.some((user) => user && user.defaultRole === "admin") || users.some((user) => !user || typeof user.password !== "string" || /REPLACE(_WITH)?|CHANGE_ME|change-me|dev-only/i.test(user.password))) { throw new Error("campus-lab requires configured, non-placeholder users including an admin"); }'
+        node -e 'const fs=require("fs"); const users=JSON.parse(fs.readFileSync("/run/secrets/practice-relay_users","utf8")); if (!Array.isArray(users) || !users.some((user) => user && user.defaultRole === "admin") || users.some((user) => !user || typeof user.passwordHash !== "string" || user.passwordHash.indexOf("scrypt-v1") !== 0 || /REPLACE(_WITH)?|CHANGE_ME|change-me|dev-only/i.test(user.passwordHash))) { throw new Error("campus-lab requires configured, non-placeholder users including an admin"); }'
         if [ "$$PRACTICE_RELAY_OBJECT_STORE" = s3 ]; then
           for secret in /run/secrets/minio_root_user /run/secrets/minio_root_password; do
             test -s "$$secret"
@@ -89,10 +90,11 @@ services:
           export PRACTICE_RELAY_S3_SECRET_KEY="$$(tr -d '\r\n' </run/secrets/minio_root_password)"
         fi
         corepack enable
-        if [ ! -d node_modules ]; then
+        if [ ! -f node_modules/.modules.yaml ]; then
           pnpm install --frozen-lockfile
         fi
-        pnpm --filter @practice-relay/api start
+        pnpm --filter @practice-relay/relay-api run build
+        pnpm --filter @practice-relay/relay-api start
     ports:
       - "127.0.0.1:8787:8787"
     healthcheck:
@@ -113,10 +115,12 @@ services:
     working_dir: /workspace
     volumes:
       - .:/workspace
+      - practice-relay-node-modules:/workspace/node_modules
     environment:
       MOCK_PLATFORM_PORT: "8790"
       # Bind the container interface; the published host port remains loopback-only.
       MOCK_PLATFORM_HOST: "0.0.0.0"
+      MOCK_PLATFORM_ALLOW_NON_LOOPBACK: "1"
       # Server-side calls to Practice Relay use the compose network DNS name
       PRACTICE_RELAY_API_BASE: http://practice-relay-api:8787
       PRACTICE_RELAY_LTI_SECRET_FILE: /run/secrets/practice-relay_lti
@@ -134,10 +138,10 @@ services:
         fi
         export PRACTICE_RELAY_LTI_SECRET="$$(tr -d '\r\n' </run/secrets/practice-relay_lti)"
         corepack enable
-        if [ ! -d node_modules ]; then
+        if [ ! -f node_modules/.modules.yaml ]; then
           pnpm install --frozen-lockfile
         fi
-        pnpm --filter @practice-relay/lti-mock-platform start
+        pnpm --filter @practice-relay/lti-simulator start
     ports:
       - "127.0.0.1:8790:8790"
     depends_on:
@@ -215,6 +219,7 @@ services:
       MINIO_ROOT_PASSWORD_FILE: /run/secrets/minio_root_password
 
 volumes:
+  practice-relay-node-modules:
   practice-relay-data:
   practice-relay-media:
   practice-relay-lti-keys:

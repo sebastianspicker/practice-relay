@@ -1,0 +1,90 @@
+{
+  "name": "@practice-relay/movement",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "Browser-safe movement schemas, vocabulary, corpus fixtures, glyphs, and domain transforms",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "imports": {
+    "#movement-browser": {
+      "types": "./browser/index.d.mts",
+      "default": "./browser/index.mjs"
+    },
+    "#movement-vocabulary": {
+      "types": "./vocabulary/motif-vocabulary.d.mts",
+      "default": "./vocabulary/motif-vocabulary.mjs"
+    },
+    "#movement-transforms": {
+      "types": "./browser/transforms.d.mts",
+      "default": "./browser/transforms.mjs"
+    },
+    "#movement-contracts": "./browser/contracts.d.mts"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "default": "./dist/src/index.js"
+    },
+    "./browser": {
+      "types": "./browser/index.d.mts",
+      "import": "./browser/index.mjs",
+      "default": "./browser/index.mjs"
+    },
+    "./schemas/*": "./schemas/*",
+    "./fixtures/corpus/*": "./fixtures/corpus/*",
+    "./fixtures/corpus/index.json": "./fixtures/corpus/index.json",
+    "./glyphs": {
+      "types": "./dist/glyphs/index.d.ts",
+      "import": "./dist/glyphs/index.js",
+      "default": "./dist/glyphs/index.js"
+    },
+    "./vocabulary/*": "./vocabulary/*",
+    "./package.json": "./package.json",
+    "./browser/parser": {
+      "types": "./browser/parser.d.mts",
+      "import": "./browser/parser.mjs",
+      "default": "./browser/parser.mjs"
+    },
+    "./browser/vocabulary": {
+      "types": "./browser/vocabulary.d.mts",
+      "import": "./browser/vocabulary.mjs",
+      "default": "./browser/vocabulary.mjs"
+    },
+    "./browser/examples": {
+      "types": "./browser/examples.d.mts",
+      "import": "./browser/examples.mjs",
+      "default": "./browser/examples.mjs"
+    },
+    "./browser/transforms": {
+      "types": "./browser/transforms.d.mts",
+      "import": "./browser/transforms.mjs",
+      "default": "./browser/transforms.mjs"
+    },
+    "./browser/authoring": {
+      "types": "./browser/authoring.d.mts",
+      "import": "./browser/authoring.mjs",
+      "default": "./browser/authoring.mjs"
+    }
+  },
+  "files": [
+    "dist",
+    "browser",
+    "schemas",
+    "fixtures/corpus",
+    "vocabulary",
+    "PUBLISH.md"
+  ],
+  "scripts": {
+    "build": "node scripts/generate-motif-contract.mjs --check && tsc -p tsconfig.build.json",
+    "test": "node scripts/generate-motif-contract.mjs --check && node --import tsx --test tests/*.test.ts",
+    "test:emitted": "pnpm run build && node --test tests/emitted-import.test.mjs",
+    "typecheck": "node scripts/generate-motif-contract.mjs --check && tsc -p tsconfig.json --noEmit",
+    "verify:generated": "node scripts/generate-motif-contract.mjs --check"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  }
+}

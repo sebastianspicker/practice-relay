@@ -1,7 +1,9 @@
 <!-- Baseline/pilot measures sheet. Why: compares comparable handoffs with denominators instead of turning preference or demos into outcome claims. -->
 # Baseline and pilot measures
 
-For one comparable work type, record baseline and pilot separately. Report raw counts, median where applicable, denominator, exceptions, and any change in work scope.
+For one comparable work type, record baseline and pilot separately. Report raw
+counts, the median where applicable, the denominator, exceptions, and any change
+in work scope.
 
 | Measure | Baseline | Pilot | Evidence |
 |---|---|---|---|
@@ -13,5 +15,5 @@ For one comparable work type, record baseline and pilot separately. Report raw c
 | Unacceptable burden, access issue, or missing context | | | |
 | Specialist system that remained authoritative | | | |
 
-Interpret results against [`evaluation-rubric.md`](evaluation-rubric.md). A
-small or positive pilot does not establish adoption or replacement.
+Interpret results against [`evaluation-rubric.md`](evaluation-rubric.md). A small
+or positive pilot does not establish adoption or replacement.

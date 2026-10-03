@@ -1,0 +1,11 @@
+/** Approved high-key studio palette and shared control typography. */
+:root {
+  color-scheme: light;
+  --bg: #fff; --paper: #fff; --surface: #fff; --rail: #faf9fc; --sunken: #f4f2f8;
+  --ink: #161526; --body: #393747; --muted: #626071; --faint: #706c7d; --ghost: #706c7d;
+  --line: #d9d6e1; --line-strong: #aaa3b7; --accent: #756486; --accent-soft: #f0ebf8;
+  --hold: #81520f; --hold-soft: #fff8eb; --grant: #4b6358; --deny: #9e3442; --withdrawn: #76508b;
+  --ui: "Inter", "Helvetica Neue", Arial, sans-serif; --serif: var(--ui); --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
+  --r-sm: 3px; --r-md: 5px; --header-height: 48px; --dur: 120ms; --ease: ease-out;
+}

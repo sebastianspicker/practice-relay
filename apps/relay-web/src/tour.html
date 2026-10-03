@@ -1,0 +1,72 @@
+<!doctype html>
+<!-- Static screenshot tour for the GitHub Pages demo; images are staged from docs/images at build time. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Practice Relay / MvEI screenshot tour</title>
+  <link rel="icon" href="./assets/practice-relay-mark.svg" type="image/svg+xml">
+  <style>
+    :root { color-scheme: light dark; --ink: #1c1a22; --muted: #5f5a6b; --line: #e2dfe8; --bg: #faf9fb; --accent: #68537f; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    a { color: var(--accent); }
+    header { border-bottom: 1px solid var(--line); background: #fff; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 60px; }
+    .wordmark { font-weight: 600; letter-spacing: .01em; }
+    main { padding: 40px 0 72px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+    .lede { margin: 0 0 8px; color: var(--muted); max-width: 62ch; }
+    .notice { margin: 16px 0 32px; padding: 12px 16px; border: 1px solid var(--line); border-left: 3px solid var(--accent); background: #fff; border-radius: 6px; font-size: .92rem; color: var(--muted); }
+    figure { margin: 0 0 40px; }
+    figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    figcaption { margin-top: 12px; color: var(--muted); font-size: .92rem; }
+    figcaption strong { color: var(--ink); }
+    footer { border-top: 1px solid var(--line); padding: 24px 0; color: var(--muted); font-size: .88rem; }
+    @media (prefers-color-scheme: dark) {
+      :root { --ink: #eceaf1; --muted: #a8a3b4; --line: #35323d; --bg: #16141b; --accent: #b9a6d6; }
+      header, figure img, .notice { background: #1e1c24; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <span class="wordmark">practice relay / mvei</span>
+      <a href="./">Open the live demo &rarr;</a>
+    </div>
+  </header>
+  <main>
+    <div class="wrap">
+      <h1>Screenshot tour</h1>
+      <p class="lede">A static walkthrough of the two product surfaces in this repository. The live demo beside this page is the interactive version; these images are captured from it and the local MvEI applications.</p>
+      <p class="notice">The demo runs on synthetic, sanitized mock data. Its controls are simulated and make no API or service writes. This tour is illustrative, not evidence of deployment readiness or adoption.</p>
+
+      <figure>
+        <img src="./screenshots/relay-web-movement.png" alt="Practice Relay workspace showing a work record, a rehearsal still, and a partial Motif phrase with time anchors.">
+        <figcaption><strong>Movement workspace.</strong> A WorkRecord in progress: selected evidence, a partial Motif phrase with time anchors, and a controlled movement vocabulary.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="./screenshots/relay-web-handoff.png" alt="Practice Relay handoff review showing evidence items, intended use, and recorded permissions per participant.">
+        <figcaption><strong>Handoff review.</strong> Evidence, the intended purpose and destination, and participant-level permissions gathered before an export decision.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="./screenshots/mvei-workbench.png" alt="MvEI Workbench showing a Motif document, a controlled palette, and canvas tiles.">
+        <figcaption><strong>MvEI Workbench.</strong> A local authoring surface for Motif and the pedagogical Laban subset, validated against the canonical schemas.</figcaption>
+      </figure>
+
+      <figure>
+        <img src="./screenshots/mvei-schema-site.png" alt="MvEI schema site listing profiles, corpus samples, boundaries, and implementation notes.">
+        <figcaption><strong>MvEI schema site.</strong> The profile, vocabulary, and corpus reference for implementers, generated from the packaged contracts.</figcaption>
+      </figure>
+    </div>
+  </main>
+  <footer>
+    <div class="wrap">Practice Relay / MvEI &middot; Apache-2.0 &middot; <a href="https://github.com/sebastianspicker/practice-relay">repository</a></div>
+  </footer>
+</body>
+</html>

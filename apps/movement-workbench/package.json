@@ -1,0 +1,14 @@
+{
+  "name": "@practice-relay/movement-workbench",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/dev.mjs",
+    "test": "node --test test/*.verify.mjs"
+  },
+  "dependencies": {
+    "@practice-relay/movement": "workspace:*"
+  },
+  "license": "Apache-2.0"
+}

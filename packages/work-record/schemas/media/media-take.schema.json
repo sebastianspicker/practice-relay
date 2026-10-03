@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:work-record:schema:media-take:0.1",
+  "title": "WorkRecordMediaTake",
+  "description": "The inline Take value stored in WorkRecord.takes.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$"
+    },
+    "label": { "type": "string", "maxLength": 500 },
+    "mediaPath": { "type": "string", "maxLength": 4096 },
+    "recordedAt": { "type": "string", "format": "date-time" },
+    "storageKey": { "type": "string", "maxLength": 4096 },
+    "contentType": { "type": "string", "maxLength": 255 },
+    "sha256": { "type": "string", "maxLength": 128 },
+    "byteSize": { "type": "number", "minimum": 0 }
+  }
+}

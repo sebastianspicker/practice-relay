@@ -1,0 +1,18 @@
+{
+  "name": "@practice-relay/relay-web",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/dev.mjs",
+    "test": "node --test test/*.verify.mjs && node --import tsx --test test/role-parity.test.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "dependencies": {
+    "@practice-relay/movement": "workspace:*"
+  },
+  "devDependencies": {
+    "@practice-relay/work-record": "workspace:*"
+  },
+  "license": "Apache-2.0"
+}

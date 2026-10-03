@@ -5,21 +5,58 @@
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
-      "@practice-relay/work-record-core": ["packages/work-record-core/src/index.ts"],
-      "@practice-relay/work-record-package": ["packages/work-record-package/src/index.ts"],
-      "@practice-relay/time-core": ["packages/time-core/src/index.ts"],
-      "@practice-relay/use-policy": ["packages/use-policy/src/index.ts"],
-      "@practice-relay/interop": ["packages/interop/src/index.ts"],
-      "@practice-relay/media-index": ["packages/media-index/src/index.ts"],
-      "@practice-relay/movement-encode": ["packages/movement-encode/src/index.ts"],
-      "@practice-relay/auth": ["practice-relay/packages/auth/src/index.ts"],
-      "@practice-relay/collaboration": ["practice-relay/packages/collaboration/src/index.ts"],
-      "@practice-relay/media-store": ["practice-relay/packages/media-store/src/index.ts"],
-      "@practice-relay/record-store": ["practice-relay/packages/record-store/src/index.ts"],
-      "@practice-relay/api": ["practice-relay/apps/api/src/index.ts"],
-      "@practice-relay/mvei-glyph-font": ["mvei/packages/glyph-font/src/index.ts"]
+      "@practice-relay/work-record": [
+        "packages/work-record/src/index.ts"
+      ],
+      "@practice-relay/work-record/time": [
+        "packages/work-record/src/time/index.ts"
+      ],
+      "@practice-relay/work-record/policy": [
+        "packages/work-record/src/policy/index.ts"
+      ],
+      "@practice-relay/work-record/media": [
+        "packages/work-record/src/media/index.ts"
+      ],
+      "@practice-relay/handoff": [
+        "packages/handoff/src/index.ts"
+      ],
+      "@practice-relay/movement": [
+        "packages/movement/src/index.ts"
+      ],
+      "@practice-relay/movement/browser": [
+        "packages/movement/browser/index.mjs"
+      ],
+      "@practice-relay/movement-toolkit": [
+        "packages/movement-toolkit/src/index.ts"
+      ],
+      "@practice-relay/auth": [
+        "packages/auth/src/index.ts"
+      ],
+      "@practice-relay/media-store": [
+        "packages/media-store/src/index.ts"
+      ],
+      "@practice-relay/record-store": [
+        "packages/record-store/src/index.ts"
+      ],
+      "@practice-relay/relay-api": [
+        "apps/relay-api/src/index.ts"
+      ],
+      "@practice-relay/movement/glyphs": [
+        "packages/movement/glyphs/index.ts"
+      ],
+      "@practice-relay/database": [
+        "packages/database/src/index.ts"
+      ],
+      "@practice-relay/runtime-state": [
+        "packages/runtime-state/src/index.ts"
+      ],
+      "@practice-relay/movement/browser/*": [
+        "packages/movement/browser/*.mjs"
+      ]
     },
-    "lib": ["ES2022"],
+    "lib": [
+      "ES2022"
+    ],
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

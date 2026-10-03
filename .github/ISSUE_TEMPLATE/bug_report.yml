@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a defect in alpha surfaces (API, schemas, shells, docs)
+description: Report a defect in an alpha surface (API, schemas, shells, docs)
 title: "[bug] "
 labels: ["bug", "alpha"]
 body:
@@ -11,7 +11,7 @@ body:
         - Practice Relay
         - MvEI
         - MvEI Workbench
-        - WorkRecord Core and shared packages
+        - WorkRecord contracts and shared packages
         - Docs / CI
         - Unsure
     validations:
@@ -20,7 +20,7 @@ body:
     id: what
     attributes:
       label: What happened?
-      description: Observed vs expected. Include command output if relevant.
+      description: Observed vs expected. Include command output if it helps.
     validations:
       required: true
   - type: textarea

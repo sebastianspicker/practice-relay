@@ -1,0 +1,102 @@
+/**
+ * Synthetic Practice Relay WorkRecord fixtures for local demo fallback.
+ * Why residual: the alpha surface must stay usable when the record service is unreachable,
+ * without implying live institutional data or remote write-back.
+ */
+
+/** Explicit local demo WorkRecord array shown only when the API is unavailable. */
+export const fallbackRecords = [{
+  id: "WR-2026-042",
+  title: "Synthetic Week 6 duet study",
+  profile: "Performing arts",
+  revision: 5,
+  artifacts: [
+    { id: "video", name: "Performance video", mediaType: "video/mp4", detail: "MP4 · 1080p · 02:34", preferredTake: "Studio run 2" },
+    { id: "audio", name: "Reference audio", mediaType: "audio/wav", detail: "WAV · 48 kHz · 02:34", preferredTake: "Studio run 2" },
+    { id: "score", name: "MusicXML score", mediaType: "application/vnd.recordare.musicxml+xml", detail: "MusicXML · 8 pages" },
+    { id: "reflection", name: "Student reflection", mediaType: "text/markdown", detail: "Markdown · 1.2 KB" },
+    { id: "movement", name: "Movement annotation", mediaType: "application/json", detail: "JSON · 256 KB", preferredTake: "Studio run 2" },
+    { id: "cues", name: "Media cues", mediaType: "application/json", detail: "JSON · 6 cues" },
+  ],
+  tracks: [{ id: "movement", type: "movement_annotation", ref: "crossing-motif.json" }],
+  members: [{ userId: "synthetic-performer-a", label: "Synthetic performer A", role: "student" }, { userId: "synthetic-faculty-review", label: "Synthetic faculty review", role: "faculty" }],
+  representedSubjects: [{ id: "synthetic-performer-a", type: "Person", label: "Synthetic performer A" }, { id: "synthetic-partner-archive", type: "Group", label: "Synthetic partner archive" }],
+  usePolicies: [
+    { id: "assessment", representedSubjectId: "synthetic-performer-a", purpose: "assessment", destination: "Synthetic studio review", state: "granted", createdAt: "2026-07-18" },
+    { id: "archive", representedSubjectId: "synthetic-partner-archive", purpose: "archive", destination: "Synthetic partner archive", state: "denied", createdAt: "2026-07-18" },
+  ],
+  snapshots: [{ id: "snapshot-04", createdAt: "2026-07-18", artifactIds: ["video", "audio", "score", "reflection", "movement"], reason: "assessment handoff" }],
+  versions: [{ id: "revision-05", name: "Revision 05", createdAt: "2026-07-18", snapshotRef: "snapshot-04" }],
+  preferredTakeId: "Studio run 2",
+  comments: [{ id: "comment-1", body: "Synthetic review note: align travel with measure 5.", authorId: "synthetic-faculty-review", regionId: "phrase-a", createdAt: "2026-07-18T09:14:00Z", resolved: false }],
+  provenance: { createdAt: "2026-07-18T09:20:00Z", sourceSystem: "local synthetic static-demo fixture" },
+  spine: { durationMs: 154000, regions: [] },
+}, {
+  id: "WR-2026-043",
+  title: "Synthetic marsh transect review",
+  profile: "Field study",
+  revision: 2,
+  artifacts: [
+    { id: "field-log", name: "Observation log", mediaType: "text/markdown", detail: "Markdown · synthetic transect notes" },
+    { id: "site-stills", name: "Site still sequence", mediaType: "image/jpeg", detail: "JPEG · 12 synthetic reference frames" },
+    { id: "sensor-table", name: "Sensor reading table", mediaType: "text/csv", detail: "CSV · synthetic sample readings" },
+    { id: "method-note", name: "Method note", mediaType: "application/pdf", detail: "PDF · 2 pages" },
+  ],
+  tracks: [{ id: "transect", type: "analysis", ref: "synthetic-marsh-transect.json" }],
+  members: [{ userId: "synthetic-field-learner", label: "Synthetic field learner", role: "student" }, { userId: "synthetic-field-review", label: "Synthetic field reviewer", role: "faculty" }],
+  representedSubjects: [{ id: "synthetic-site-observation", type: "Place", label: "Synthetic site observation" }],
+  usePolicies: [
+    { id: "assessment", representedSubjectId: "synthetic-site-observation", purpose: "assessment", destination: "Synthetic methods review", state: "granted", createdAt: "2026-07-19" },
+    { id: "archive", representedSubjectId: "synthetic-site-observation", purpose: "archive", destination: "Synthetic field archive", state: "denied", createdAt: "2026-07-19" },
+  ],
+  snapshots: [],
+  versions: [{ id: "revision-02", name: "Revision 02", createdAt: "2026-07-19" }],
+  comments: [{ id: "comment-1", body: "Synthetic review note: select a bounded evidence set before handoff.", authorId: "synthetic-field-review", createdAt: "2026-07-19T10:00:00Z", resolved: false }],
+  provenance: { createdAt: "2026-07-19T09:30:00Z", sourceSystem: "local synthetic static-demo fixture" },
+}, {
+  id: "WR-2026-044",
+  title: "Synthetic wayfinding prototype critique",
+  profile: "Design studio",
+  revision: 3,
+  artifacts: [
+    { id: "brief", name: "Design brief", mediaType: "application/pdf", detail: "PDF · 3 pages" },
+    { id: "prototype", name: "Prototype walkthrough", mediaType: "video/mp4", detail: "MP4 · synthetic interface walkthrough" },
+    { id: "board", name: "Critique board", mediaType: "image/png", detail: "PNG · synthetic design board" },
+    { id: "rationale", name: "Design rationale", mediaType: "text/markdown", detail: "Markdown · 1.8 KB" },
+  ],
+  tracks: [{ id: "prototype-flow", type: "analysis", ref: "synthetic-wayfinding-flow.json" }],
+  members: [{ userId: "synthetic-designer", label: "Synthetic designer", role: "student" }, { userId: "synthetic-critic", label: "Synthetic critique facilitator", role: "faculty" }],
+  representedSubjects: [{ id: "synthetic-design-work", type: "Other", label: "Synthetic design work" }],
+  usePolicies: [
+    { id: "assessment", representedSubjectId: "synthetic-design-work", purpose: "assessment", destination: "Synthetic design critique", state: "denied", createdAt: "2026-07-20" },
+    { id: "repository", representedSubjectId: "synthetic-design-work", purpose: "repository", destination: "Synthetic pattern library", state: "granted", createdAt: "2026-07-20" },
+  ],
+  snapshots: [{ id: "snapshot-03", createdAt: "2026-07-20", artifactIds: ["brief", "board", "rationale"], reason: "bounded critique packet" }],
+  versions: [{ id: "revision-03", name: "Revision 03", createdAt: "2026-07-20", snapshotRef: "snapshot-03" }],
+  preferredTakeId: "Critique board",
+  comments: [{ id: "comment-1", body: "Synthetic review note: assessment permission is intentionally not granted.", authorId: "synthetic-critic", createdAt: "2026-07-20T14:10:00Z", resolved: false }],
+  provenance: { createdAt: "2026-07-20T13:40:00Z", sourceSystem: "local synthetic static-demo fixture" },
+}, {
+  id: "WR-2026-045",
+  title: "Synthetic ensemble cue study",
+  profile: "Performing arts",
+  revision: 4,
+  artifacts: [
+    { id: "cue-video", name: "Cue study video", mediaType: "video/mp4", detail: "MP4 · synthetic rehearsal excerpt" },
+    { id: "cue-score", name: "Cue score", mediaType: "application/pdf", detail: "PDF · 6 pages" },
+    { id: "cue-list", name: "Cue list", mediaType: "application/json", detail: "JSON · 9 synthetic cues" },
+    { id: "reflection", name: "Ensemble reflection", mediaType: "text/markdown", detail: "Markdown · 980 B" },
+  ],
+  tracks: [{ id: "cue-motion", type: "movement_annotation", ref: "synthetic-ensemble-cues.json" }],
+  members: [{ userId: "synthetic-ensemble-member", label: "Synthetic ensemble member", role: "student" }, { userId: "synthetic-director", label: "Synthetic rehearsal director", role: "faculty" }],
+  representedSubjects: [{ id: "synthetic-ensemble-performance", type: "Group", label: "Synthetic ensemble performance" }],
+  usePolicies: [
+    { id: "assessment", representedSubjectId: "synthetic-ensemble-performance", purpose: "assessment", destination: "Synthetic ensemble assessment", state: "granted", createdAt: "2026-07-21" },
+    { id: "deposit", representedSubjectId: "synthetic-ensemble-performance", purpose: "deposit", destination: "Synthetic rehearsal repository", state: "granted", createdAt: "2026-07-21" },
+  ],
+  snapshots: [{ id: "snapshot-04", createdAt: "2026-07-21", artifactIds: ["cue-video", "cue-score", "cue-list"], reason: "approved synthetic handoff" }],
+  versions: [{ id: "revision-04", name: "Revision 04", createdAt: "2026-07-21", snapshotRef: "snapshot-04" }],
+  preferredTakeId: "Synthetic ensemble take 1",
+  comments: [],
+  provenance: { createdAt: "2026-07-21T16:00:00Z", sourceSystem: "local synthetic static-demo fixture" },
+}];

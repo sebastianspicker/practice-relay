@@ -1,30 +1,20 @@
-# Documentation map
+# Documentation
 
-Current candidate: `0.4.0-alpha.1`, not tagged or published.
+Current source candidate: `0.4.0-alpha.1`.
 
-| Topic | Document |
-| --- | --- |
-| Public alpha behavior and limitations | [`ALPHA.md`](ALPHA.md) |
-| Measured local status and blockers | [`../RELEASE_STATUS.md`](../RELEASE_STATUS.md) |
-| Release checklist | [`RELEASE-CHECKLIST.md`](RELEASE-CHECKLIST.md) |
-| Implementation evidence and product boundaries | [`EVIDENCE.md`](EVIDENCE.md) |
-| Practice Relay implementation map | [`../practice-relay/IMPLEMENTATION.md`](../practice-relay/IMPLEMENTATION.md) |
-| MvEI implementation map | [`../mvei/IMPLEMENTATION.md`](../mvei/IMPLEMENTATION.md) |
-| Product naming and separation | [`products/naming.md`](products/naming.md), [`products/merge-decision.md`](products/merge-decision.md) |
-| Package contracts and patterns | [`packages/contracts.md`](packages/contracts.md), [`packages/patterns.md`](packages/patterns.md) |
-| Practice Relay operations | [`../practice-relay/docs/ops.md`](../practice-relay/docs/ops.md), [`../practice-relay/docs/slo.md`](../practice-relay/docs/slo.md) |
-| Current runtime images | [`images/0.4.0-alpha.1/`](images/0.4.0-alpha.1/) |
-| Pilot and observation templates | [`pilot-pack/README.md`](pilot-pack/README.md) |
-| Package publication boundaries | [`publish-and-consume.md`](publish-and-consume.md) |
+- [Architecture](ARCHITECTURE.md) covers the whole repository: components,
+  dependencies, runtime flows, and state ownership.
+- [Practice Relay](relay/README.md) covers the API, web workspace, storage,
+  handoff, local LTI simulation, and lab operations.
+- [MvEI](movement/README.md) covers movement schemas, corpus, applications, and
+  the toolkit.
+- [Testing](testing.md) lists focused checks and the ordered root gates.
+- [Alpha limits](ALPHA.md), [evidence](EVIDENCE.md), and the
+  [release checklist](RELEASE-CHECKLIST.md) mark the source-candidate and
+  publication boundaries.
+- [Product names and separation](products/README.md) defines the public terminology.
+- [Pilot-study materials](pilot-pack/README.md) are blank research instruments,
+  not evidence of adoption or a completed evaluation.
 
-## Technical entry points
-
-| Layer | Path |
-| --- | --- |
-| Practice Relay | `practice-relay/` |
-| MvEI and MvEI Workbench | `mvei/` |
-| WorkRecord Core and shared contracts | `packages/` |
-| Synthetic fixtures | `fixtures/` |
-| Validation and release tooling | `scripts/` and root `package.json` |
-
-Run `pnpm validate:docs` to validate relative links across the Markdown corpus.
+Contributor workflow is in [`../CONTRIBUTING.md`](../CONTRIBUTING.md). The
+single-host lab example is documented in [`../deploy/README.md`](../deploy/README.md).

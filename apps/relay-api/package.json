@@ -1,0 +1,32 @@
+{
+  "name": "@practice-relay/relay-api",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "node scripts/build-runtime.mjs",
+    "postbuild": "node scripts/check-production-runtime.mjs",
+    "start": "node dist/index.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --import ./src/test-support/test-environment.mjs --test src/*.test.ts scripts/*.test.ts"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  },
+  "dependencies": {
+    "@practice-relay/auth": "workspace:*",
+    "@practice-relay/lti": "workspace:*",
+    "@practice-relay/work-record": "workspace:*",
+    "@practice-relay/media-store": "workspace:*",
+    "@practice-relay/handoff": "workspace:*",
+    "@practice-relay/record-store": "workspace:*",
+    "@practice-relay/database": "workspace:*",
+    "@practice-relay/runtime-state": "workspace:*"
+  },
+  "license": "Apache-2.0"
+}

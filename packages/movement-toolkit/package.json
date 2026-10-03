@@ -1,0 +1,38 @@
+{
+  "name": "@practice-relay/movement-toolkit",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "Movement capture, engraving, import, reading, and validation tools",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js", "default": "./dist/index.js" },
+    "./capture": { "types": "./dist/capture/index.d.ts", "import": "./dist/capture/index.js", "default": "./dist/capture/index.js" },
+    "./engraver": { "types": "./dist/engraver/index.d.ts", "import": "./dist/engraver/index.js", "default": "./dist/engraver/index.js" },
+    "./labanwriter-import": { "types": "./dist/labanwriter-import/index.d.ts", "import": "./dist/labanwriter-import/index.js", "default": "./dist/labanwriter-import/index.js" },
+    "./reference-reader": { "types": "./dist/reference-reader/index.d.mts", "import": "./dist/reference-reader/index.mjs", "default": "./dist/reference-reader/index.mjs" },
+    "./validator": { "types": "./dist/validator/index.d.ts", "import": "./dist/validator/index.js", "default": "./dist/validator/index.js" },
+    "./fixtures/*": "./fixtures/*",
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "fixtures"],
+  "bin": {
+    "mvei-validate": "./dist/validator/index.js",
+    "mvei-engrave": "./dist/engraver/cli.js",
+    "mvei-labanwriter-import": "./dist/labanwriter-import/cli.js",
+    "mvei-reference-read": "./dist/reference-reader/cli.mjs"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "node --import tsx --test tests/*.test.*",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@practice-relay/movement": "workspace:*",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
+  },
+  "license": "Apache-2.0",
+  "publishConfig": { "access": "public" }
+}

@@ -15,4 +15,6 @@ Use role titles and site pseudonyms only.
 | Procurement route | | |
 | Incumbent system owner | | |
 
-Do not call a buyer confirmed until the budget holder and relevant policy/repository owners acknowledge the actual workflow problem and a permitted pilot route.
+Do not call a buyer confirmed until the budget holder and the relevant
+policy/repository owners acknowledge the actual workflow problem and a permitted
+pilot route.

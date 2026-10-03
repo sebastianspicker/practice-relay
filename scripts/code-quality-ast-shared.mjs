@@ -48,8 +48,25 @@ export function documented(node, sourceFile) {
   return ts.getJSDocCommentsAndTags(node).some(
     (comment) =>
       comment.kind === ts.SyntaxKind.JSDoc &&
-      !/^\s*(?:#![^\n]*\n)?\s*$/.test(sourceFile.text.slice(0, comment.pos)),
+      !isWhitespaceOrTerminatedShebang(sourceFile.text.slice(0, comment.pos)),
   );
+}
+
+function isWhitespaceOrTerminatedShebang(prefix) {
+  if (hasOnlyWhitespace(prefix, 0, prefix.length)) return true;
+
+  const shebangStart = prefix.indexOf("#!");
+  if (shebangStart === -1 || !hasOnlyWhitespace(prefix, 0, shebangStart)) return false;
+
+  const lineEnd = prefix.indexOf("\n", shebangStart + 2);
+  return lineEnd !== -1 && hasOnlyWhitespace(prefix, lineEnd + 1, prefix.length);
+}
+
+function hasOnlyWhitespace(text, start, end) {
+  for (let index = start; index < end; index += 1) {
+    if (text.at(index).trim().length !== 0) return false;
+  }
+  return true;
 }
 
 /** Return whether source begins with a comment before its first statement. */

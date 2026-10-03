@@ -1,5 +1,5 @@
 /**
- * Root script: `pnpm validate:evidence`
+ * Root check: `pnpm check:contracts`
  *
  * Structural check that the scientific evidence layer stays wired:
  * - Required residual/evidence files exist on disk
@@ -7,7 +7,7 @@
  * - Relative .md links from EVIDENCE entrypoints resolve (no dead links)
  *
  * Does not re-litigate residual text - only wiring + required markers.
- * Invoked from `pnpm test` after package suites.
+ * Invoked from `pnpm check:contracts`.
  */
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -23,17 +23,17 @@ const requiredFiles = [
   "docs/EVIDENCE.md",
   "docs/products/naming.md",
   "docs/products/merge-decision.md",
-  "practice-relay/IMPLEMENTATION.md",
-  "practice-relay/docs/scope.md",
-  "mvei/IMPLEMENTATION.md",
-  "mvei/docs/scope.md",
+  "docs/relay/README.md",
+  "docs/relay/architecture.md",
+  "docs/movement/README.md",
+  "docs/movement/architecture.md",
 ] as const;
 
 const EVIDENCE_MARKERS: [string, string[]][] = [
-  ["docs/EVIDENCE.md", ["Practice Relay", "MvEI", "MvEI Workbench", "WorkRecord Core", "WorkRecord", "RO-Crate", "merge"]],
-  ["practice-relay/IMPLEMENTATION.md", ["EVIDENCE.md", "Practice Relay"]],
-  ["mvei/IMPLEMENTATION.md", ["EVIDENCE.md", "MvEI"]],
-  ["docs/products/naming.md", ["Practice Relay", "MvEI", "MvEI Workbench", "WorkRecord Core"]],
+  ["docs/EVIDENCE.md", ["Practice Relay", "MvEI", "MvEI Workbench", "WorkRecord contracts", "WorkRecord", "RO-Crate", "merge"]],
+  ["docs/relay/README.md", ["Practice Relay", "WorkRecord"]],
+  ["docs/movement/README.md", ["MvEI", "movement"]],
+  ["docs/products/naming.md", ["Practice Relay", "MvEI", "MvEI Workbench", "WorkRecord contracts"]],
   ["docs/products/merge-decision.md", ["Practice Relay", "MvEI Workbench", "separate"]],
 ];
 

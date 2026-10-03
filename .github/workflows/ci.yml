@@ -27,11 +27,28 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
 
       - name: Install
         run: pnpm install --frozen-lockfile
 
       - name: Verify source candidate
-        run: pnpm release:check
+        run: pnpm check:release
+
+  integration:
+    name: PostgreSQL 18 and S3 multi-process checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: 9.15.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @practice-relay/relay-api run build
+      - run: pnpm check:integration

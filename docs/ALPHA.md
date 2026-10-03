@@ -1,103 +1,88 @@
 # Practice Relay public alpha
 
-Status: local `0.4.0-alpha.1` source candidate on branch `main` at
-`c4b446d623cdb00b1eb6a54a065ef0bc02b5200d`. The configured origin is
-`https://github.com/sebastianspicker/practice-relay.git`; publication state was
-not queried.
-License: Apache-2.0 ([`LICENSE`](../LICENSE))
-Candidate date: 2026-07-19
+Status: local `0.4.0-alpha.1` source candidate. The version and candidate date
+come from [`../release.json`](../release.json). Nothing here means the candidate
+has been committed, tagged, published, or deployed.
 
-Practice Relay is a portable, versioned, policy-aware WorkRecord builder for a bounded handoff from creation to assessment to repository deposit. It keeps selected versions, evidence, people and roles, use conditions, and export provenance together. It does not take over specialist authoring tools, course administration, asset management, or repository publication.
+Practice Relay prepares a portable, versioned, policy-aware WorkRecord for a
+bounded handoff from creation through assessment or review to repository deposit.
+It keeps selected evidence, people, represented subjects, permitted uses,
+revisions, and export provenance together. It does not replace specialist
+authoring, course administration, asset-management, assessment, or repository
+systems.
 
-This repository contains four related but separate surfaces:
+The repository also contains MvEI, its shared movement contracts, and MvEI
+Workbench — separate product surfaces. See [Product boundaries](products/README.md)
+and [Architecture](ARCHITECTURE.md).
 
-| Surface | Role |
-|---|---|
-| Practice Relay | Main WorkRecord handoff application |
-| WorkRecord Core | Shared domain and contract packages, not a user-facing application |
-| MvEI | Movement Encoding Initiative schemas, validators, and corpus |
-| MvEI Workbench | Separate MvEI authoring application |
+## What is implemented
 
-The Practice Relay and MvEI Workbench applications share contracts only. See
-[`products/README.md`](products/README.md) for the maintained naming and
-separation rules.
+- WorkRecord domain, membership, time, policy, media-reference, version, and
+  snapshot contracts.
+- Memory and durable JSON record stores with revision, event, audit, backup, and
+  restore behavior.
+- Filesystem, memory, and S3-compatible media adapters.
+- A loopback-first API with record, media, handoff, health, readiness, metrics,
+  local LTI, and lab-operations routes.
+- Integrity-checked handoff manifests, RO-Crate 1.3 metadata, ZIP archives, and
+  explicitly lossy OTIO, EAF, OSC, and MusicXML-reference projections.
+- A static Practice Relay workspace with a labelled synthetic fallback record.
+- MvEI schemas, vocabulary, corpus, browser parser, workbench, schema site, and
+  movement toolkit.
+- A local LMS-shaped LTI and AGS simulator.
 
-## Alpha scope
-
-Implemented, inspectable surfaces include:
-
-- WorkRecord domain types, roles, preferred takes, purpose-bound use policy, and package export.
-- Work-record package and RO-Crate export paths, including ZIP output.
-- A local API with lifecycle and export gates.
-- A browser shell for inspecting WorkRecord evidence, policy, exports, and MvEI references.
-- MvEI schemas, validator, pedagogical corpus, schema site, and a separate Workbench.
-- Local-mock LTI and interoperability fixtures.
-
-The browser shell currently has no authenticated browser session flow. When its API request is unauthenticated, it displays a clearly labelled local synthetic WorkRecord instead of live API data. This is an inspection path, not proof of a participant workflow.
+These are source and deterministic local checks. They do not establish
+participant use, external compatibility, or operational fitness.
 
 ## Limits
 
-- This is alpha software. Interfaces, schemas, commands, and package layouts can change without compatibility guarantees.
-- The repository does not establish deployment, institutional adoption, pilot outcomes, IMS certification, real LMS registration, multi-campus identity integration, or production operations.
-- The local LTI path is a mock integration only.
-- MvEI supports pedagogical Motif and a Laban subset. It does not claim full professional Labanotation density or LabanWriter parity.
-- Packages are private monorepo packages. This candidate is not an npm publication.
+- Interfaces, schemas, and package layouts are alpha and can change through a
+  reviewed breaking change.
+- Workspace packages are private; packed-consumer checks are not npm publication.
+- There is no production identity provider, database adapter, TLS or reverse
+  proxy configuration, high-availability deployment, backup schedule, or
+  off-host media recovery.
+- The browser workspace has no production authenticated-session integration.
+- The LTI path is a local mock, not a real LMS registration or IMS certification.
+- MvEI supports Motif and a pedagogical Laban subset. Full professional
+  Labanotation density, LabanWriter parity, and live capture hardware are out of scope.
+- No institutional adoption, completed pilot, production support, or
+  response-time commitment is established.
 
-## Runtime screenshots
+## Local evaluation
 
-The images below are captured from the current local runtime surfaces. They are not design concepts or evidence of authenticated participant use.
-
-![Practice Relay Quiet Dossier web shell](images/0.4.0-alpha.1/practice-relay-web.png)
-
-Practice Relay’s Quiet Dossier shell shows the labelled synthetic fallback described above when no authenticated API session is available.
-
-![MvEI schema site](images/0.4.0-alpha.1/mvei-schema-site.png)
-
-![MvEI Workbench](images/0.4.0-alpha.1/mvei-workbench.png)
-
-## Start locally
-
-Requirements: Node.js 20 or later and pnpm 9.15.0.
-
-Use a Node.js distribution with Corepack support. If Corepack cannot enable its
-shims, switch to a Node installation where it can do so rather than using an
-unpinned pnpm version.
+Requirements are Node.js 24 LTS and pnpm 9.15.0. From the repository root:
 
 ```bash
 corepack enable
 pnpm install --frozen-lockfile
-pnpm validate:schemas
-pnpm validate:evidence
-pnpm test
+pnpm check:contracts
+pnpm check:unit
 ```
 
-Repeat the frozen-lockfile install in a clean canonical checkout before
-publication.
+Start individual surfaces with the commands in the [root README](../README.md),
+the [Practice Relay guide](relay/README.md), and the [MvEI guide](movement/README.md).
+Use only synthetic data and loopback listeners unless the
+[operations guide](relay/operations.md) requirements are met.
 
-To start local surfaces:
+## GitHub Pages demonstration
 
-```bash
-PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1 pnpm --filter @practice-relay/api start
-pnpm --filter @practice-relay/web dev
-pnpm --filter @practice-relay/mvei-schema-site dev
-pnpm --filter @practice-relay/mvei-workbench dev
-```
+After a successful Pages publication, the expected URL is
+<https://sebastianspicker.github.io/practice-relay/>. The workflow stages the
+static application to `apps/relay-web/dist` and publishes it with the shared
+movement modules, styles, assets, and a static screenshot tour. This document
+does not claim the URL is live.
 
-The API binds to loopback by default. Durable local storage is optional through `PRACTICE_RELAY_DATA=./data/practice-relay`.
+The page uses synthetic, sanitized local mock data. Its controls are simulated
+and make no API or service writes. Interactive inspection is not evidence of
+deployment readiness, participant use, institutional adoption, a pilot, or a
+completed workflow. HTML snapshots and screenshots are review artifacts, not
+release evidence.
 
-## Validation
+## Publication boundary
 
-```bash
-pnpm release:check
-```
-
-`release:check` runs local checks only. It does not create a package, tag,
-release, deployment, or publication.
-
-## Further reading
-
-- [Current evidence map](EVIDENCE.md)
-- [Practice Relay implementation entrypoint](../practice-relay/IMPLEMENTATION.md)
-- [MvEI implementation entrypoint](../mvei/IMPLEMENTATION.md)
-- [Release status](../RELEASE_STATUS.md)
-- [Contributing](../CONTRIBUTING.md), [security reporting](../SECURITY.md), and [code of conduct](../CODE_OF_CONDUCT.md)
+`pnpm check:release` validates the local source set only. Publication also needs
+accepted maintainers, a tested confidential security-reporting route, a clean
+reviewed checkout, passing CI, remote repository checks, and explicit approval.
+Follow the [release procedure](../RELEASING.md) and
+[release checklist](RELEASE-CHECKLIST.md).

@@ -1,0 +1,45 @@
+/** Shared evidence preparation and metadata completion surfaces. */
+#handoff-panel { max-width: 1160px; margin: 26px auto 40px; }
+.handoff-heading { display: flex; align-items: center; justify-content: space-between; gap: 30px; margin-bottom: 32px; }
+.handoff-heading h2 { font-size: clamp(28px, 3vw, 42px); font-weight: 400; line-height: 1.2; letter-spacing: -1px; margin: 5px 0 12px; }
+.handoff-heading p { margin: 5px 0; color: var(--muted); }
+.handoff-heading img { width: 220px; height: 145px; object-fit: cover; }
+.step-label { font-family: var(--mono); font-size: 13px; }
+#handoff-panel h3 { font-size: 18px; font-weight: 500; margin: 0 0 14px; }
+.handoff-evidence { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.handoff-evidence li { padding: 18px 5px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.handoff-evidence li > span:first-of-type { flex: 1; min-width: 0; }
+.handoff-evidence small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }
+.handoff-evidence .icon { width: 22px; height: 22px; }
+.reference-state { font-size: 12px; color: var(--muted); text-align: right; }
+.handoff-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 34px 0; }
+.handoff-fields > section + section { border-left: 1px solid var(--line); padding-left: 36px; }
+.handoff-fields label { grid-template-columns: 110px 1fr; align-items: center; font-size: 14px; margin: 12px 0; }
+.field-help { color: var(--muted); font-size: 13px; line-height: 1.5; }
+.permissions { list-style: none; padding: 0; margin: 15px 0; }
+.permissions li { display: flex; justify-content: space-between; align-items: center; gap: 18px; border-bottom: 1px solid var(--line); padding: 13px 0; font-size: 14px; }
+.permission-state { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.output-scope { border-top: 1px solid var(--line); padding-top: 20px; }
+.output-scope p { margin-top: 0; color: var(--muted); font-size: 14px; }
+.handoff-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 26px; }
+.handoff-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 22px; }
+.export-blocker { color: var(--hold); background: var(--hold-soft); border-left: 3px solid var(--hold); padding: 20px; margin: 0 0 26px; }
+.export-blocker ul { padding-left: 20px; }
+.policy-entry { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 12px; }
+.policy-entry form { max-width: 600px; display: grid; gap: 16px; }
+.policy-entry p { font-size: 14px; color: var(--muted); }
+.policy-entry form [role="alert"] { color: var(--deny); }
+.metadata-result { border: 1px solid var(--line); border-radius: 4px; padding: 28px; }
+.metadata-title { display: flex; gap: 22px; align-items: center; margin-bottom: 25px; }
+.metadata-title > .icon { width: 42px; height: 48px; }
+.metadata-title h3 { overflow-wrap: anywhere; }
+.metadata-title p { margin: 0; color: var(--muted); font-size: 14px; }
+.delivery-note { border-top: 1px solid var(--line); padding: 24px 0 0; display: flex; gap: 16px; align-items: center; font-size: 14px; }
+@media (max-width: 760px) { #handoff-panel { margin-top: 8px; } .handoff-heading { gap: 16px; } .handoff-heading img { width: 95px; height: 100px; } .handoff-heading h2 { font-size: 29px; } .handoff-fields { grid-template-columns: 1fr; gap: 22px; padding: 25px 0; } .handoff-fields > section + section { border-left: 0; padding-left: 0; } .handoff-fields label { grid-template-columns: 1fr; } .reference-state { max-width: 95px; } .handoff-evidence li { gap: 10px; font-size: 14px; } .metadata-result { padding: 18px; } .handoff-actions button { flex: 1; } }
+
+.prepare-heading { justify-content: flex-start; }
+.prepare-heading img { order: -1; width: 310px; height: 175px; }
+.complete-heading > div { flex: 1; }
+.success-mark { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 50%; background: var(--accent-soft); border: 2px solid #b8a1da; flex: 0 0 auto; }
+.success-mark .icon { width: 35px; height: 35px; }
+@media (max-width: 760px) { .prepare-heading img { width: 95px; height: 100px; order: 0; } .success-mark { width: 42px; height: 42px; } .success-mark .icon { width: 24px; height: 24px; } .handoff-actions { flex-direction: column; } .handoff-actions button { min-height: 48px; } .complete-heading { flex-wrap: wrap; } .complete-heading img { display: none; } }

@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:work-record:schema:work-record:0.4",
+  "title": "WorkRecord",
+  "description": "Portable WorkRecord v0.4 aggregate. Embedded time and policy values keep their own schema versions and semantics.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "schemaVersion", "profile", "title", "members", "actors", "representedSubjects", "spine", "tracks", "preferredTakeId", "takeIds", "takes", "comments", "versions", "usePolicySnapshots", "movementCapability", "artifacts", "relations", "iterations", "annotations", "views", "usePolicies", "provenance", "snapshots"],
+  "properties": {
+    "id": { "$ref": "#/$defs/resourceId" },
+    "schemaVersion": { "const": "0.4" },
+    "profile": { "enum": ["urn:work-record:profile:core:0.4", "urn:work-record:profile:design-studio:0.1", "urn:work-record:profile:field-study:0.1"] },
+    "revision": { "type": "integer", "minimum": 0, "maximum": 9007199254740991 },
+    "title": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "members": { "type": "array", "items": { "$ref": "#/$defs/member" } },
+    "actors": { "type": "array", "items": { "$ref": "#/$defs/actor" } },
+    "representedSubjects": { "type": "array", "items": { "$ref": "#/$defs/representedSubject" } },
+    "spine": { "$ref": "urn:work-record:schema:time-core:0.1" },
+    "tracks": { "type": "array", "items": { "$ref": "#/$defs/track" } },
+    "preferredTakeId": { "type": ["string", "null"] },
+    "takeIds": { "type": "array", "items": { "type": "string" } },
+    "takes": { "type": "array", "items": { "$ref": "urn:work-record:schema:media-take:0.1" } },
+    "comments": { "type": "array", "items": { "$ref": "#/$defs/comment" } },
+    "versions": { "type": "array", "items": { "$ref": "#/$defs/versionTag" } },
+    "usePolicySnapshots": { "type": "array", "items": { "$ref": "urn:work-record:schema:use-policy-snapshot:0.1" } },
+    "movementCapability": { "enum": ["none", "annotation", "mvei_view", "mvei_edit"] },
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/artifact" } },
+    "relations": { "type": "array", "items": { "$ref": "#/$defs/relation" } },
+    "iterations": { "type": "array", "items": { "$ref": "#/$defs/iteration" } },
+    "annotations": { "type": "array", "items": { "$ref": "#/$defs/annotation" } },
+    "views": { "type": "array", "items": { "$ref": "#/$defs/view" } },
+    "usePolicies": { "type": "array", "items": { "$ref": "#/$defs/usePolicy" } },
+    "provenance": { "$ref": "#/$defs/provenance" },
+    "snapshots": { "type": "array", "items": { "$ref": "#/$defs/snapshot" } }
+  },
+  "$defs": {
+    "resourceId": { "type": "string", "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$" },
+    "member": {
+      "type": "object", "additionalProperties": false, "required": ["userId", "role"],
+      "properties": { "userId": { "type": "string" }, "role": { "enum": ["student", "faculty", "admin", "guest"] } }
+    },
+    "actor": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type", "name"],
+      "properties": { "id": { "type": "string" }, "type": { "enum": ["Person", "Organization", "SoftwareApplication"] }, "name": { "type": "string" }, "roles": { "type": "array", "items": { "type": "string" } } }
+    },
+    "representedSubject": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type", "label"],
+      "properties": { "id": { "type": "string" }, "type": { "enum": ["Person", "Group", "Place", "Other"] }, "label": { "type": "string" } }
+    },
+    "track": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type"],
+      "properties": { "id": { "$ref": "#/$defs/resourceId" }, "type": { "enum": ["audio", "video", "music_notation", "movement_annotation", "movement_notation", "media_cues", "text", "assessment", "analysis"] }, "label": { "type": "string", "maxLength": 500 }, "ref": { "type": "string", "maxLength": 4096 } }
+    },
+    "comment": {
+      "type": "object", "additionalProperties": false, "required": ["id", "regionId", "authorId", "body", "resolved", "createdAt"],
+      "properties": { "id": { "type": "string" }, "regionId": { "type": "string" }, "trackId": { "type": "string" }, "authorId": { "type": "string" }, "body": { "type": "string" }, "resolved": { "type": "boolean" }, "createdAt": { "type": "string" } }
+    },
+    "versionTag": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name", "createdAt", "snapshotRef"],
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "createdAt": { "type": "string" }, "snapshotRef": { "type": "string" } }
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name"],
+      "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "mediaType": { "type": "string" }, "contentUrl": { "type": "string" }, "sha256": { "type": "string" }, "representedSubjectIds": { "type": "array", "items": { "type": "string" } }, "preservationRequired": { "type": "boolean" } }
+    },
+    "relation": {
+      "type": "object", "additionalProperties": false, "required": ["subjectId", "predicate", "objectId"],
+      "properties": { "subjectId": { "type": "string" }, "predicate": { "enum": ["hasPart", "derivesFrom", "references", "documents", "isVersionOf"] }, "objectId": { "type": "string" } }
+    },
+    "iteration": {
+      "type": "object", "additionalProperties": false, "required": ["id", "createdAt", "artifactIds"],
+      "properties": { "id": { "type": "string" }, "createdAt": { "type": "string" }, "createdByActorId": { "type": "string" }, "artifactIds": { "type": "array", "items": { "type": "string" } }, "note": { "type": "string" } }
+    },
+    "annotation": {
+      "type": "object", "additionalProperties": false, "required": ["@context", "id", "type", "body", "target"],
+      "properties": { "@context": { "const": "http://www.w3.org/ns/anno.jsonld" }, "id": { "type": "string" }, "type": { "const": "Annotation" }, "body": {}, "target": { "oneOf": [{ "type": "string" }, { "type": "object", "required": ["source"], "properties": { "source": { "type": "string" }, "selector": {} } }] }, "creator": { "type": "string" }, "created": { "type": "string" } }
+    },
+    "view": {
+      "type": "object", "additionalProperties": false, "required": ["id", "type", "label"],
+      "properties": { "id": { "type": "string" }, "type": { "enum": ["AnnotationCollection", "Dataset", "CreativeWork"] }, "label": { "type": "string" }, "items": { "type": "array", "items": { "type": "string" } } }
+    },
+    "usePolicy": {
+      "type": "object", "additionalProperties": false, "required": ["id", "representedSubjectId", "purpose", "destination", "state", "createdAt"],
+      "properties": { "id": { "type": "string" }, "representedSubjectId": { "type": "string" }, "purpose": { "type": "string" }, "destination": { "type": "string" }, "state": { "enum": ["granted", "denied", "withdrawn"] }, "createdAt": { "type": "string" }, "evidenceRef": { "type": "string" } }
+    },
+    "provenance": {
+      "type": "object", "additionalProperties": false, "required": ["createdAt"],
+      "properties": { "createdAt": { "type": "string" }, "createdByActorId": { "type": "string" }, "sourceSystem": { "type": "string" }, "sourceId": { "type": "string" } }
+    },
+    "snapshot": {
+      "type": "object", "additionalProperties": false, "required": ["id", "createdAt", "artifactIds"],
+      "properties": { "id": { "type": "string" }, "createdAt": { "type": "string" }, "artifactIds": { "type": "array", "items": { "type": "string" } }, "reason": { "type": "string" } }
+    }
+  }
+}

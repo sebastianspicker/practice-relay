@@ -1,7 +1,9 @@
 <!-- Workflow interview guide. Why: gathers neutral accounts of real handoffs without asking respondents to endorse Practice Relay. -->
 # Workflow interview guide
 
-Use after a workflow observation where possible. Record role, work type, site pseudonym, date, and whether the account concerns an observed or recalled handoff.
+Use this after a workflow observation where possible. Record the role, work type,
+site pseudonym, date, and whether the account concerns an observed or recalled
+handoff.
 
 1. Please show or describe the most recent work that moved from creation to assessment and then to retention, deposit, or archive.
 2. Which systems remained authoritative at each step, and why?
@@ -12,4 +14,6 @@ Use after a workflow observation where possible. Record role, work type, site ps
 7. If a portable record existed, what minimum contents would make it useful, and what would make it unsafe or duplicative?
 8. What institutional role owns the budget, policy approval, repository destination, and operational support?
 
-Do not ask whether the participant “prefers Practice Relay,” request competitive rankings, or promise a feature. Attach an artifact inventory and buyer map when approved.
+Do not ask whether the participant "prefers Practice Relay", request competitive
+rankings, or promise a feature. Attach an artifact inventory and buyer map when
+approved.

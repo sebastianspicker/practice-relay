@@ -6,6 +6,12 @@ export interface ResolvedRepositoryPath {
   info: import("node:fs").Stats;
 }
 
+/** Resolve an existing path without crossing its root or a final symlink. */
+export function resolveExistingContainedPath(
+  root: string,
+  candidate: string,
+): ResolvedRepositoryPath;
+
 /** Resolve an existing repository path without crossing protected or symlink boundaries. */
 export function resolveExistingRepositoryPath(
   root: string,
@@ -17,3 +23,9 @@ export function hasSafeRepositoryPath(root: string, candidate: string): boolean;
 
 /** Read one contained regular text file after validating its complete path. */
 export function readRepositoryText(root: string, candidate: string): string;
+
+/** Read one contained regular text file with descriptor identity validation when needed. */
+export function readRepositoryTextWithIdentityFallback(
+  root: string,
+  candidate: string,
+): string;

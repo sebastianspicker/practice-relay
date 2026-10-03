@@ -2,17 +2,23 @@
  * Contained read and write paths for release-reachable fixture generators.
  * Why: demos must reject protected, linked, or external paths before file access.
  */
+import { randomBytes } from "node:crypto";
 import {
   closeSync,
   constants,
-  existsSync,
+  fchmodSync,
+  fstatSync,
+  fsyncSync,
   lstatSync,
   mkdirSync,
   openSync,
   realpathSync,
+  renameSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { umask } from "node:process";
 import { isProtectedRepositoryPath } from "./protected-paths.mjs";
 import { readRepositoryText } from "./repository-files.mjs";
 
@@ -68,6 +74,40 @@ function assertCanonicalContainment(root, candidate) {
   }
 }
 
+function outputFileInfo(root, candidate) {
+  let info;
+  try {
+    info = lstatSync(candidate);
+  } catch (error) {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  }
+  if (!info.isFile()) throw new Error("contained output is not a regular file");
+  if (info.nlink !== 1) {
+    throw new Error("contained output has multiple hard links");
+  }
+  assertCanonicalContainment(root, candidate);
+  return info;
+}
+
+function syncDirectoryBestEffort(directory) {
+  let descriptor;
+  try {
+    descriptor = openSync(directory, constants.O_RDONLY);
+    fsyncSync(descriptor);
+  } catch {
+    // Atomic visibility does not depend on directory fsync support.
+  } finally {
+    if (descriptor !== undefined) {
+      try {
+        closeSync(descriptor);
+      } catch {
+        // A durability cleanup failure cannot undo an already published file.
+      }
+    }
+  }
+}
+
 /** Read a contained text input after rejecting every symlink component. */
 export function readContainedText(root, candidate) {
   const { absoluteRoot, absolute } = containedPath(root, candidate);
@@ -108,23 +148,86 @@ export function writeContainedText(root, candidate, contents) {
     throw new Error("contained output escapes its directory");
   }
   assertNoSymlinkComponents(absoluteRoot, absolute, true);
-  if (existsSync(absolute)) {
-    const info = lstatSync(absolute);
-    if (!info.isFile()) throw new Error("contained output is not a regular file");
-    assertCanonicalContainment(absoluteRoot, absolute);
-  }
-  const descriptor = openSync(
-    absolute,
-    constants.O_WRONLY |
-      constants.O_CREAT |
-      constants.O_TRUNC |
-      constants.O_NOFOLLOW,
-    0o644,
-  );
+  const existingInfo = outputFileInfo(absoluteRoot, absolute);
+  const finalMode = existingInfo
+    ? existingInfo.mode & 0o777
+    : 0o644 & ~umask() & 0o777;
+  let descriptor;
+  let temporary;
+  let temporaryIdentity;
+  let published = false;
   try {
+    for (let attempt = 0; attempt < 16; attempt += 1) {
+      temporary = join(
+        outputDirectory,
+        `.contained-output-${randomBytes(16).toString("hex")}.tmp`,
+      );
+      try {
+        descriptor = openSync(
+          temporary,
+          constants.O_WRONLY |
+            constants.O_CREAT |
+            constants.O_EXCL |
+            constants.O_NOFOLLOW,
+          0o600,
+        );
+        break;
+      } catch (error) {
+        temporary = undefined;
+        if (error?.code !== "EEXIST" || attempt === 15) throw error;
+      }
+    }
+    temporaryIdentity = fstatSync(descriptor);
+    if (!temporaryIdentity.isFile()) {
+      throw new Error("contained temporary output is not a regular file");
+    }
+    if (temporaryIdentity.nlink !== 1) {
+      throw new Error("contained temporary output has multiple hard links");
+    }
     writeFileSync(descriptor, contents, "utf8");
-  } finally {
-    closeSync(descriptor);
+    fchmodSync(descriptor, finalMode);
+    fsyncSync(descriptor);
+    assertNoSymlinkComponents(absoluteRoot, absolute, true);
+    outputFileInfo(absoluteRoot, absolute);
+    const finalTemporaryInfo = fstatSync(descriptor);
+    if (finalTemporaryInfo.nlink !== 1) {
+      throw new Error("contained temporary output has multiple hard links");
+    }
+    const completedDescriptor = descriptor;
+    descriptor = undefined;
+    closeSync(completedDescriptor);
+    const pathnameInfo = lstatSync(temporary);
+    if (
+      pathnameInfo.dev !== temporaryIdentity.dev ||
+      pathnameInfo.ino !== temporaryIdentity.ino
+    ) {
+      throw new Error("contained temporary output changed before publication");
+    }
+    renameSync(temporary, absolute);
+    published = true;
+    syncDirectoryBestEffort(outputDirectory);
+  } catch (error) {
+    if (descriptor !== undefined) {
+      try {
+        closeSync(descriptor);
+      } catch {
+        // Preserve the primary publication failure.
+      }
+    }
+    if (!published && temporary && temporaryIdentity) {
+      try {
+        const current = lstatSync(temporary);
+        if (
+          current.dev === temporaryIdentity.dev &&
+          current.ino === temporaryIdentity.ino
+        ) {
+          unlinkSync(temporary);
+        }
+      } catch {
+        // Remove only the inode this call created and preserve the primary failure.
+      }
+    }
+    throw error;
   }
   return absolute;
 }

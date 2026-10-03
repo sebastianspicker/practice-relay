@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:work-record:schema:time-core:0.1",
+  "title": "TimeSpine",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "mode", "durationMs"],
+  "properties": {
+    "schemaVersion": { "const": "0.1.0" },
+    "mode": {
+      "type": "string",
+      "enum": ["absolute", "hybrid"],
+      "description": "Absolute is millisecond-only; hybrid requires meter."
+    },
+    "durationMs": { "type": "number", "minimum": 0 },
+    "markers": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/marker" }
+    },
+    "regions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/region" }
+    },
+    "meter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tempoBpm", "timeSignature"],
+      "properties": {
+        "tempoBpm": { "type": "number", "exclusiveMinimum": 0 },
+        "timeSignature": { "type": "string" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "mode": { "const": "hybrid" } } },
+      "then": { "required": ["meter"] },
+      "else": { "not": { "required": ["meter"] } }
+    }
+  ],
+  "$defs": {
+    "marker": {
+      "type": "object",
+      "required": ["id", "tMs", "label"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "tMs": { "type": "number", "minimum": 0 },
+        "label": { "type": "string" }
+      }
+    },
+    "region": {
+      "type": "object",
+      "required": ["id", "startMs", "endMs"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "startMs": { "type": "number", "minimum": 0 },
+        "endMs": { "type": "number", "minimum": 0 },
+        "label": { "type": "string" }
+      }
+    }
+  }
+}

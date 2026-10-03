@@ -1,41 +1,48 @@
-# Shared contracts and WorkRecord Core
+# Shared packages
 
-This directory contains the shared domain and schema packages used by Practice Relay and the MvEI surfaces. WorkRecord Core is a technical boundary, not a user-facing application.
+These are the reusable domain, handoff, movement, protocol, and storage packages
+used by Practice Relay and MvEI. Every package is private in the
+`0.4.0-alpha.1` source candidate.
 
-Status: local `0.4.0-alpha.1` candidate. Workspace packages are private and currently export TypeScript source. They are not prepared for npm publication.
-
-| Package | Role |
-|---|---|
-| `@practice-relay/work-record-core` | Neutral WorkRecord types, profiles, represented-subject policy, and snapshots |
-| `@practice-relay/work-record-package` | Manifest validation and RO-Crate 1.3 handoff packages |
-| `@practice-relay/time-core` | Shared clocks, markers, and regions |
-| `@practice-relay/media-index` | Media and take identity contracts |
-| `@practice-relay/use-policy` | Purpose and export-filter contracts |
-| `@practice-relay/movement-encode` | MvEI schemas, vocabulary, fixtures, and helpers |
-| `@practice-relay/interop` | OTIO, EAF, and OSC conversion surfaces with loss reporting |
+| Package | Responsibility | Documentation |
+| --- | --- | --- |
+| `@practice-relay/work-record` | WorkRecord domain, parser, time, policy, media-reference, and store contracts | [`work-record/README.md`](work-record/README.md) |
+| `@practice-relay/handoff` | Package integrity, RO-Crate, ZIP, imports, and declared-loss projections | [`handoff/README.md`](handoff/README.md) |
+| `@practice-relay/movement` | MvEI schemas, vocabulary, glyphs, corpus, browser parser, transforms | [`movement/README.md`](movement/README.md) |
+| `@practice-relay/movement-toolkit` | MvEI validation, capture, import, reading, and engraving tools | [`movement-toolkit/README.md`](movement-toolkit/README.md) |
+| `@practice-relay/auth` | Local HMAC bearer authentication and configured-user validation | [Relay operations](../docs/relay/operations.md) |
+| `@practice-relay/record-store` | Memory, JSON, and PostgreSQL WorkRecord persistence | [Relay operations](../docs/relay/operations.md) |
+| `@practice-relay/database` | Shared PostgreSQL pools, transactions, explicit migrations | [Multi-process operations](../docs/relay/multi-process.md) |
+| `@practice-relay/runtime-state` | Shared login admission and single-use LTI state | [Multi-process operations](../docs/relay/multi-process.md) |
+| `@practice-relay/media-store` | Streaming filesystem and S3 media with durable quota and recovery | [Relay operations](../docs/relay/operations.md) |
+| `@practice-relay/lti` | Local LTI/OIDC/JWT/AGS helpers | [Relay API contracts](../docs/relay/api-and-contracts.md) |
 
 ## Contract rules
 
-1. MvEI schemas live only in `movement-encode`; applications must not fork them.
-2. `movement_annotation` is not Labanotation.
-3. Practice Relay and MvEI Workbench share contracts but remain separate products.
-4. Breaking schema changes use the documented dual-RFC process.
-5. Conversion loss must remain explicit at interop boundaries.
-6. WorkRecord package behavior profiles existing RO-Crate practice and does not claim a new packaging standard.
+- Packages never import applications; use stable `@practice-relay/*` exports.
+- WorkRecord and movement remain independent domains.
+- Movement schemas, vocabulary, glyph contracts, and corpus live only in `movement`.
+- Handoff projections and movement transformations report unsupported or omitted
+  material rather than claiming lossless equivalence.
+- A tenant namespace is not actor authorization. Memory and JSON are
+  single-process adapters; multiple processes require PostgreSQL records and
+  shared runtime/media coordination.
+- Packed-consumer checks for `movement` and `movement-toolkit` verify local
+  artifacts; they do not authorize npm publication.
 
 ## Validation
 
 From the repository root:
 
 ```bash
-pnpm typecheck
-pnpm build
-pnpm validate:schemas
-pnpm --filter @practice-relay/work-record-core test
-pnpm --filter @practice-relay/work-record-package test
-pnpm --filter @practice-relay/interop test
+pnpm check:types
+pnpm check:build
+pnpm check:packages
+pnpm check:contracts
+pnpm check:boundaries
 ```
 
-Package-specific details live in each package directory. Publication prerequisites are documented in [`movement-encode/PUBLISH.md`](movement-encode/PUBLISH.md).
-Shared contract guidance is in [`../docs/packages`](../docs/packages), and test
-placement and commands are documented in [`../docs/testing.md`](../docs/testing.md).
+A single suite, for example, is
+`pnpm --filter @practice-relay/work-record test`. See [Testing](../docs/testing.md)
+for every workspace command and [Architecture](../docs/ARCHITECTURE.md) for
+dependency rules.

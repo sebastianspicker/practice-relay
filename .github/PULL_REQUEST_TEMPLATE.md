@@ -1,20 +1,15 @@
 ## Summary
 
-<!-- What changed and why (Practice Relay / WorkRecord Core / MvEI / MvEI Workbench). -->
+<!-- What changed, and why? Link the issue if there is one. -->
 
 ## Checklist
 
-- [ ] `pnpm validate:schemas` passes
-- [ ] `pnpm validate:docs` passes
-- [ ] `pnpm typecheck` and `pnpm quality:check` pass
-- [ ] `pnpm test` passes
-- [ ] `pnpm verify:public-hygiene` passes for public-facing changes
-- [ ] No forbidden marketing claims (first digital score, first browser Laban, LabanLite = MvEI, AI coach as Practice Relay primary, IMS certified, multi-campus SSO shipped)
-- [ ] Practice Relay and MvEI Workbench remain separate applications
-- [ ] Movement schemas only under `@practice-relay/movement-encode` (if touched)
-- [ ] Docs / screenshots updated if user-facing behaviour changed
-- [ ] Brief JSDoc / file comment on new public functions (what + why)
+- [ ] Relevant focused tests pass
+- [ ] `pnpm check:all` passes, or unavailable checks are explained
+- [ ] Public contracts and documentation are updated where needed
+- [ ] No credentials, local data, generated output, or tool state is included
+- [ ] Practice Relay, MvEI, and MvEI Workbench boundaries remain explicit
 
 ## Test plan
 
-<!-- Commands and API/CLI paths exercised. For UI work include demo:render-html, demo:screenshots, and visual QA evidence or the exact renderer blocker. -->
+<!-- Commands and API or CLI paths you exercised. For UI work, note pnpm demo:render-html and the surfaces you inspected. -->

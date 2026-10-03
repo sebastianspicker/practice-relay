@@ -1,0 +1,9 @@
+/** Shared high-key design system with preserved evidence preview styling. */
+@import "./styles/tokens.css";
+@import "./styles/base.css";
+@import "./styles/dossier.css";
+@import "./styles/decision.css";
+@import "./styles/dialog.css";
+@import "./styles/studio.css";
+@import "./styles/movement.css";
+@import "./styles/handoff.css";

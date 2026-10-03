@@ -1,76 +1,84 @@
 # Contributing
 
-Contributions may address Practice Relay, MvEI, MvEI Workbench, or the shared WorkRecord Core contracts. Keep the product boundaries explicit in code, tests, and documentation.
+Thanks for looking at Practice Relay. Contributions can touch Practice Relay,
+MvEI, MvEI Workbench, or the shared WorkRecord contracts. Keep those product
+boundaries visible in code, tests, and documentation.
 
 ## Setup
 
-Requirements are Node.js 20 or later and pnpm 9.15.0.
-Use a Node.js distribution with Corepack support. If `corepack enable` cannot
-write its shims, switch to a Node installation where it can do so.
+You need Node.js 24 LTS and pnpm 9.15.0. From the repository root:
 
 ```bash
 corepack enable
 pnpm install --frozen-lockfile
-pnpm verify:core
+pnpm check:all
 ```
 
-## Repository boundaries
+If Corepack cannot write its shims, use a Node.js install where it can rather
+than substituting an unpinned package manager.
 
-| Path | Ownership |
-|---|---|
-| `practice-relay/` | Practice Relay application and service packages |
-| `mvei/` | MvEI validator and reference tools plus the separate MvEI Workbench application |
-| `packages/` | WorkRecord Core and shared contracts |
-| `docs/` | Maintained technical guides, product boundaries, and release checks |
+## Where things live
 
-Do not merge Practice Relay and MvEI Workbench into one application. Movement schemas belong only in `packages/movement-encode`. See [`docs/products/merge-decision.md`](docs/products/merge-decision.md) and [`docs/EVIDENCE.md`](docs/EVIDENCE.md).
+- `apps/` holds runnable delivery surfaces and process composition.
+- `packages/` holds reusable domain, adapter, and interchange contracts.
+- `packages/work-record` and `packages/movement` are independent domains.
+- Practice Relay and MvEI Workbench are separate applications.
+- Movement schemas and vocabulary belong only in `packages/movement`.
 
-## Change requirements
+Read [Architecture](docs/ARCHITECTURE.md) before moving behavior between
+components or changing dependencies.
 
-- Review this guide and the relevant implementation map before editing.
-- Preserve unrelated worktree changes.
-- Keep public APIs stable unless correctness requires a reviewed change.
-- Add a short file-level comment to source files and a one-line JSDoc comment to exports.
-- Add tests for observable behavior and boundary conditions.
-- Follow the test locations and focused commands in [`docs/testing.md`](docs/testing.md).
-- Do not add production dependencies without prior approval.
-- Do not add unsupported product, adoption, compatibility, pilot, certification, or performance claims.
-- Do not include credentials, environment files, local data, real participant media, logs, or local tool state.
+## Making a change
 
-For changes to work-record package export, validate against `packages/work-record-package/schemas/work-record-package.schema.json`. For changes to MvEI, validate the shared corpus and do not create application-local schema forks.
+1. Read the current implementation, manifest scripts, tests, and relevant docs.
+2. Leave unrelated worktree changes alone, and keep `@practice-relay/*` exports stable.
+3. Add or update tests for observable behavior and edge cases.
+4. Run the narrowest relevant workspace test first, then the broadest practical
+   root gate from [Testing](docs/testing.md).
+5. Update documentation when behavior, routes, exports, commands,
+   configuration, or limitations change.
+
+Please do not add production dependencies without maintainer approval, and do
+not add product, adoption, certification, compatibility, pilot, or performance
+claims the repository cannot support.
+
+For a public API change, update both
+[`apps/relay-api/src/public-routes.ts`](apps/relay-api/src/public-routes.ts) and
+[`apps/relay-api/openapi.yaml`](apps/relay-api/openapi.yaml). For handoff work,
+validate the manifest schema and keep projection loss reporting intact. For
+movement-schema work, update the canonical schema, the generated contract, the
+corpus, affected consumers, and compatibility notes together.
 
 ## Validation
 
-Run the narrowest relevant test first, followed by the broadest practical repository gate.
+The complete local gate is:
 
 ```bash
-pnpm typecheck
-pnpm build
-pnpm lint
-pnpm test
-pnpm validate:schemas
-pnpm validate:docs
-pnpm validate:evidence
-pnpm verify:public-hygiene
+pnpm check:all
 ```
 
-For user-interface changes, regenerate the portable HTML snapshots and inspect
-the affected surface locally:
+It runs `check:types`, `check:build`, `check:packages`, `check:tooling`,
+`check:contracts`, `check:docs`, `check:boundaries`, and `check:unit`, in that
+order. Use `pnpm check:release` when the public source set is in scope.
 
-```bash
-pnpm demo:render-html
-```
+For an interface change, run the affected app tests, start the surface, and
+inspect it in a browser. `pnpm demo:render-html` produces portable review
+snapshots, but it is no substitute for the live application. `pnpm screenshots`
+refreshes the README and Pages tour images.
 
-Document failed, skipped, unavailable, and environment-blocked checks separately. Do not suppress a check solely to obtain a passing result.
+Report failed, skipped, unavailable, and environment-blocked checks separately.
+A green local gate does not authorize a commit, tag, push, package publication,
+deployment, or GitHub release.
 
-## Documentation and release changes
+## Community
 
-Update maintained documentation when behavior, commands, configuration, or limitations change. Current entry points are [`README.md`](README.md), [`docs/ALPHA.md`](docs/ALPHA.md), [`practice-relay/IMPLEMENTATION.md`](practice-relay/IMPLEMENTATION.md), and [`mvei/IMPLEMENTATION.md`](mvei/IMPLEMENTATION.md).
+Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Do not put a vulnerability,
+credential, personal data, or participant media in a public issue; the current
+reporting limitation is in [SECURITY.md](SECURITY.md).
 
-Release preparation follows [`docs/RELEASE-CHECKLIST.md`](docs/RELEASE-CHECKLIST.md) and [`RELEASING.md`](RELEASING.md). A passing local gate does not authorize a commit, tag, push, package publication, or GitHub release.
+Documentation entry points are the [root README](README.md),
+[architecture](docs/ARCHITECTURE.md), the [Practice Relay guide](docs/relay/README.md),
+and the [MvEI guide](docs/movement/README.md).
 
-## Conduct and security
-
-Follow [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md). Do not place vulnerability details in a public issue. The confidential route is still unconfigured and is tracked as a publication blocker in [`SECURITY.md`](SECURITY.md).
-
-The repository is licensed under Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+The repository is licensed under Apache License 2.0. See [LICENSE](LICENSE) and
+[NOTICE](NOTICE).

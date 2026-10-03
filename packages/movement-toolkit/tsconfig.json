@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "allowJs": true,
+    "paths": {
+      "@practice-relay/movement": ["../movement/browser/contracts.d.mts"],
+      "@practice-relay/movement/glyphs": ["../movement/glyphs/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "tests/**/*"]
+}

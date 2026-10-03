@@ -1,0 +1,15 @@
+{
+  "name": "@practice-relay/movement-schema-site",
+  "version": "0.4.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/dev.mjs",
+    "generate": "node --import tsx scripts/generate-site.mjs",
+    "test": "node --import tsx --test test/*.verify.mjs"
+  },
+  "dependencies": {
+    "@practice-relay/movement": "workspace:*"
+  },
+  "license": "Apache-2.0"
+}

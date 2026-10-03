@@ -2,13 +2,12 @@
  * Verify that a release candidate exposes no local residue or stale public evidence.
  *
  * Candidate mode permits explicitly documented external blockers. `--strict`
- * additionally requires a clean Git checkout, a private reporting route, and a
- * current PNG for every screenshot source.
+ * additionally requires a clean Git checkout and a private reporting route.
+ * Pages evidence must be the loaded static application, never a screenshot.
  */
 import {
   existsSync,
   readdirSync,
-  readFileSync,
 } from "node:fs";
 import { dirname, extname, join, relative, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
@@ -22,14 +21,14 @@ import {
 import { findWorkspacePackageMetadataErrors } from "./workspace-package-metadata.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const TRUSTED_GIT_EXECUTABLE = "/usr/bin/git";
 const SCAN_ROOTS = [
   ".github",
+  "apps",
   "deploy",
   "docs",
   "fixtures",
-  "mvei",
   "packages",
-  "practice-relay",
   "scripts",
   "tests",
 ];
@@ -40,7 +39,6 @@ const ROOT_FILES = [
   "PRODUCT.md",
   "README.md",
   "RELEASING.md",
-  "RELEASE_STATUS.md",
   "SECURITY.md",
   "docker-compose.campus-lab.yml",
   "docker-compose.production-lab.yml",
@@ -90,7 +88,6 @@ const EXCLUDED_SCANNER_FILES = new Set([
   "scripts/verify-public-hygiene.mjs",
 ]);
 const REQUIRED_IGNORE_RULES = [
-  "/AGENTS.md",
   "node_modules/",
   ".pnpm-store/",
   "*.log",
@@ -99,8 +96,12 @@ const REQUIRED_IGNORE_RULES = [
   "!.env.example",
   ".codegraph/",
   ".agents/",
+  ".claude/",
   ".codex/",
+  ".cursor/",
   ".serena/",
+  "AGENTS.md",
+  "CODEX.md",
   "/data/**",
   "*.pem",
   "*.key",
@@ -115,10 +116,17 @@ const REQUIRED_PUBLIC_FILES = [
   "PRODUCT.md",
   "README.md",
   "RELEASING.md",
-  "RELEASE_STATUS.md",
   "SECURITY.md",
   "docs/ALPHA.md",
   "docs/RELEASE-CHECKLIST.md",
+];
+const PAGES_WORKFLOW_PATH = ".github/workflows/pages.yml";
+const PAGES_ARTIFACT_PATH = "apps/relay-web/dist";
+const PAGES_DEMO_URL = "https://sebastianspicker.github.io/practice-relay/";
+const REQUIRED_PAGES_ASSETS = [
+  "apps/relay-web/src/index.html",
+  "apps/relay-web/src/app.css",
+  "apps/relay-web/src/practice-relay-app.mjs",
 ];
 
 function normalizedExt(path) {
@@ -266,8 +274,8 @@ function verifyReleaseIdentity(root, errors) {
     "docs/README.md",
     "docs/ALPHA.md",
     "docs/images/0.4.0-alpha.1/README.md",
-    "practice-relay/README.md",
-    "mvei/README.md",
+    "docs/relay/README.md",
+    "docs/movement/README.md",
     "packages/README.md",
     ".github/ISSUE_TEMPLATE/bug_report.yml",
   ];
@@ -281,52 +289,58 @@ function verifyReleaseIdentity(root, errors) {
   return release;
 }
 
-function verifyPng(root, path, label, errors) {
-  if (!hasSafeRepositoryPath(root, path)) {
-    errors.push(`missing PNG evidence: ${label}`);
+function verifyPagesDemoEvidence(root, errors) {
+  if (!hasSafeRepositoryPath(root, PAGES_WORKFLOW_PATH)) {
+    errors.push(`missing Pages demo workflow: ${PAGES_WORKFLOW_PATH}`);
     return;
   }
-  const { absolute } = resolveExistingRepositoryPath(root, path);
-  const data = readFileSync(absolute);
-  if (data.length < 10_000) errors.push(`PNG too small: ${label}`);
-  const isPng = data.subarray(0, 8).equals(
-    Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
-  );
-  if (!isPng || data.length < 24) {
-    errors.push(`invalid PNG signature: ${label}`);
-    return;
-  }
-  const width = data.readUInt32BE(16);
-  const height = data.readUInt32BE(20);
-  if (width < 1000 || height < 700) {
-    errors.push(`PNG dimensions too small: ${label} (${width}x${height})`);
-  }
-}
 
-function verifyScreenshots(root, errors) {
-  const gallery = join(root, "docs/images/0.4.0-alpha.1");
-  for (const base of ["practice-relay-web", "mvei-schema-site", "mvei-workbench"]) {
-    const source = join(gallery, `${base}.source.html`);
-    if (!hasSafeRepositoryPath(root, source)) {
-      errors.push(`missing product evidence: ${relative(root, source)}`);
-      continue;
-    }
-    const missing = findMissingLocalHtmlReferences(
-      readRepositoryText(root, source),
-      source,
-      root,
-    );
-    for (const reference of missing) {
-      errors.push(`${relative(root, source)} has missing local reference: ${reference}`);
+  const workflow = readRepositoryText(root, PAGES_WORKFLOW_PATH);
+  const workflowRequirements = [
+    ["Node 24 setup", /actions\/setup-node@v4[\s\S]*node-version:\s*24/u],
+    [
+      "dependency-free relay-web test gate",
+      /node --test apps\/relay-web\/test\/\*\.verify\.mjs/u,
+    ],
+    ["Pages artifact upload", /actions\/upload-pages-artifact@v3/u],
+    ["relay-web static artifact path", /path:\s*apps\/relay-web\/dist/u],
+    ["Pages deployment", /actions\/deploy-pages@v4/u],
+  ];
+  for (const [label, pattern] of workflowRequirements) {
+    if (!pattern.test(workflow)) errors.push(`Pages demo workflow lacks ${label}`);
+  }
+
+  for (const path of REQUIRED_PAGES_ASSETS) {
+    if (!hasSafeRepositoryPath(root, path)) {
+      errors.push(`missing Pages demo artifact asset: ${path}`);
     }
   }
-  for (const base of ["practice-relay-web", "mvei-schema-site", "mvei-workbench"]) {
-    verifyPng(
-      root,
-      join(gallery, `${base}.png`),
-      `0.4.0-alpha.1/${base}.png`,
-      errors,
-    );
+  if (hasSafeRepositoryPath(root, "apps/relay-web/src/index.html")) {
+    const page = readRepositoryText(root, "apps/relay-web/src/index.html");
+    for (const reference of ["./app.css", "./practice-relay-app.mjs"]) {
+      if (!page.includes(reference)) {
+        errors.push(`Pages demo artifact does not load ${reference}`);
+      }
+    }
+  }
+
+  for (const path of ["README.md", "RELEASING.md", "docs/ALPHA.md", "docs/RELEASE-CHECKLIST.md"]) {
+    const document = readRepositoryText(root, path);
+    if (!document.includes(PAGES_DEMO_URL) || !document.includes(PAGES_ARTIFACT_PATH)) {
+      errors.push(`Pages demo documentation is not linked to source and expected URL: ${path}`);
+    }
+  }
+  const alpha = readRepositoryText(root, "docs/ALPHA.md");
+  for (const disclosure of [
+    "synthetic, sanitized local mock data",
+    "simulated",
+    "no API or service writes",
+    "deployment readiness",
+    "institutional adoption",
+  ]) {
+    if (!alpha.includes(disclosure)) {
+      errors.push(`Pages demo documentation omits required disclosure: ${disclosure}`);
+    }
   }
 }
 
@@ -334,14 +348,16 @@ function verifyCandidateResidue(root, errors) {
   const forbidden = [
     "docs/images/0.4.0-alpha.1/practice-relay-concept.png",
     "docs/images/0.4.0-alpha.1/mvei-workbench-concept.png",
+    "docs/images/0.4.0-alpha.1/lti-mock-admin.png",
+    "docs/images/0.4.0-alpha.1/mvei-corpus-site.png",
     "docs/images/archive/0.2.7-alpha.1",
     "docs/pilot-pack/preference-survey.md",
-    "practice-relay/docs/mvp.md",
-    "practice-relay/docs/prd.md",
-    "practice-relay/docs/roadmap.md",
-    "mvei/docs/mvp.md",
-    "mvei/docs/prd.md",
-    "mvei/docs/roadmap.md",
+    "docs/relay/mvp.md",
+    "docs/relay/prd.md",
+    "docs/relay/roadmap.md",
+    "docs/movement/mvp.md",
+    "docs/movement/prd.md",
+    "docs/movement/roadmap.md",
     "docs/images/alpha/faculty-path/X01-out-of-path-stubs.png",
     "docs/images/alpha/faculty-path/X01-out-of-path-stubs.source.html",
   ];
@@ -356,7 +372,7 @@ function verifyStrictExternalState(root, strict, errors, warnings) {
     (strict ? errors : warnings).push("confidential security reporting route is not configured");
   }
   const insideWorktree = spawnSync(
-    "git",
+    TRUSTED_GIT_EXECUTABLE,
     ["rev-parse", "--is-inside-work-tree"],
     { cwd: root, encoding: "utf8" },
   );
@@ -364,7 +380,7 @@ function verifyStrictExternalState(root, strict, errors, warnings) {
     (strict ? errors : warnings).push("Git metadata is unavailable; tracked-set and clean-tree checks were skipped");
     return;
   }
-  const status = spawnSync("git", ["status", "--short"], {
+  const status = spawnSync(TRUSTED_GIT_EXECUTABLE, ["status", "--short"], {
     cwd: root,
     encoding: "utf8",
   });
@@ -386,7 +402,7 @@ export function collectPublicHygiene(root = repoRoot, options = {}) {
   const release = verifyReleaseIdentity(root, errors);
   const packageMetadata = findWorkspacePackageMetadataErrors(root, release.version);
   errors.push(...packageMetadata.errors);
-  verifyScreenshots(root, errors);
+  verifyPagesDemoEvidence(root, errors);
   verifyCandidateResidue(root, errors);
   verifyStrictExternalState(root, strict, errors, warnings);
   return {

@@ -2,7 +2,7 @@
 # Not a full Prometheus deployment - paste into your scrape_configs or
 # import as a file_sd / additional scrape config.
 #
-# Scrapes admin-authenticated in-process text at GET /metrics (see practice-relay/docs/slo.md).
+# Scrapes admin-authenticated in-process text at GET /metrics (see docs/relay/operations.md).
 # This is lab observability, not federated multi-campus HA.
 
 scrape_configs:

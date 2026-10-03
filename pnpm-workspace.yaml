@@ -1,10 +1,7 @@
 packages:
+  - "apps/*"
   - "packages/*"
-  - "practice-relay/apps/*"
-  - "practice-relay/packages/*"
   - "tests/*"
-  - "mvei/apps/*"
-  - "mvei/packages/*"
 
 overrides:
   fast-uri: 3.1.5

@@ -22,8 +22,14 @@ institutional study review.
 
 ## Boundary
 
-Study whether a portable, versioned, policy-aware WorkRecord improves a bounded handoff. Do not test whether users prefer a named product; do not imply Practice Relay replaces an LMS, ePortfolio, DAM, repository, video editor, or authoring suite. MvEI and MvEI Workbench remain separate products.
+Study whether a portable, versioned, policy-aware WorkRecord improves a bounded
+handoff. Do not test whether users prefer a named product, and do not imply that
+Practice Relay replaces an LMS, ePortfolio, DAM, repository, video editor, or
+authoring suite. MvEI and MvEI Workbench remain separate products.
 
 ## Handling notes
 
-Use site pseudonyms in working notes. Inventory metadata or redacted descriptions only; do not put participant media, credentials, personal data, or restricted research material in this repository. Follow each institution’s ethics, privacy, and repository processes.
+Use site pseudonyms in working notes. Inventory metadata or redacted descriptions
+only; do not put participant media, credentials, personal data, or restricted
+research material in this repository. Follow each institution's ethics, privacy,
+and repository processes.

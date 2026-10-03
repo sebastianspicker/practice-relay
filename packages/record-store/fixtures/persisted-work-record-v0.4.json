@@ -1,0 +1,50 @@
+{
+  "id": "persisted-record",
+  "schemaVersion": "0.4",
+  "profile": "urn:work-record:profile:core:0.4",
+  "revision": 7,
+  "title": "Persisted v0.4 record",
+  "members": [{ "userId": "student-1", "role": "student" }],
+  "actors": [],
+  "representedSubjects": [{
+    "id": "student-1",
+    "type": "Person",
+    "label": "Student"
+  }],
+  "spine": {
+    "schemaVersion": "0.1.0",
+    "mode": "absolute",
+    "durationMs": 1000,
+    "markers": [],
+    "regions": []
+  },
+  "tracks": [{ "id": "track-video", "type": "video", "ref": "media/run.mp4" }],
+  "preferredTakeId": "take-1",
+  "takeIds": ["take-1"],
+  "takes": [{ "id": "take-1", "mediaPath": "media/run.mp4", "byteSize": 1 }],
+  "comments": [],
+  "versions": [],
+  "usePolicySnapshots": [{
+    "id": "snapshot-1",
+    "subjectId": "student-1",
+    "purposes": ["course_assessment"],
+    "exportAllowed": true,
+    "createdAt": "2026-08-29T00:00:00.000Z"
+  }],
+  "movementCapability": "annotation",
+  "artifacts": [],
+  "relations": [],
+  "iterations": [],
+  "annotations": [],
+  "views": [],
+  "usePolicies": [{
+    "id": "grant-1",
+    "representedSubjectId": "student-1",
+    "purpose": "course_assessment",
+    "destination": "lms",
+    "state": "granted",
+    "createdAt": "2026-08-29T00:00:00.000Z"
+  }],
+  "provenance": { "createdAt": "2026-08-29T00:00:00.000Z" },
+  "snapshots": []
+}

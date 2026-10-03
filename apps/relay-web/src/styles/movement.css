@@ -1,0 +1,57 @@
+/* The phrase is an open working surface; tools remain secondary. */
+.movement-editor { min-width: 0; color: var(--ink, #101126); padding-top: 21px; }
+.motif-heading { display: flex; justify-content: space-between; align-items: end; gap: 18px; }
+.motif-heading h2 { margin: 0 0 3px; font-size: 23px; font-weight: 400; letter-spacing: -.55px; }
+.motif-heading p { margin: 0; font-size: 14px; color: var(--muted, #808093); line-height: 1.5; }
+.motif-completeness { font: 11px/1.7 ui-monospace, monospace; color: var(--muted); white-space: nowrap; text-transform: capitalize; padding-bottom: 5px; }
+.motif-sequence { min-height: 326px; position: relative; display: flex; align-items: center; }
+.motif-arcs { position: absolute; inset: 12px 0; width: 100%; height: calc(100% - 24px); pointer-events: none; overflow: visible; }
+.motif-arcs path { fill: none; stroke: #dcd5ec; stroke-width: .7; opacity: .8; }
+.motif-arcs .dashed { stroke-dasharray: 4 4; }
+.motif-items { position: relative; width: 100%; display: flex; gap: clamp(12px, 3.6vw, 62px); align-items: center; padding: 30px 0; margin: 0; list-style: none; overflow-x: auto; }
+.motif-items > li { min-width: 126px; flex: 1 0 126px; position: relative; }
+.motif-items > li:not(:last-child)::after { content: ""; position: absolute; top: 50%; left: 100%; width: clamp(12px, 3.6vw, 62px); border-top: 1px solid #b8b6c6; }
+.movement-editor .motif-tile { display: flex; flex-direction: column; justify-content: center; align-items: start; gap: 5px; width: 100%; min-height: 102px; padding: 17px 19px 14px; color: var(--ink); background: var(--surface, #fff); border: 1px solid var(--line, #d8d6df); border-radius: 5px; box-shadow: none; text-align: left; cursor: pointer; }
+.movement-editor .motif-tile[aria-pressed="true"] { border-color: var(--accent, #927ab8); background: var(--accent-soft, #f0ebf8); }
+.motif-tile span:first-child, .motif-tile span:last-child { font: 11px/1.5 ui-monospace, monospace; color: #55556e; }
+.motif-tile span:nth-child(2) { font-size: 18px; line-height: 1.2; margin-bottom: 7px; }
+.motif-properties { display: grid; grid-template-columns: 1fr 1.1fr; border-top: 1px solid var(--line, #d8d6df); padding-top: 30px; min-height: 224px; }
+.motif-properties > section { padding-left: 24px; }
+.motif-properties > section:first-child { padding: 0 24px 0 0; border-right: 1px solid var(--line, #d8d6df); }
+.motif-properties h3 { font-size: 20px; font-weight: 400; margin: 0 0 24px; letter-spacing: -.4px; }
+.motif-properties label { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14px; margin-bottom: 17px; }
+.motif-properties input, .motif-properties select { width: 100%; min-width: 0; border: 1px solid var(--line, #d8d6df); border-radius: 4px; background: var(--surface, #fff); color: var(--ink); font: inherit; font-size: 16px; padding: 11px; height: 43px; }
+.motif-properties .motif-document-label { display: flex; flex-direction: column; align-items: stretch; gap: 13px; margin-bottom: 9px; }
+.motif-anchor { position: relative; }
+.motif-anchor input { padding-right: 33px; font: 13px ui-monospace, monospace; }
+.motif-anchor > span { position: absolute; right: 12px; top: 14px; color: var(--muted); font: 12px ui-monospace, monospace; pointer-events: none; }
+.motif-help, .motif-selection-empty { margin: 0; color: var(--muted, #808093); font-size: 14px; line-height: 1.6; }
+.motif-validation { margin: 14px 0; font-size: 13px; }
+.motif-validation.is-error { color: #9d293a; }
+.motif-tools { font-size: 13px; border-top: 1px solid var(--line, #d8d6df); padding: 13px 0; color: var(--muted); }
+.motif-tools summary { cursor: pointer; width: fit-content; }
+.motif-tool-actions, .motif-file-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 15px 0; align-items: end; }
+.motif-tools button { color: var(--ink); background: var(--surface, #fff); border: 1px solid var(--line, #d8d6df); border-radius: 4px; padding: 8px 10px; cursor: pointer; }
+.motif-tools button:disabled { opacity: .45; cursor: default; }
+.motif-file-actions label { display: grid; gap: 8px; }
+.motif-file-actions input { max-width: 100%; }
+.motif-projection { margin-top: 18px; line-height: 1.5; }
+.motif-projection pre { max-height: 300px; overflow: auto; padding: 15px; background: #f6f5f8; white-space: pre; font-size: 11px; }
+.motif-projection-warnings { padding-left: 20px; }
+.motif-empty { color: var(--muted); line-height: 1.6; }
+.movement-editor :focus-visible { outline: 2px solid var(--accent, #927ab8); outline-offset: 3px; }
+@media (max-width: 1200px) {
+  .motif-heading { align-items: start; flex-direction: column; gap: 8px; }
+  .motif-properties label { grid-template-columns: 1fr; gap: 8px; }
+  .motif-items { gap: 22px; }
+  .motif-items > li:not(:last-child)::after { width: 22px; }
+}
+@media (max-width: 600px) {
+  .movement-editor { padding-top: 12px; }
+  .motif-heading h2 { font-size: 22px; }
+  .motif-sequence { min-height: 230px; }
+  .motif-properties { grid-template-columns: 1fr; gap: 26px; padding-top: 24px; }
+  .motif-properties > section, .motif-properties > section:first-child { padding: 0; border: 0; }
+  .motif-properties label { grid-template-columns: 100px minmax(0, 1fr); }
+  .motif-properties h3 { margin-bottom: 18px; }
+}

@@ -86,22 +86,25 @@
 
     <section class="section" id="profiles" aria-labelledby="profiles-heading">
       <div class="section-heading"><h2 id="profiles-heading">Profiles</h2><p class="meta">Current implementation</p></div>
-      <ul class="profile-list">        <li><code>mvei-motif</code><small>0.2.0 · Pedagogical Motif profile with controlled vocabulary</small></li>
-        <li><code>mvei-laban-subset</code><small>0.2.0 · Pedagogical Labanotation subset (not full density)</small></li>
-        <li><code>movement_annotation</code><small>v0 · Practice Relay v0: not symbolic Labanotation</small></li>
+      <ul class="profile-list">        <li><code>mvei-motif</code><small>0.2.0 · Motif-level encoding with controlled vocabulary. Not full Labanotation. Not LabanLite CV IR. Partial documents allowed.</small></li>
+        <li><code>mvei-laban-subset</code><small>0.2.0 · Pedagogical Labanotation subset - not full professional density. Partial documents allowed.</small></li>
+        <li><code>movement_annotation</code><small>0.1.0 · Practice Relay-native structured movement annotation (NOT full Labanotation / MvEI). Never label UI as Labanotation when using this type.</small></li>
         <li><code>mvei-laban</code><small>not implemented · Full Labanotation profile is outside the current alpha</small></li></ul>
     </section>
 
     <section class="section" id="corpus" aria-labelledby="corpus-heading">
       <div class="section-heading"><h2 id="corpus-heading">Corpus samples</h2><p class="meta">Pedagogical fixtures</p></div>
-      <ul class="corpus-list">        <li><code>motif-sketch-01</code><small>Pedagogical Motif sketch: walk and turn (completeness: sketch)</small></li>
+      <ul class="corpus-list">        <li><code>motif-sketch-01</code><small>Pedagogical Motif sketch - walk and turn (completeness: sketch)</small></li>
         <li><code>motif-partial-02</code><small>Partial Motif with time anchors (completeness: partial)</small></li>
-        <li><code>laban-subset-01</code><small>Pedagogical Laban subset: walk support (completeness: sketch)</small></li>
+        <li><code>laban-subset-01</code><small>Pedagogical Laban subset - walk support (completeness: sketch)</small></li>
         <li><code>laban-subset-02</code><small>Partial Laban subset with arm gesture + music anchor (completeness: partial)</small></li>
-        <li><code>laban-subset-03-dense</code><small>Denser pedagogical subset: multi-column phrase (completeness: partial)</small></li>
+        <li><code>laban-subset-03-dense</code><small>Denser pedagogical subset - multi-column phrase (completeness: partial)</small></li>
         <li><code>laban-subset-04</code><small>Simultaneity ladder: multi-column + beatOffset groups (completeness: partial)</small></li>
-        <li><code>annotation-v0-demo</code><small>movement_annotation v0 demo events</small></li></ul>
-      <div class="corpus-link"><p>Machine-readable catalogue of pedagogical fixtures with profiles for external validators.<br /><span class="meta">Layout · <code>packages/movement-encode/fixtures/corpus/README.md</code></span></p><a href="../../../packages/movement-encode/fixtures/corpus/index.json">Open corpus index <svg class="link-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg></a></div>
+        <li><code>laban-subset-05</code><small>Gradual density ladder - sketch columns → multi-limb phrase (completeness: partial)</small></li>
+        <li><code>laban-subset-06</code><small>Gradual density II - full staff columns + denser simultaneous phrase (completeness: partial)</small></li>
+        <li><code>annotation-v0-demo</code><small>movement_annotation v0 demo events</small></li>
+        <li><code>workbench-demo</code><small>Default Motif editing example (completeness: partial)</small></li></ul>
+      <div class="corpus-link"><p>Machine-readable catalogue of pedagogical fixtures with profiles for external validators.<br /><span class="meta">Layout · <code>packages/movement/fixtures/corpus/README.md</code></span></p><a href="../../../packages/movement/fixtures/corpus/index.json">Open corpus index <svg class="link-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M14 7l5 5-5 5"/></svg></a></div>
     </section>
 
     <section class="section" id="boundaries" aria-labelledby="boundaries-heading">
@@ -113,15 +116,15 @@
         <li><strong>KineScribe</strong>: Free Motif/Laban literacy app</li></ul></article><article class="card"><h3>Capture bridge</h3><p>Landmark conversion accepts local provenance labels and emits sketch-quality annotations; no capture application or external integration is implemented.</p><p>Events use source plugin_pose and quality sketch; Motif output has completeness sketch.</p><ul class="source-list"><li><code>opencap</code></li>
 <li><code>mediapipe</code></li>
 <li><code>pose2sim</code></li>
-<li><code>other</code></li></ul><p class="meta">Doc · <code>mvei/docs/capture-preference.md</code></p></article></div>
+<li><code>other</code></li></ul><p class="meta">Doc · <code>docs/movement/README.md</code></p></article></div>
     </section>
 
     <section class="section" id="implementation" aria-labelledby="implementation-heading">
       <div class="section-heading"><h2 id="implementation-heading">Implementation notes</h2><p class="meta">Governance and interchange</p></div>
-      <div class="grid"><article class="card"><h3>Governance status</h3><p>No external organization or governance body is appointed; two independent organizations remain a future minimum threshold.</p><p class="meta">Doc · <code>mvei/docs/consortium-seed.md</code></p></article><article class="card"><h3>LabanWriter migration</h3><p>Motif is supported. Lossy LabanWriter import and full mvei-laban are not implemented.</p><p class="meta">Doc · <code>mvei/docs/labanwriter-migration.md</code></p></article><article class="card"><h3>Music co-timeline annex</h3><p>Optional musicCoTimeline on Motif (MusicXML/MEI anchors).</p><p class="meta">Schema · <code>packages/movement-encode/schemas/music-co-timeline-annex.schema.json</code><br />Doc · <code>mvei/docs/co-timeline-annex.md</code></p></article><article class="card"><h3>Schema source</h3><p>Versioned schema documents remain the implementation authority for this reference site.</p><p><code>packages/movement-encode/schemas/</code></p></article></div>
+      <div class="grid"><article class="card"><h3>Governance status</h3><p>No external organization or governance body is appointed; two independent organizations remain a future minimum threshold.</p><p class="meta">Doc · <code>docs/movement/README.md</code></p></article><article class="card"><h3>LabanWriter migration</h3><p>Documented intermediate JSON import exists. Proprietary .lw decoding and full mvei-laban are not implemented.</p><p class="meta">Doc · <code>docs/movement/architecture.md</code></p></article><article class="card"><h3>Music co-timeline annex</h3><p>Optional musicCoTimeline on Motif (MusicXML/MEI anchors).</p><p class="meta">Schema · <code>packages/movement/schemas/music-co-timeline-annex.schema.json</code><br />Doc · <code>docs/movement/architecture.md</code></p></article><article class="card"><h3>Schema source</h3><p>Versioned schema documents remain the implementation authority for this reference site.</p><p><code>packages/movement/schemas/</code></p></article></div>
     </section>
 
   </main>
-  <footer class="site-footer"><p class="meta">MvEI reference surface</p><p>Schemas: <code>packages/movement-encode/schemas/</code></p></footer>
+  <footer class="site-footer"><p class="meta">MvEI reference surface</p><p>Schemas: <code>packages/movement/schemas/</code></p></footer>
 </body>
 </html>

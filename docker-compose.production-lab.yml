@@ -91,6 +91,7 @@ services:
       # Tenant-prefixed JSON durable store (zero-native; not Postgres)
       PRACTICE_RELAY_STORE: json
       PRACTICE_RELAY_DATA: /var/lib/practice-relay/data
+      PRACTICE_RELAY_REQUIRE_DURABLE: "1"
       PRACTICE_RELAY_TENANT_ID: lab-default
       PRACTICE_RELAY_MEDIA: /var/lib/practice-relay/media
       # S3-compatible media via MinIO (network only when this compose is up)
