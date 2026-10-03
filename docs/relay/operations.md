@@ -87,6 +87,8 @@ root through `PRACTICE_RELAY_MEDIA_STAGING`. Object and per-record limits may be
 lowered with `PRACTICE_RELAY_MEDIA_MAX_OBJECT_BYTES` and
 `PRACTICE_RELAY_MEDIA_MAX_RECORD_BYTES`; the ceilings stay at 200 MiB and 1 GiB.
 Pending reservations and objects awaiting physical deletion remain charged.
+Each media download has a 120-second process-side deadline; timed-out streams
+release their staging and transfer admission before clients retry.
 
 ### Local LTI
 

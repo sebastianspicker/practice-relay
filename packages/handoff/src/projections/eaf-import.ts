@@ -12,10 +12,6 @@ const KNOWN_EAF_TIERS = new Set(["regions", "comments"]);
 const MAX_EAF_TIME_SLOTS = 20_000;
 const MAX_EAF_ANNOTATIONS = 10_000;
 const MAX_EAF_TIERS = 256;
-const REGION_TIER_PATTERN =
-  /<TIER[^>]*TIER_ID="regions"[^>]*>([\s\S]*?)<\/TIER>/i;
-const COMMENT_TIER_PATTERN =
-  /<TIER[^>]*TIER_ID="comments"[^>]*>([\s\S]*?)<\/TIER>/i;
 
 /** Region/comment projection returned by EAF import. */
 export interface ImportRegionsResult {
@@ -66,6 +62,58 @@ type TierParseContext = {
   annotationCount: { value: number };
 };
 
+function asciiTokenAt(value: string, token: string, start: number): boolean {
+  if (start + token.length > value.length) return false;
+  for (let offset = 0; offset < token.length; offset += 1) {
+    const codeUnit = value.charCodeAt(start + offset);
+    const folded = codeUnit >= 0x41 && codeUnit <= 0x5a ? codeUnit + 0x20 : codeUnit;
+    if (folded !== token.charCodeAt(offset)) return false;
+  }
+  return true;
+}
+
+function findAsciiToken(value: string, token: string, start: number): number {
+  for (let cursor = start; cursor + token.length <= value.length; cursor += 1) {
+    if (asciiTokenAt(value, token, cursor)) return cursor;
+  }
+  return -1;
+}
+
+/** Find one named tier without rescanning suffixes of malformed opening tags. */
+function findTierContent(eafXml: string, tierId: "regions" | "comments"): string | undefined {
+  const attribute = `tier_id="${tierId}"`;
+  let cursor = 0;
+  while (cursor < eafXml.length) {
+    const start = findAsciiToken(eafXml, "<tier", cursor);
+    if (start === -1) return undefined;
+    const boundary = eafXml.at(start + 5);
+    if (boundary !== undefined && boundary !== ">" && !/\s/u.test(boundary)) {
+      cursor = start + 5;
+      continue;
+    }
+    let openingEnd = start + 5;
+    while (
+      openingEnd < eafXml.length &&
+      eafXml.at(openingEnd) !== "<" &&
+      eafXml.at(openingEnd) !== ">"
+    ) {
+      openingEnd += 1;
+    }
+    if (eafXml.at(openingEnd) !== ">") {
+      cursor = openingEnd;
+      continue;
+    }
+    const openingTag = eafXml.slice(start + 5, openingEnd);
+    if (findAsciiToken(openingTag, attribute, 0) !== -1) {
+      const closingStart = findAsciiToken(eafXml, "</tier>", openingEnd + 1);
+      if (closingStart === -1) return undefined;
+      return eafXml.slice(openingEnd + 1, closingStart);
+    }
+    cursor = openingEnd + 1;
+  }
+  return undefined;
+}
+
 /** Parse one aligned annotation while retaining importer limit and warning semantics. */
 function parseTierAnnotation(
   match: RegExpExecArray,
@@ -104,15 +152,13 @@ function parseTierAnnotation(
 
 function tierParser(context: TierParseContext) {
   return (tierId: "regions" | "comments"): ParsedAnnotation[] => {
-    const tierPattern =
-      tierId === "regions" ? REGION_TIER_PATTERN : COMMENT_TIER_PATTERN;
-    const tierMatch = context.eafXml.match(tierPattern);
-    if (!tierMatch) return [];
+    const tierContent = findTierContent(context.eafXml, tierId);
+    if (tierContent === undefined) return [];
     const annotations: ParsedAnnotation[] = [];
     const annotationPattern =
       /<ALIGNABLE_ANNOTATION\s+ANNOTATION_ID="([^"]+)"\s+TIME_SLOT_REF1="([^"]+)"\s+TIME_SLOT_REF2="([^"]+)"[^>]*>\s*<ANNOTATION_VALUE>([\s\S]*?)<\/ANNOTATION_VALUE>/g;
     let match: RegExpExecArray | null;
-    while ((match = annotationPattern.exec(tierMatch[1]!))) {
+    while ((match = annotationPattern.exec(tierContent))) {
       annotations.push(parseTierAnnotation(match, tierId, context));
     }
     return annotations;

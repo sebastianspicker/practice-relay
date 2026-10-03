@@ -7,15 +7,25 @@ import type { RequestContext, RouteResult } from "./request-context.ts";
 import { attachStoredMedia, MediaAttachmentPendingError } from "./application/media.ts";
 
 type TransferLifetime = { signal: AbortSignal; dispose: () => void };
+export const MEDIA_DOWNLOAD_TIMEOUT_MS = 120_000;
 
-function transferLifetime(ctx: RequestContext): TransferLifetime {
+/** Abort a media transfer when its client disconnects or its optional deadline expires. */
+export function mediaTransferLifetime(
+  ctx: RequestContext,
+  timeoutMs?: number,
+): TransferLifetime {
   const controller = new AbortController();
   const abort = (): void => controller.abort(new Error("media client disconnected"));
   const responseClosed = (): void => { if (!ctx.res.writableFinished) abort(); };
   const responseEvents = ctx.res as Partial<Pick<typeof ctx.res, "once" | "off">>;
+  const timeout = timeoutMs === undefined
+    ? undefined
+    : setTimeout(() => controller.abort(new Error("media transfer timed out")), timeoutMs);
+  timeout?.unref();
   ctx.req.once("aborted", abort);
   responseEvents.once?.("close", responseClosed);
   return { signal: controller.signal, dispose: () => {
+    if (timeout) clearTimeout(timeout);
     ctx.req.off("aborted", abort);
     responseEvents.off?.("close", responseClosed);
   } };
@@ -40,7 +50,7 @@ async function uploadAdmission(ctx: RequestContext, match: RegExpMatchArray): Pr
 }
 
 async function serveUpload(ctx: RequestContext, match: RegExpMatchArray): Promise<void> {
-  const lifetime = transferLifetime(ctx);
+  const lifetime = mediaTransferLifetime(ctx);
   let reservation: MediaUploadReservation | undefined;
   let staged: Awaited<ReturnType<typeof ctx.runtime.mediaStore.stageUpload>> | undefined;
   try {
@@ -64,26 +74,35 @@ async function serveUpload(ctx: RequestContext, match: RegExpMatchArray): Promis
   }
 }
 
-async function authorizeDownload(ctx: RequestContext): Promise<string | undefined> {
+type AuthorizedDownload = { key: string; takeId: string };
+
+async function authorizeDownload(ctx: RequestContext): Promise<AuthorizedDownload | undefined> {
   if (!requireActor(ctx)) return undefined;
   const key = decodeURIComponent(ctx.pathname.slice("/media/".length));
   if (!validMediaStorageKey(key)) { sendProblem(ctx.res, 400, "Bad Request", "invalid media storage key"); return undefined; }
   const record = await requireRecordForActor(ctx, key.split("/", 1)[0]!);
   if (!record) return undefined;
-  if (!record.takes.some((take) => take.storageKey === key)) { sendProblem(ctx.res, 404, "Not Found", "media not found"); return undefined; }
-  return key;
+  const take = record.takes.find((candidate) => candidate.storageKey === key);
+  if (!take) { sendProblem(ctx.res, 404, "Not Found", "media not found"); return undefined; }
+  return { key, takeId: take.id };
 }
 
-async function serveDownload(ctx: RequestContext): Promise<void> {
-  const key = await authorizeDownload(ctx);
-  if (!key) return;
-  const lifetime = transferLifetime(ctx);
+async function serveDownload(
+  ctx: RequestContext,
+  timeoutMs: number,
+): Promise<void> {
+  const authorized = await authorizeDownload(ctx);
+  if (!authorized) return;
+  const { key } = authorized;
+  const lifetime = mediaTransferLifetime(ctx, timeoutMs);
   let staged: StagedMediaDownload | undefined;
   try {
     staged = await ctx.runtime.mediaStore.stageDownload(key, { signal: lifetime.signal });
-    if (!staged || staged.meta.storageKey !== key || staged.meta.recordId !== key.split("/", 1)[0]) {
+    if (!staged || staged.meta.storageKey !== key || staged.meta.recordId !== key.split("/", 1)[0] || staged.meta.takeId !== authorized.takeId) {
       sendProblem(ctx.res, 404, "Not Found", "media not found"); return;
     }
+    const current = await authorizeDownload(ctx);
+    if (!current || current.key !== key || current.takeId !== staged.meta.takeId) return;
     const contentType = normalizedMediaContentType(staged.meta.contentType);
     const responseMeta = responseMetaOf(ctx.res);
     if (responseMeta) responseMeta.status = 200;
@@ -103,9 +122,15 @@ async function serveDownload(ctx: RequestContext): Promise<void> {
 }
 
 /** Handle media upload and authorized download paths. */
-export async function handleMediaRoutes(ctx: RequestContext): Promise<RouteResult> {
+export async function handleMediaRoutes(
+  ctx: RequestContext,
+  downloadTimeoutMs = MEDIA_DOWNLOAD_TIMEOUT_MS,
+): Promise<RouteResult> {
   const upload = ctx.pathname.match(/^\/work-records\/([^/]+)\/takes\/([^/]+)\/media$/u);
   if (upload && ctx.method === "POST") { await serveUpload(ctx, upload); return "handled"; }
-  if (ctx.pathname.startsWith("/media/") && ctx.method === "GET") { await serveDownload(ctx); return "handled"; }
+  if (ctx.pathname.startsWith("/media/") && ctx.method === "GET") {
+    await serveDownload(ctx, downloadTimeoutMs);
+    return "handled";
+  }
   return "unmatched";
 }

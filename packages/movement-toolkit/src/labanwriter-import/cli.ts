@@ -7,6 +7,7 @@ import { readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { importLabanWriterIntermediate } from "./index.js";
+import { neutralizeTerminalScalar } from "../reference-reader/index.mjs";
 
 function main() {
   const input = process.argv[2];
@@ -20,16 +21,17 @@ function main() {
   try {
     const raw = JSON.parse(readFileSync(resolve(input), "utf8")) as unknown;
     const { document, warnings } = importLabanWriterIntermediate(raw);
-    for (const w of warnings) console.error("WARN:", w);
+    for (const w of warnings) console.error("WARN:", neutralizeTerminalScalar(w));
     const text = JSON.stringify(document, null, 2) + "\n";
     if (output) {
       writeFileSync(resolve(output), text, "utf8");
-      console.log("Wrote", output);
+      console.log("Wrote", neutralizeTerminalScalar(output));
     } else {
       process.stdout.write(text);
     }
   } catch (error) {
-    console.error(`ERROR: ${error instanceof Error ? error.message : String(error)}`);
+    const message = error instanceof Error ? error.message : String(error);
+    console.error(`ERROR: ${neutralizeTerminalScalar(message)}`);
     process.exitCode = 1;
   }
 }

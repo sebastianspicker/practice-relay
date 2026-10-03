@@ -48,3 +48,64 @@ test("Workbench Laban load and render reject invalid staff columns", () => {
   assert.throws(() => loadLabanSubset(valid), /staff\.columns\[0\] must be one of/);
   assert.throws(() => renderLabanSubsetStaffHtml(valid), /staff\.columns\[0\] must be one of/);
 });
+
+test("Workbench Laban renderer rejects amplified staff dimensions", () => {
+  const base = {
+    schemaVersion: "0.2.0",
+    profile: "mvei-laban-subset",
+    id: "render-budget",
+    completeness: "sketch",
+    measures: [],
+    symbols: [],
+  };
+  assert.throws(
+    () => renderLabanSubsetStaffHtml({
+      ...base,
+      staff: { columns: ["body", "body"] },
+    }),
+    /columns must not contain duplicates/,
+  );
+  assert.throws(
+    () => renderLabanSubsetStaffHtml({
+      ...base,
+      staff: { columns: ["body"] },
+      measures: [
+        { id: "m-1", index: 0 },
+        { id: "m-1", index: 1 },
+      ],
+    }),
+    /measures must not contain duplicate IDs/,
+  );
+  assert.throws(
+    () => renderLabanSubsetStaffHtml({
+      ...base,
+      staff: {
+        columns: [
+          "support_left",
+          "support_right",
+          "leg_left",
+          "leg_right",
+          "body",
+          "arm_left",
+          "arm_right",
+          "head",
+        ],
+      },
+      measures: Array.from({ length: 1_251 }, (_, index) => ({
+        id: `m-${index}`,
+        index,
+      })),
+    }),
+    /cell render limit/,
+  );
+  assert.throws(
+    () => renderLabanSubsetStaffHtml({
+      ...base,
+      measures: Array.from({ length: 10_001 }, (_, index) => ({
+        id: `header-${index}`,
+        index,
+      })),
+    }),
+    /cell render limit/,
+  );
+});

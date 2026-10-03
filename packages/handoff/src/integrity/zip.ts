@@ -23,6 +23,22 @@ const CENTRAL_HEADER_LENGTH = 46;
 const END_RECORD_LENGTH = 22;
 const UTF8_FLAG = 0x0800;
 
+/** Reject strings that cannot round-trip through the ZIP writer's UTF-8 encoding. */
+const hasUnpairedSurrogate = (value: string): boolean => {
+  for (let index = 0; index < value.length; index += 1) {
+    const codeUnit = value.charCodeAt(index);
+    if (codeUnit >= 0xd800 && codeUnit <= 0xdbff) {
+      if (index + 1 >= value.length) return true;
+      const next = value.charCodeAt(index + 1);
+      if (next < 0xdc00 || next > 0xdfff) return true;
+      index += 1;
+    } else if (codeUnit >= 0xdc00 && codeUnit <= 0xdfff) {
+      return true;
+    }
+  }
+  return false;
+};
+
 /** Static lookup table used by every entry checksum. */
 const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, value) => {
   let checksum = value;
@@ -38,6 +54,9 @@ const normalizeZipPath = (entryPath: string): string => {
   }
   if (entryPath.includes("\0")) {
     throw new Error("ZIP entry path must not contain NUL");
+  }
+  if (hasUnpairedSurrogate(entryPath)) {
+    throw new Error("ZIP entry path must contain well-formed Unicode");
   }
   if (/^[a-zA-Z]:/.test(entryPath)) {
     throw new Error("ZIP entry path must not use a drive prefix");

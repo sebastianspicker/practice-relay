@@ -321,6 +321,29 @@ test("buildStoreZip rejects unsafe, duplicate, and platform-colliding entry path
       ]),
     /duplicate or reserved/,
   );
+  for (const malformed of [
+    `high-${String.fromCharCode(0xd800)}.txt`,
+    `trailing-high-${String.fromCharCode(0xd800)}`,
+    `low-${String.fromCharCode(0xdc00)}.txt`,
+  ]) {
+    assert.throws(
+      () => buildStoreZip([{ path: malformed, bytes: "x" }]),
+      /well-formed Unicode/,
+    );
+  }
+  assert.doesNotThrow(() =>
+    buildStoreZip([{ path: "valid-𐐷-😀.txt", bytes: "x" }]),
+  );
+});
+
+test("package ZIP inventory rejects malformed Unicode before manifest construction", () => {
+  const malformed = `notes/${String.fromCharCode(0xd800)}.txt`;
+  assert.throws(
+    () => exportWorkRecordPackageZip(multiDomainRecordWithMotif(), {
+      extraFiles: [{ path: malformed, bytes: Buffer.from("x") }],
+    }),
+    /well-formed Unicode/,
+  );
 });
 
 test("exportWorkRecordPackageZip reserves package metadata paths from extra files", () => {

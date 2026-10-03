@@ -80,11 +80,34 @@ export async function readJson({ req }) {
   return parseJsonObject(await collectJsonBody(req));
 }
 
+/** Resolve one outbound target and keep it on the configured API origin. */
+export function resolveApiUrl(apiBase, target) {
+  let base;
+  let resolved;
+  try {
+    base = new URL(apiBase);
+    resolved = new URL(target, `${base.origin}/`);
+  } catch {
+    throw new MockRequestError(400, "invalid Practice Relay API target");
+  }
+  if (
+    !["http:", "https:"].includes(base.protocol) ||
+    base.username ||
+    base.password ||
+    resolved.origin !== base.origin ||
+    resolved.username ||
+    resolved.password
+  ) {
+    throw new MockRequestError(400, "Practice Relay API target must stay on the configured origin");
+  }
+  return resolved;
+}
+
 /** Request the configured Practice Relay API and normalize its text response as JSON. */
 export async function apiFetch({ apiBase, fetchImpl }, path, opts = {}) {
-  const url = `${apiBase}${path}`;
+  const url = resolveApiUrl(apiBase, path);
   const requestFetch = fetchImpl ?? globalThis.fetch;
-  const res = await requestFetch(url, {
+  const res = await requestFetch(url.href, {
     method: opts.method ?? "GET",
     headers: {
       "content-type": "application/json",
@@ -92,6 +115,7 @@ export async function apiFetch({ apiBase, fetchImpl }, path, opts = {}) {
     },
     body: opts.body != null ? JSON.stringify(opts.body) : undefined,
     signal: AbortSignal.timeout(API_FETCH_TIMEOUT_MS),
+    redirect: "error",
   });
   const text = await res.text();
   let json = null;
@@ -100,7 +124,7 @@ export async function apiFetch({ apiBase, fetchImpl }, path, opts = {}) {
   } catch {
     json = { raw: text };
   }
-  return { status: res.status, json, url };
+  return { status: res.status, json, url: url.href };
 }
 
 /** Report whether a request context has the exact route path and method. */

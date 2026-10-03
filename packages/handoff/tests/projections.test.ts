@@ -314,6 +314,28 @@ describe("interop-io exporters", () => {
     );
   });
 
+  it("scans malformed EAF tier prefixes in bounded time", () => {
+    const eaf = `${"<TIER".repeat(32_000)} TIER_ID="regions"`;
+    const started = performance.now();
+    const parts = importEafToRecordParts(eaf);
+    const elapsed = performance.now() - started;
+    assert.deepEqual(parts.regions, []);
+    assert.deepEqual(parts.comments, []);
+    assert.ok(elapsed < 1_000, `malformed tier scan took ${elapsed.toFixed(1)}ms`);
+
+    const valid = importEafToRecordParts(
+      '<ANNOTATION_DOCUMENT><TIER TIER_ID="regions"></TIER></ANNOTATION_DOCUMENT>',
+    );
+    assert.deepEqual(valid.regions, []);
+  });
+
+  it("keeps EAF tier offsets stable around Unicode case-fold expansions", () => {
+    const eaf = `\u0130${eafWithRegionAnnotations(1)}`;
+    const parts = importEafToRecordParts(eaf);
+    assert.equal(parts.regions.length, 1);
+    assert.equal(parts.regions[0]!.id, "r-0");
+  });
+
   it("starts a new EAF annotation scan after an over-limit import fails", () => {
     assert.throws(
       () => importEafToRecordParts(eafWithRegionAnnotations(10_001)),
