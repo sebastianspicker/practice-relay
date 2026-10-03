@@ -41,17 +41,6 @@ function glyphLabel(artifact) {
   return classifier?.label ?? (mediaTypeSuffix(type) || "FILE");
 }
 
-/**
- * Whether this artifact uses the rehearsal photo thumb (video / movement).
- * @param {object} artifact Evidence artifact.
- * @returns {boolean}
- */
-function usesPhotoThumb(artifact) {
-  const type = String(artifact?.mediaType ?? "").toLowerCase();
-  const id = String(artifact?.id ?? "").toLowerCase();
-  return type.startsWith("video") || id === "movement" || type.includes("movement");
-}
-
 /** Render an evidence-selection control without changing its command contract. */
 function renderEvidenceToggle(id, name, included, staticDemo) {
   const tickClass = included ? "tick" : "tick empty";
@@ -61,11 +50,9 @@ function renderEvidenceToggle(id, name, included, staticDemo) {
   return `<button class="${tickClass}" type="button" data-action="toggle-evidence" data-artifact="${escapeHtml(id)}" aria-pressed="${ariaPressed}" aria-label="${escapeHtml(ariaLabel)}">${included ? icon("check") : ""}</button>`;
 }
 
-/** Render the evidence thumbnail, choosing the rehearsal image when applicable. */
+/** Render the evidence format label; formats are named, never illustrated. */
 function renderEvidenceThumb(artifact) {
-  return usesPhotoThumb(artifact)
-    ? `<div class="thumb photo" aria-hidden="true"></div>`
-    : `<div class="thumb glyph" aria-hidden="true">${escapeHtml(glyphLabel(artifact))}</div>`;
+  return `<div class="thumb glyph" aria-hidden="true">${escapeHtml(glyphLabel(artifact))}</div>`;
 }
 
 /** Render the evidence name and retained detail. */

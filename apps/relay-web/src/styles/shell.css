@@ -1,0 +1,116 @@
+/**
+ * Marking shell: header, record identity, the 01-02-03 route, landing, and document bar.
+ * The route is one floor line; the current context is marked with a strip of graphite tape.
+ */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: var(--s5);
+  height: var(--header);
+  padding: 0 var(--gutter);
+  background: var(--floor);
+  border-bottom: 1px solid var(--rule);
+}
+.wordmark { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-size: var(--t-md); font-weight: 600; letter-spacing: -.01em; text-decoration: none; white-space: nowrap; }
+.wordmark .mark { width: 22px; height: 22px; flex: none; }
+.wordmark-sub { color: var(--ink-3); font-weight: 400; }
+.demo-notice { display: flex; align-items: center; gap: var(--s3); min-width: 0; color: var(--ink-2); font-size: var(--t-sm); }
+.demo-detail { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.account-controls { display: flex; align-items: center; gap: var(--s1); margin-left: auto; }
+.account-controls button { min-height: 36px; padding: 0 var(--s3); border: 0; background: none; color: var(--ink-2); font-weight: 500; }
+.account-controls button:hover:not(:disabled) { color: var(--ink); background: var(--worn); }
+#account { gap: var(--s3); white-space: nowrap; }
+#session-user { max-width: 18ch; overflow: hidden; text-overflow: ellipsis; }
+#session-role:not(:empty) { color: var(--ink-3); font: 600 11px/1 var(--sans); font-stretch: var(--narrow); letter-spacing: .1em; text-transform: uppercase; }
+
+/* Record identity and route */
+.studio { padding: 0 var(--gutter) var(--s7); min-height: calc(100dvh - var(--header) - 49px); }
+.project-header { padding-top: var(--s7); }
+.project-identity { display: grid; gap: var(--s2); min-width: 0; }
+.project-identity h1 { max-width: 24ch; font-size: var(--t-3xl); overflow-wrap: anywhere; }
+.project-identity p:last-child { color: var(--ink-2); font-size: var(--t-lg); }
+.project-route { display: flex; align-items: flex-end; gap: var(--s5); margin-top: var(--s6); border-bottom: 1px solid var(--rule); }
+.project-tabs { display: flex; gap: var(--s6); margin-right: auto; }
+.project-tabs button {
+  position: relative;
+  align-items: baseline;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--ink-3);
+  font-size: var(--t-md);
+  font-weight: 500;
+}
+.project-tabs button:hover:not(:disabled) { color: var(--ink); background: none; }
+.project-tabs button:active:not(:disabled) { background: none; }
+.project-tabs button[aria-current="page"] { color: var(--ink); }
+.project-tabs button[aria-current="page"]::after { content: ""; position: absolute; right: 0; bottom: -1px; left: 0; height: 3px; background: var(--ink); }
+.route-n { color: var(--ink-3); font: 400 11px/1 var(--mono); letter-spacing: .02em; }
+[aria-current="page"] .route-n { color: var(--plum); }
+#use-in-handoff { margin-bottom: var(--s2); }
+/* Outside Movement the bridge stays reachable, but the context keeps the only plum action. */
+.studio:has([data-tab="movement"]:not([aria-current])) #use-in-handoff:not(:disabled) { color: var(--ink); background: transparent; border-color: var(--rule-strong); }
+.studio:has([data-tab="movement"]:not([aria-current])) #use-in-handoff:hover:not(:disabled) { border-color: var(--ink); }
+#use-in-handoff span { transition: transform var(--dur) var(--ease); }
+#use-in-handoff:hover:not(:disabled) span { transform: translateX(3px); }
+
+#movement-panel, #evidence-panel-view, #handoff-panel { padding-top: var(--s6); }
+.workspace-status { margin-top: var(--s6); }
+
+/* Landing: the route explained, and one clear way in. */
+.studio[data-state="empty"] .project-route { display: none; }
+.studio[data-state="empty"] .project-header { padding-top: var(--s8); }
+.studio[data-state="empty"] .project-identity h1 { max-width: 20ch; }
+.studio[data-state="empty"] .movement-layout { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--s8); margin-top: var(--s4); }
+.route-intro { margin: 0; padding: 0; list-style: none; counter-reset: route; }
+.route-intro li { display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: var(--s4); padding: var(--s5) 0; border-top: 1px solid var(--rule); }
+.route-intro li:last-child { border-bottom: 1px solid var(--rule); }
+.route-intro .route-n { padding-top: 5px; font-size: var(--t-sm); }
+.route-intro h2 { font-size: var(--t-lg); font-weight: 500; }
+.route-intro p { grid-column: 2; max-width: 54ch; margin-top: var(--s1); color: var(--ink-2); }
+.workspace-empty { display: grid; gap: var(--s4); align-content: start; padding: var(--s6); background: var(--sheet); border: 1px solid var(--rule); }
+.workspace-empty h2 { font-size: var(--t-xl); font-stretch: var(--wide); font-weight: 300; letter-spacing: -.015em; }
+.workspace-empty > p:not(.field-help) { color: var(--ink-2); }
+.empty-actions { display: flex; flex-wrap: wrap; gap: var(--s3); padding-top: var(--s2); }
+
+/* Document bar: what the movement draft is, and whether it is valid. */
+.document-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2) var(--s5); padding: 14px var(--gutter); border-top: 1px solid var(--rule); color: var(--ink-2); font-size: var(--t-sm); }
+.document-identity { display: flex; align-items: center; gap: var(--s3); min-width: 0; }
+#document-name { font-family: var(--mono); font-size: 12.5px; color: var(--ink); overflow-wrap: anywhere; }
+#document-status:not(:empty) { padding-left: var(--s5); border-left: 1px solid var(--rule); }
+#workspace-scope { margin-left: auto; color: var(--ink-3); }
+body:has(.studio[data-state="empty"]) .document-bar { display: none; }
+
+@media (max-width: 1100px) {
+  .studio[data-state="empty"] .movement-layout { grid-template-columns: 1fr; gap: var(--s6); }
+  .studio[data-state="empty"] #movement-editor { order: -1; }
+  .demo-detail, #session-role { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+
+@media (max-width: 640px) {
+  .app-header { flex-wrap: wrap; height: auto; min-height: var(--header); padding-block: var(--s2); row-gap: var(--s1); }
+  .wordmark-sub { display: none; }
+  .demo-notice { order: 3; flex-basis: 100%; }
+  .demo-detail { position: static; width: auto; height: auto; overflow: visible; clip: auto; font-size: var(--t-xs); }
+  #session-user { max-width: 12ch; }
+  .account-controls button { padding: 0 var(--s2); }
+  .project-header, .studio[data-state="empty"] .project-header { padding-top: var(--s6); }
+  .project-identity h1 { font-size: var(--t-2xl); }
+  .project-identity p:last-child { font-size: var(--t-md); }
+  .project-route { flex-direction: column; align-items: stretch; gap: 0; margin-top: var(--s5); border-bottom: 0; }
+  .project-tabs { justify-content: space-between; gap: 0; margin: 0; border-bottom: 1px solid var(--rule); }
+  .project-tabs button { flex: 1; justify-content: flex-start; font-size: 14px; }
+  #use-in-handoff { align-self: stretch; margin: var(--s4) 0 0; }
+  #movement-panel, #evidence-panel-view, #handoff-panel { padding-top: var(--s5); }
+  .workspace-empty { padding: var(--s5); }
+  .route-intro li { grid-template-columns: 36px minmax(0, 1fr); padding: var(--s4) 0; }
+  .document-bar { padding: 12px var(--gutter); }
+  #workspace-scope { display: none; }
+  #document-status:not(:empty) { padding-left: 0; border-left: 0; flex-basis: 100%; }
+}

@@ -1,134 +1,92 @@
 /**
- * Quiet Dossier package dialog surface.
- * Why residual: local package preview stays paper-like, not modal SaaS chrome.
+ * Dialogs: sign-in, record list, package preview, and movement attachment.
+ * A sheet laid on the floor: square, ruled, no blur, no floating card.
  */
-
-dialog,
-#package-dialog {
-  width: min(520px, calc(100vw - 32px));
-  max-height: min(720px, calc(100vh - 32px));
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 6px;
+dialog {
+  width: min(560px, calc(100vw - 32px));
+  max-height: min(760px, calc(100dvh - 32px));
+  padding: 0 var(--s5) var(--s5);
+  border: 1px solid var(--rule-strong);
+  border-radius: 0;
   color: var(--ink);
-  background: var(--paper);
-  box-shadow: 0 20px 60px oklch(0.22 0.018 255 / 0.12);
+  background: var(--sheet);
+  box-shadow: 0 24px 48px -24px rgb(31 29 36 / .28);
+  overflow: auto;
 }
-
-dialog::backdrop,
-#package-dialog::backdrop {
-  background: oklch(0.22 0.018 255 / 0.28);
-  backdrop-filter: blur(2px);
-}
+dialog[open] { animation: sheet-in var(--dur-slow) var(--ease); }
+dialog::backdrop { background: rgb(31 29 36 / .32); }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(8px); } }
 
 .dialog-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 28px 28px 20px;
-  border-bottom: 1px solid var(--line);
-}
-
-.dialog-header h2 {
-  margin: 0;
-  font: 400 28px/1.1 var(--serif);
-  letter-spacing: -0.02em;
-  color: var(--ink);
-}
-
-.dialog-header p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.dialog-header button {
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: var(--bg);
-  cursor: pointer;
-  color: var(--muted);
-  flex: 0 0 auto;
-}
-
-.dialog-header button:hover {
-  color: var(--ink);
-}
-
-.dialog-header .icon {
-  width: 16px;
-  height: 16px;
-}
-
-.dialog-body {
-  padding: 24px 28px 28px;
-}
-
-.dialog-body h3 {
-  margin: 0 0 12px;
-  font-size: 12px;
-  font-weight: 450;
-  color: var(--faint);
-  letter-spacing: -0.005em;
-}
-
-.dialog-body ul {
-  padding: 0;
-  margin: 0 0 24px;
-  border: 0;
-  border-radius: 0;
-  list-style: none;
-  overflow: visible;
-}
-
-.dialog-body li {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--line);
-  font-size: 13px;
-  color: var(--ink);
+  gap: var(--s4);
+  margin: 0 calc(-1 * var(--s5)) var(--s5);
+  padding: var(--s4) var(--s3) var(--s4) var(--s5);
+  background: var(--sheet);
+  border-bottom: 1px solid var(--rule);
 }
+.dialog-header h2 { display: flex; align-items: baseline; gap: var(--s3); font-size: var(--t-xl); font-stretch: var(--wide); font-weight: 300; letter-spacing: -.015em; }
+.dialog-header button { width: var(--control); padding: 0; border: 0; background: none; color: var(--ink-2); }
+.dialog-header button:hover:not(:disabled) { color: var(--ink); background: var(--worn); }
+#record-count { color: var(--ink-3); font: 400 var(--t-sm) var(--mono); }
+dialog > p, dialog form > p { color: var(--ink-2); font-size: 14px; }
+dialog > p + p, dialog > p + form, dialog > form + p { margin-top: var(--s3); }
+dialog .field-help { margin-top: var(--s4); }
 
-.dialog-body li:first-child {
-  border-top: 1px solid var(--line);
-}
+/* Sign in */
+#login-form { display: grid; gap: var(--s4); }
+#login-form button { justify-self: start; min-width: 120px; }
+#account-error:not(:empty) { margin-top: var(--s3); }
+.dialog-actions { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--rule); }
 
-.dialog-body li:last-child {
-  border-bottom: 1px solid var(--line);
-}
-
-.dialog-body code {
-  color: var(--muted);
-  font: 11px/1.4 ui-monospace, "SFMono-Regular", Consolas, monospace;
-  font-variant-numeric: tabular-nums;
-}
-
-.dialog-warning {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  padding: 0;
-  color: var(--hold);
-  background: transparent;
+/* Records */
+#records-dialog { width: min(640px, calc(100vw - 32px)); }
+#records-dialog .filter { margin-bottom: var(--s4); }
+#records { display: grid; margin: 0 0 var(--s4); padding: 0; list-style: none; border-top: 1px solid var(--ink); }
+#records li { border-bottom: 1px solid var(--rule); }
+#records button {
+  position: relative;
+  display: grid;
+  justify-content: stretch;
+  gap: var(--s1);
+  width: 100%;
+  min-height: 64px;
+  padding: var(--s3) var(--s3) var(--s3) var(--s4);
   border: 0;
   border-radius: 0;
-  font-size: 12px;
-  line-height: 1.5;
+  background: none;
+  text-align: left;
 }
+#records button:hover:not(:disabled) { background: var(--floor); }
+#records button[aria-current="true"] { background: var(--floor); }
+#records button[aria-current="true"]::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px; background: var(--plum); }
+.r-title { color: var(--ink); font-size: var(--t-md); font-weight: 500; overflow-wrap: anywhere; }
+.r-sub { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); color: var(--ink-3); font-size: var(--t-sm); font-weight: 400; }
+.r-state { display: inline-flex; align-items: center; gap: var(--s2); color: var(--ink-2); }
+#records .empty { padding: var(--s5) 0; color: var(--ink-2); }
+#load-more, #refresh-records { margin-right: var(--s2); }
 
-.dialog-warning .icon {
-  width: 15px;
-  height: 15px;
-  flex: 0 0 auto;
-  margin-top: 1px;
+/* Package preview */
+#dialog-summary { color: var(--ink-2); }
+#dialog-manifest { margin: var(--s4) 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
+#dialog-manifest li { display: flex; justify-content: space-between; gap: var(--s4); padding: var(--s3) 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
+#dialog-manifest code { color: var(--ink-3); overflow-wrap: anywhere; }
+
+/* Attach movement */
+#attach-form { display: grid; gap: var(--s5); margin-top: var(--s5); }
+#attach-form input[name="filename"] { font-family: var(--mono); font-size: 14px; }
+#attach-subjects { display: grid; border-top: 1px solid var(--rule); }
+#attach-subjects label { display: flex; align-items: center; gap: var(--s3); min-height: 48px; border-bottom: 1px solid var(--rule); color: var(--ink); font-size: var(--t-md); cursor: pointer; }
+#attach-form button { justify-self: start; }
+#attach-error:empty { margin-top: calc(-1 * var(--s5)); }
+
+@media (max-width: 640px) {
+  dialog { width: 100vw; max-width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0; border: 0; padding: 0 var(--s4) var(--s5); }
+  .dialog-header { margin-inline: calc(-1 * var(--s4)); padding-left: var(--s4); }
+  #login-form button, #attach-form button, .dialog-actions button { width: 100%; }
 }

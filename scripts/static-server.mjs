@@ -19,6 +19,7 @@ const CONTENT_TYPES = new Map([
   [".png", "image/png"],
   [".svg", "image/svg+xml; charset=utf-8"],
   [".txt", "text/plain; charset=utf-8"],
+  [".woff2", "font/woff2"],
 ]);
 
 /** Return the response content type for a static file path. */

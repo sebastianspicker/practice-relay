@@ -10,6 +10,7 @@ import { bindEvidencePreview } from "./studio/evidence-preview.mjs";
 import { EXPORT_ROLES } from "./studio/role-gates.mjs";
 import { createHandoff } from "./studio/handoff.mjs";
 import { bindAttachment } from "./studio/attachment.mjs";
+import { TAGLINE } from "./shell.mjs";
 export { toWorkspaceRecord } from "./data/workspace-record.mjs";
 export { renderRecord } from "./render/record.mjs";
 export { renderReadiness } from "./render/readiness.mjs";
@@ -136,15 +137,21 @@ function mountSelected() {
   valid = false; draftChanged = false;
   const record = selected(); mountedId = record?.id;
   draftChanged = unsavedIds.has(record?.id);
-  byId("project-title").textContent = record?.title ?? "A space for movement and evidence";
+  byId("workspace").dataset.state = record ? "record" : "empty";
+  byId("project-kicker").textContent = record ? record.profile : "Alpha workspace · local evaluation";
+  byId("project-title").textContent = record?.title ?? TAGLINE;
   byId("project-subtitle").textContent = record ? record.versions[0]?.name ?? `${record.profile} / Revision ${record.revision}` : "Open a work record to begin.";
   byId("use-in-handoff").disabled = true;
   byId("document-status").textContent = "";
   byId("document-name").textContent = "No movement document";
   handoff.reset(); evidencePreview.render(); renderSession(); changeTab("movement");
   if (!record) {
-    byId("reference-media").innerHTML = '<div class="media-frame"><div class="media-empty"><h2>Bring practice into focus.</h2><p>Open a work record, compose a movement phrase, and prepare evidence for a specific use.</p><button type="button" data-signin>Sign in</button><button type="button" data-demo>Explore synthetic demo</button></div></div>';
-    byId("movement-editor").innerHTML = '<div class="workspace-empty"><h2>Movement, evidence, handoff.</h2><p>Your record connects movement references, rehearsal evidence, and recorded use permissions.</p><p>Drafts stay in memory until you download JSON or save a movement reference.</p></div>';
+    byId("reference-media").innerHTML = `<ol class="route-intro" aria-label="How a handoff is prepared">
+      <li><span class="route-n" aria-hidden="true">01</span><h2>Movement</h2><p>Shape a Motif phrase beside rehearsal media. Each symbol keeps its time anchor in milliseconds.</p></li>
+      <li><span class="route-n" aria-hidden="true">02</span><h2>Evidence</h2><p>See what the record holds, who is represented in it, and which uses have been recorded.</p></li>
+      <li><span class="route-n" aria-hidden="true">03</span><h2>Handoff</h2><p>Name an exact purpose and destination. Every represented person needs a matching recorded permission before metadata is generated. Nothing is sent.</p></li>
+    </ol>`;
+    byId("movement-editor").innerHTML = `<div class="workspace-empty"><h2>Open your records</h2><p>Sign in with your workspace account to load the records you are a member of.</p><div class="empty-actions"><button class="primary" type="button" data-signin>Sign in</button><button type="button" data-demo>Explore the synthetic demo</button></div><p class="field-help">The demo uses fictional records and simulated permissions. It never contacts the record service and stores nothing.</p></div>`;
     return;
   }
   media = mountReferenceMedia(byId("reference-media"), { record, demo: state.demo, request: (...args) => controller.request(...args), onStatus: status });
@@ -195,7 +202,7 @@ byId("choose-record").addEventListener("click", () => { renderIndex(); byId("rec
 byId("use-in-handoff").addEventListener("click", attachment.open);
 byId("open-demo").addEventListener("click", openDemo);
 byId("logout").addEventListener("click", () => { controller.logout(); byId("account-dialog").close(); status("Signed out. Private drafts and previews cleared."); });
-byId("reference-media").addEventListener("click", event => {
+byId("movement-panel").addEventListener("click", event => {
   if (event.target.closest("[data-signin]")) byId("account-dialog").showModal();
   if (event.target.closest("[data-demo]")) openDemo();
 });

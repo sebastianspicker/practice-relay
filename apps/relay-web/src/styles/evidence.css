@@ -1,0 +1,103 @@
+/**
+ * Evidence: what the record holds, the uses recorded for it, and the handoff check.
+ * Hairline ledgers, named formats, and tape for every decision.
+ */
+.evidence-layout { display: grid; grid-template-columns: minmax(0, 8fr) minmax(260px, 4fr); gap: var(--s7); align-items: start; }
+.evidence-layout > * { min-width: 0; }
+.evidence-layout .dossier > h1, .evidence-layout .dossier > .kicker, .evidence-layout .destination { display: none; }
+
+/* Record facts */
+.meta-strip { display: grid; grid-template-columns: repeat(4, minmax(0, auto)); justify-content: start; gap: var(--s6); margin: 0; padding-bottom: var(--s4); border-bottom: 1px solid var(--rule); }
+.meta-strip dt { margin-bottom: var(--s1); }
+.meta-strip dt, .section-label h2, .block-head h2, .decision-inner > h2 { color: var(--ink-3); font: 600 11px/1.2 var(--sans); font-stretch: var(--narrow); letter-spacing: .1em; text-transform: uppercase; }
+.meta-strip dd { margin: 0; color: var(--ink); font-size: 14px; overflow-wrap: anywhere; }
+.meta-strip .mono { font-size: 12.5px; }
+
+/* Handoff path: five stations on one line, measured like the phrase ruler. */
+.path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); margin: var(--s6) 0 var(--s7); padding: 0; list-style: none; }
+.path li { position: relative; display: grid; gap: var(--s2); padding-top: var(--s4); border-top: 1px solid var(--rule-strong); color: var(--ink-3); font-size: var(--t-sm); }
+.path .step-dot { position: absolute; top: -5px; left: 0; width: 9px; height: 9px; overflow: hidden; border: 1px solid var(--rule-strong); background: var(--floor); color: transparent; font-size: 0; }
+.path .done { border-top-color: var(--ink); color: var(--ink-2); }
+.path .done .step-dot { top: -7px; width: 13px; height: 13px; border-color: var(--ink); background: var(--ink); color: #fff; font-size: 9px; line-height: 11px; text-align: center; }
+.path .now { color: var(--ink); font-weight: 600; }
+.path .now .step-dot { top: -7px; width: 22px; height: 13px; border: 0; background: var(--tape-hold); clip-path: polygon(0 0, 100% 0, calc(100% - 2px) 50%, 100% 100%, 0 100%, 2px 50%); }
+
+/* Blocks */
+.block { margin-top: var(--s7); }
+.evidence-block { margin-top: 0; }
+.section-label, .block-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s3); padding-bottom: var(--s3); border-bottom: 1px solid var(--ink); }
+.section-label span, .hint { color: var(--ink-3); font-size: var(--t-sm); }
+.evidence, .decisions { margin: 0; padding: 0; list-style: none; }
+
+/* Evidence rows: include toggle, named format, title, preferred take. */
+.evidence li { display: grid; grid-template-columns: 24px 48px minmax(0, 1fr) auto; gap: var(--s4); align-items: center; min-height: 64px; padding: var(--s2) 0; border-bottom: 1px solid var(--rule); }
+.evidence .tick { width: 20px; height: 20px; min-height: 0; padding: 0; border: 1px solid var(--rule-strong); border-radius: 0; background: var(--sheet); color: #fff; }
+.evidence .tick[aria-pressed="true"] { border-color: var(--plum); background: var(--plum); }
+.evidence .tick:hover:not(:disabled) { border-color: var(--plum); }
+.evidence .tick svg { width: 12px; height: 12px; stroke-width: 2.6; }
+.thumb { display: grid; place-items: center; width: 48px; height: 28px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink-2); font: 500 10.5px/1 var(--mono); letter-spacing: .04em; }
+.item { display: grid; gap: 2px; min-width: 0; }
+.item strong { overflow: hidden; color: var(--ink); font-size: var(--t-md); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+.item small { color: var(--ink-3); font-size: var(--t-sm); overflow-wrap: anywhere; }
+.take { color: var(--ink-3); font-size: var(--t-sm); white-space: nowrap; }
+.take.none { visibility: hidden; }
+.evidence li.out .item strong { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--rule-strong); }
+.evidence li.out .thumb { color: var(--ink-3); border-style: dashed; }
+
+/* Use decisions */
+.decisions li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s4); align-items: center; padding: var(--s4) 0; border-bottom: 1px solid var(--rule); }
+.d-purpose { color: var(--ink); font-size: var(--t-md); font-weight: 500; text-transform: capitalize; }
+.d-detail { margin-top: 2px; color: var(--ink-3); font-size: var(--t-sm); overflow-wrap: anywhere; }
+.d-detail b { color: var(--ink-2); font-weight: 500; }
+
+/* Participants: names and roles, no avatars. */
+.participant-note { margin: var(--s3) 0 0; color: var(--ink-3); font-size: var(--t-sm); }
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0 var(--s5); margin-top: var(--s3); }
+.person { display: block; padding: var(--s3) 0; border-bottom: 1px solid var(--rule); }
+.person .avatar, .person br { display: none; }
+.p-name { display: block; color: var(--ink); font-size: var(--t-md); font-weight: 500; overflow-wrap: anywhere; }
+.p-role { display: block; margin-top: 2px; color: var(--ink-3); font-size: var(--t-sm); }
+.p-role::first-letter { text-transform: uppercase; }
+.footnote { max-width: 56ch; margin-top: var(--s7); color: var(--ink-3); font-size: var(--t-sm); }
+
+/* Handoff check rail */
+#readiness { position: sticky; top: calc(var(--header) + var(--s5)); padding: var(--s5); background: var(--sheet); border: 1px solid var(--rule); }
+.decision-inner > h2 { margin-bottom: var(--s4); }
+.status-list { display: grid; margin: 0; padding: 0; list-style: none; }
+.status-list li { display: flex; gap: var(--s3); align-items: flex-start; padding: var(--s2) 0; border-bottom: 1px solid var(--rule); color: var(--ink-2); font-size: 14px; line-height: 1.4; }
+.status-list .blocked { color: var(--ink); font-weight: 500; }
+.check-icon { display: grid; place-items: center; width: 18px; height: 18px; flex: none; }
+.check-icon svg { width: 14px; height: 14px; stroke-width: 2.2; }
+.ok .check-icon { color: var(--grant); }
+.blocked .check-icon { color: var(--hold); }
+.hold-note { display: grid; gap: var(--s2); margin-top: var(--s5); padding: var(--s4); background: color-mix(in srgb, var(--tape-hold) 22%, var(--sheet)); box-shadow: inset 3px 0 0 var(--tape-hold); }
+.hold-note p:first-child { color: var(--ink); font-weight: 600; }
+.hold-note .detail { color: var(--ink-2); font-size: var(--t-sm); }
+.hold-note button { justify-self: start; margin-top: var(--s2); }
+.decision-actions { display: flex; flex-wrap: wrap; gap: var(--s2); margin-top: var(--s5); }
+.decision-actions > * { flex: 1 1 auto; }
+.decision-actions button { width: 100%; }
+.package-summary { margin: 0; }
+.rail-links { display: grid; margin-top: var(--s4); padding-top: var(--s3); border-top: 1px solid var(--rule); }
+.rail-links p { margin: 0; }
+.quiet-link .icon { width: 12px; height: 12px; }
+.alpha-note { margin-top: var(--s3); color: var(--ink-3); font-size: var(--t-xs); }
+#readiness .empty { color: var(--ink-3); }
+
+@media (max-width: 1100px) {
+  .evidence-layout { grid-template-columns: 1fr; gap: var(--s6); }
+  #readiness { position: static; order: -1; }
+  .meta-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s4) var(--s5); }
+}
+
+@media (max-width: 640px) {
+  .path li { padding-top: var(--s3); font-size: 11px; }
+  .evidence li { grid-template-columns: 24px minmax(0, 1fr); grid-template-areas: "tick item" "tick take"; row-gap: 2px; padding: var(--s3) 0; }
+  .evidence .tick { grid-area: tick; align-self: start; margin-top: 2px; }
+  .evidence .thumb { display: none; }
+  .evidence .item { grid-area: item; }
+  .evidence .take { grid-area: take; font-size: var(--t-xs); }
+  .decisions li { grid-template-columns: 1fr; gap: var(--s2); }
+  .decisions .state-pill { justify-self: start; }
+  #readiness { padding: var(--s4); }
+}

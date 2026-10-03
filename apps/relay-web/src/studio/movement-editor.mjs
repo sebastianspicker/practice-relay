@@ -14,8 +14,8 @@ export function mountMovementEditor(host, options) {
   let destroyed = false;
   let tools;
   host.classList.add("movement-editor");
-  host.innerHTML = `<header class="motif-heading"><div><h2>Motif phrase</h2><p>An ordered sequence of movement symbols with time anchors (tMs).</p></div><span class="motif-completeness"></span></header>
-    <div class="motif-sequence"><svg class="motif-arcs" viewBox="0 0 760 310" preserveAspectRatio="none" aria-hidden="true"><path d="M20 130 Q205 -90 410 140 T735 285 M75 288 Q210 282 380 123 T700 64"/><path class="dashed" d="M15 165 Q175 392 370 125 T742 78"/></svg><ol class="motif-items" aria-label="Motif phrase items"></ol></div>
+  host.innerHTML = `<header class="motif-heading"><div><h2>Motif phrase</h2><p>Movement symbols in order, each with a time anchor in milliseconds.</p></div><span class="motif-completeness tape"></span></header>
+    <div class="motif-sequence"><ol class="motif-items" aria-label="Motif phrase items"></ol><div class="motif-ruler" aria-hidden="true"><span class="ruler-start">0 s</span><span class="ruler-end"></span></div></div>
     <div class="motif-properties"><section class="motif-item-properties"><h3>Selected item</h3><label><span>Symbol</span><select data-field="symbol"></select></label><label><span>Time anchor</span><span class="motif-anchor"><input data-field="time" type="text" inputmode="decimal" aria-label="Time anchor in milliseconds" placeholder="Not set"><span aria-hidden="true">ms</span></span></label><p class="motif-selection-empty" hidden>Select or add a symbol to begin.</p></section><section><h3>Document</h3><label class="motif-document-label"><span>Completeness</span><select data-field="completeness"><option value="sketch">Sketch</option><option value="partial">Partial</option><option value="complete">Complete</option></select></label><p class="motif-help">Partial documents can be valid.</p></section></div>
     <p class="motif-validation" role="status" aria-live="polite"></p><div class="motif-tools-host"></div>`;
   const query = (selector) => host.querySelector(selector);
@@ -66,6 +66,28 @@ export function mountMovementEditor(host, options) {
       const empty = host.ownerDocument.createElement("li");
       empty.className = "motif-empty"; empty.textContent = "Your phrase is empty. Add a symbol in Document tools."; list.append(empty);
     }
+    renderRuler(ordered);
+  }
+
+  /** Place one tick per anchored symbol at its true proportional time; decoration never stands in for data. */
+  function renderRuler(ordered) {
+    const ruler = query(".motif-ruler");
+    ruler.querySelectorAll(".ruler-tick").forEach((tick) => tick.remove());
+    const anchored = ordered.map((entry, order) => ({ ...entry, order })).filter(({ item }) => Number.isFinite(item.timeAnchor?.tMs));
+    const times = anchored.map(({ item }) => item.timeAnchor.tMs);
+    const start = Math.min(0, ...times);
+    const end = Math.max(0, ...times);
+    ruler.hidden = !anchored.length;
+    query(".ruler-start").textContent = `${(start / 1000).toLocaleString("en-GB", { maximumFractionDigits: 2 })} s`;
+    query(".ruler-end").textContent = `${(end / 1000).toLocaleString("en-GB", { maximumFractionDigits: 2 })} s`;
+    for (const { item, index, order } of anchored) {
+      const tick = host.ownerDocument.createElement("span");
+      tick.className = "ruler-tick";
+      tick.textContent = String(order + 1).padStart(2, "0");
+      tick.style.setProperty("--at", `${end > start ? ((item.timeAnchor.tMs - start) / (end - start)) * 100 : 0}%`);
+      if (index === selected) tick.dataset.selected = "";
+      ruler.append(tick);
+    }
   }
 
   function queryAllTiles() { return host.querySelectorAll(".motif-tile"); }
@@ -75,7 +97,8 @@ export function mountMovementEditor(host, options) {
     if (!document.items[selected]) selected = Math.max(0, document.items.length - 1);
     const item = document.items[selected];
     renderItems(document);
-    query(".motif-completeness").textContent = `Completeness: ${document.completeness}`;
+    const prefix = Object.assign(host.ownerDocument.createElement("span"), { className: "visually-hidden", textContent: "Completeness: " });
+    query(".motif-completeness").replaceChildren(prefix, document.completeness);
     symbol.disabled = !item; time.disabled = !item;
     symbol.value = item?.symbol ?? ""; time.value = item?.timeAnchor?.tMs ?? "";
     completeness.value = document.completeness;

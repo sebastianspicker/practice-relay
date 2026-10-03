@@ -138,12 +138,11 @@ function verifyExistingStylesheetIdentity() {
   const imports = [
     "tokens",
     "base",
-    "dossier",
-    "decision",
-    "dialog",
-    "studio",
+    "shell",
     "movement",
+    "evidence",
     "handoff",
+    "dialog",
   ];
   const expected = imports.reduce(
     (css, name) =>

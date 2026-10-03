@@ -1,45 +1,93 @@
-/** Shared evidence preparation and metadata completion surfaces. */
-#handoff-panel { max-width: 1160px; margin: 26px auto 40px; }
-.handoff-heading { display: flex; align-items: center; justify-content: space-between; gap: 30px; margin-bottom: 32px; }
-.handoff-heading h2 { font-size: clamp(28px, 3vw, 42px); font-weight: 400; line-height: 1.2; letter-spacing: -1px; margin: 5px 0 12px; }
-.handoff-heading p { margin: 5px 0; color: var(--muted); }
-.handoff-heading img { width: 220px; height: 145px; object-fit: cover; }
-.step-label { font-family: var(--mono); font-size: 13px; }
-#handoff-panel h3 { font-size: 18px; font-weight: 500; margin: 0 0 14px; }
-.handoff-evidence { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
-.handoff-evidence li { padding: 18px 5px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
-.handoff-evidence li > span:first-of-type { flex: 1; min-width: 0; }
-.handoff-evidence small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }
-.handoff-evidence .icon { width: 22px; height: 22px; }
-.reference-state { font-size: 12px; color: var(--muted); text-align: right; }
-.handoff-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 34px 0; }
-.handoff-fields > section + section { border-left: 1px solid var(--line); padding-left: 36px; }
-.handoff-fields label { grid-template-columns: 110px 1fr; align-items: center; font-size: 14px; margin: 12px 0; }
-.field-help { color: var(--muted); font-size: 13px; line-height: 1.5; }
-.permissions { list-style: none; padding: 0; margin: 15px 0; }
-.permissions li { display: flex; justify-content: space-between; align-items: center; gap: 18px; border-bottom: 1px solid var(--line); padding: 13px 0; font-size: 14px; }
-.permission-state { display: flex; align-items: center; gap: 8px; color: var(--muted); }
-.output-scope { border-top: 1px solid var(--line); padding-top: 20px; }
-.output-scope p { margin-top: 0; color: var(--muted); font-size: 14px; }
-.handoff-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 26px; }
-.handoff-actions button { display: inline-flex; align-items: center; justify-content: center; gap: 22px; }
-.export-blocker { color: var(--hold); background: var(--hold-soft); border-left: 3px solid var(--hold); padding: 20px; margin: 0 0 26px; }
-.export-blocker ul { padding-left: 20px; }
-.policy-entry { margin-top: 32px; border-top: 1px solid var(--line); padding-top: 12px; }
-.policy-entry form { max-width: 600px; display: grid; gap: 16px; }
-.policy-entry p { font-size: 14px; color: var(--muted); }
-.policy-entry form [role="alert"] { color: var(--deny); }
-.metadata-result { border: 1px solid var(--line); border-radius: 4px; padding: 28px; }
-.metadata-title { display: flex; gap: 22px; align-items: center; margin-bottom: 25px; }
-.metadata-title > .icon { width: 42px; height: 48px; }
-.metadata-title h3 { overflow-wrap: anywhere; }
-.metadata-title p { margin: 0; color: var(--muted); font-size: 14px; }
-.delivery-note { border-top: 1px solid var(--line); padding: 24px 0 0; display: flex; gap: 16px; align-items: center; font-size: 14px; }
-@media (max-width: 760px) { #handoff-panel { margin-top: 8px; } .handoff-heading { gap: 16px; } .handoff-heading img { width: 95px; height: 100px; } .handoff-heading h2 { font-size: 29px; } .handoff-fields { grid-template-columns: 1fr; gap: 22px; padding: 25px 0; } .handoff-fields > section + section { border-left: 0; padding-left: 0; } .handoff-fields label { grid-template-columns: 1fr; } .reference-state { max-width: 95px; } .handoff-evidence li { gap: 10px; font-size: 14px; } .metadata-result { padding: 18px; } .handoff-actions button { flex: 1; } }
+/**
+ * Handoff: one exact use, the permission ledger that decides it, and an honest result.
+ * The ledger is the decision column; the action lives under it, never apart from its reasons.
+ */
+#handoff-panel h3 { margin-bottom: var(--s3); color: var(--ink-3); font: 600 11px/1.2 var(--sans); font-stretch: var(--narrow); letter-spacing: .1em; text-transform: uppercase; }
+.handoff-heading { display: grid; gap: var(--s2); max-width: 64ch; margin-bottom: var(--s6); }
+.handoff-heading h2 { font-size: var(--t-2xl); }
+.handoff-heading > p:last-child, .handoff-heading > p:not(.kicker) { color: var(--ink-2); }
 
-.prepare-heading { justify-content: flex-start; }
-.prepare-heading img { order: -1; width: 310px; height: 175px; }
-.complete-heading > div { flex: 1; }
-.success-mark { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 50%; background: var(--accent-soft); border: 2px solid #b8a1da; flex: 0 0 auto; }
-.success-mark .icon { width: 35px; height: 35px; }
-@media (max-width: 760px) { .prepare-heading img { width: 95px; height: 100px; order: 0; } .success-mark { width: 42px; height: 42px; } .success-mark .icon { width: 24px; height: 24px; } .handoff-actions { flex-direction: column; } .handoff-actions button { min-height: 48px; } .complete-heading { flex-wrap: wrap; } .complete-heading img { display: none; } }
+/* Layout: use, then evidence, on the left; the ledger holds the right column. */
+.handoff-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(300px, 5fr); grid-template-areas: "use ledger" "items ledger"; grid-template-rows: auto 1fr; gap: var(--s6) var(--s7); align-items: start; }
+.intended-use { grid-area: use; }
+.permission-ledger { grid-area: ledger; position: sticky; top: calc(var(--header) + var(--s5)); padding: var(--s5); background: var(--sheet); border: 1px solid var(--rule); }
+.handoff-items { grid-area: items; }
+.use-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); }
+.use-fields input, .policy-entry input[name="purpose"], .policy-entry input[name="destination"] { font-family: var(--mono); font-size: 14px; }
+.intended-use .field-help { margin-top: var(--s3); }
+
+/* Evidence list (also used on the result) */
+.handoff-evidence { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
+.handoff-evidence li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; gap: var(--s3); align-items: center; padding: var(--s3) 0; border-bottom: 1px solid var(--rule); overflow-wrap: anywhere; }
+.handoff-evidence .icon { color: var(--ink-3); }
+.handoff-evidence small { display: block; color: var(--ink-3); font: 400 12px/1.4 var(--mono); }
+.reference-state { color: var(--ink-3); font-size: var(--t-xs); text-align: right; }
+
+/* Permission ledger */
+.permission-ledger .field-help { margin-top: calc(-1 * var(--s2)); }
+.permissions { margin: var(--s4) 0 0; padding: 0; list-style: none; border-top: 1px solid var(--ink); }
+.permissions li { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); min-height: 48px; padding: var(--s2) 0; border-bottom: 1px solid var(--rule); }
+.permission-subject { font-weight: 500; overflow-wrap: anywhere; }
+.permissions-empty { color: var(--ink-2); font-size: 14px; }
+.export-blocker { margin: var(--s4) 0 0; padding: var(--s4); color: var(--ink); background: color-mix(in srgb, var(--tape-hold) 22%, var(--sheet)); box-shadow: inset 3px 0 0 var(--tape-hold); font-size: 14px; }
+#handoff-panel .export-blocker h3 { margin-bottom: var(--s2); color: var(--ink); font: 600 var(--t-md)/1.3 var(--sans); letter-spacing: 0; text-transform: none; }
+.export-blocker ul { margin: 0; padding-left: var(--s4); color: var(--ink-2); }
+.export-blocker p { margin-top: var(--s3); color: var(--ink-2); }
+.export-blocker li + li { margin-top: var(--s1); }
+#handoff-panel > .export-blocker { max-width: 64ch; margin: 0 0 var(--s6); }
+.permission-ledger > .field-help:not(:first-of-type) { margin-top: var(--s4); }
+.output-scope { margin-top: var(--s5); padding-top: var(--s4); border-top: 1px solid var(--rule); }
+#handoff-panel .output-scope h3 { margin-bottom: var(--s1); }
+.output-scope p { color: var(--ink-2); font-size: 14px; }
+.handoff-actions { display: flex; flex-wrap: wrap; gap: var(--s3); margin-top: var(--s5); }
+.permission-ledger .handoff-actions .primary { flex: 1 1 100%; min-height: 48px; justify-content: space-between; }
+.permission-ledger .handoff-actions button:not(.primary), .result-next .handoff-actions button:not(.primary) { flex: 1 1 100%; min-height: 36px; border-color: transparent; background: none; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--rule-strong); text-underline-offset: 3px; }
+.permission-ledger .handoff-actions button:not(.primary):hover:not(:disabled), .result-next .handoff-actions button:not(.primary):hover:not(:disabled) { color: var(--ink); border-color: transparent; text-decoration-color: currentColor; }
+
+/* Recording a permission obtained elsewhere */
+.policy-entry, .policy-note { max-width: calc(7 / 12 * 100%); margin-top: var(--s7); }
+.policy-entry { border-top: 1px solid var(--rule); }
+.policy-entry > p { color: var(--ink-2); font-size: 14px; }
+.policy-entry form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s4); margin-top: var(--s4); }
+.policy-entry form p { color: var(--ink-3); font-size: var(--t-sm); }
+.policy-entry .policy-wide, .policy-entry form [role="alert"] { grid-column: 1 / -1; }
+.policy-entry form button { justify-self: start; }
+
+/* Result */
+.complete-heading .intent-summary { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s6); margin: var(--s3) 0 0; }
+.intent-summary dt { color: var(--ink-3); font: 600 11px/1.2 var(--sans); font-stretch: var(--narrow); letter-spacing: .1em; text-transform: uppercase; }
+.intent-summary dd { margin: 2px 0 0; font: 400 14px var(--mono); overflow-wrap: anywhere; }
+.result-grid { grid-template-areas: "result next"; }
+.result-grid .metadata-result { grid-area: result; }
+.result-next { grid-area: next; position: sticky; top: calc(var(--header) + var(--s5)); padding: var(--s5); background: var(--sheet); border: 1px solid var(--rule); }
+.result-next .delivery-note { margin: 0; }
+.result-next .handoff-actions .primary { flex: 1 1 100%; min-height: 48px; justify-content: space-between; }
+.metadata-result { padding: var(--s5); background: var(--sheet); border: 1px solid var(--rule); }
+.metadata-result > p { margin-top: var(--s4); color: var(--ink-2); font-size: 14px; }
+.metadata-result > p.field-help { margin-top: var(--s1); color: var(--ink-3); }
+.metadata-title { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: var(--s3); align-items: start; margin-bottom: var(--s5); }
+.metadata-title > .icon { width: 28px; height: 28px; color: var(--ink-2); stroke-width: 1.4; }
+#handoff-panel .metadata-title h3 { margin: 0; color: var(--ink); font: 500 var(--t-lg)/1.3 var(--mono); letter-spacing: 0; text-transform: none; overflow-wrap: anywhere; }
+.metadata-title p { margin-top: 2px; color: var(--ink-3); font-size: var(--t-sm); }
+.delivery-note { display: flex; gap: var(--s2); align-items: flex-start; color: var(--ink); font-size: var(--t-md); font-weight: 500; overflow-wrap: anywhere; }
+.delivery-note .icon { margin-top: 3px; color: var(--ink-2); }
+
+@media (max-width: 1100px) {
+  .handoff-grid { grid-template-columns: 1fr; grid-template-areas: "use" "ledger" "items"; }
+  .permission-ledger, .result-next { position: static; }
+  .result-grid { grid-template-areas: "next" "result"; }
+  .policy-entry, .policy-note { max-width: none; }
+}
+
+@media (max-width: 640px) {
+  .handoff-heading h2 { font-size: 28px; }
+  .use-fields, .policy-entry form { grid-template-columns: 1fr; }
+  .permission-ledger, .metadata-result { padding: var(--s4); }
+  .handoff-evidence li { grid-template-columns: 20px minmax(0, 1fr); }
+  .reference-state { grid-column: 2; text-align: left; }
+  .metadata-title { grid-template-columns: 24px minmax(0, 1fr); }
+  #handoff-panel .metadata-title h3 { font-size: var(--t-md); }
+  .metadata-title .tape { grid-column: 2; justify-self: start; }
+  .handoff-actions { flex-direction: column; }
+  .handoff-actions button { width: 100%; min-height: 48px; }
+}

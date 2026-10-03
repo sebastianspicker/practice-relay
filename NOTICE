@@ -6,3 +6,7 @@ This product includes software developed by MAC Research contributors.
 Practice Relay is the programme and main application. MvEI is the separate
 standards effort, and MvEI Workbench is its separate authoring application.
 WorkRecord contracts are shared technical infrastructure, not a user-facing product.
+
+The Practice Relay web workspace bundles the Archivo and Spline Sans Mono
+typefaces, each licensed under the SIL Open Font License 1.1. Their copyright
+notices and licence texts are in apps/relay-web/src/assets/fonts/.

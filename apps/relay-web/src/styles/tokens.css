@@ -1,11 +1,60 @@
-/** Approved high-key studio palette and shared control typography. */
+/**
+ * Marking: design tokens for the Practice Relay workspace.
+ * A high-key studio floor, graphite lettering, one plum for action, and tape
+ * colours that each carry exactly one state. See DESIGN_BRIEF.md.
+ */
+@font-face { font-family: "Archivo"; src: url("../assets/fonts/Archivo-latin.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Archivo"; src: url("../assets/fonts/Archivo-latin-ext.woff2") format("woff2"); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Spline Sans Mono"; src: url("../assets/fonts/SplineSansMono-latin.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Spline Sans Mono"; src: url("../assets/fonts/SplineSansMono-latin-ext.woff2") format("woff2"); font-weight: 300 700; font-style: normal; font-display: swap; unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
 :root {
   color-scheme: light;
-  --bg: #fff; --paper: #fff; --surface: #fff; --rail: #faf9fc; --sunken: #f4f2f8;
-  --ink: #161526; --body: #393747; --muted: #626071; --faint: #706c7d; --ghost: #706c7d;
-  --line: #d9d6e1; --line-strong: #aaa3b7; --accent: #756486; --accent-soft: #f0ebf8;
-  --hold: #81520f; --hold-soft: #fff8eb; --grant: #4b6358; --deny: #9e3442; --withdrawn: #76508b;
-  --ui: "Inter", "Helvetica Neue", Arial, sans-serif; --serif: var(--ui); --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Surfaces: the floor, a sheet laid on it, and a worn patch. */
+  --floor: #f7f6f2;
+  --sheet: #ffffff;
+  --worn: #efede7;
+
+  /* Graphite lettering, three pressures. All pass AA on floor and sheet. */
+  --ink: #1f1d24;
+  --ink-2: #47444f;
+  --ink-3: #66626d;
+
+  /* Rules: hairlines for structure, a firmer line where a control needs 3:1. */
+  --rule: #dedbd4;
+  --rule-strong: #8d8994;
+
+  /* The one action colour, evolved from the earlier studio lilac. */
+  --plum: #4e3d63;
+  --plum-press: #3d2f4f;
+  --plum-soft: #ebe5f1;
+
+  /* Tape: each colour has exactly one meaning. */
+  --tape-grant: #d6e6da;     --tape-grant-ink: #1d4a33;    --grant: #2e6a4b;
+  --tape-hold: #f2d572;      --tape-hold-ink: #3a2c00;     --hold: #7a5200;
+  --tape-deny: #a8362c;      --tape-deny-ink: #ffffff;     --deny: #a8362c;
+  --tape-withdrawn: #e6dcef; --tape-withdrawn-ink: #43265a;
+
+  /* Type: one family at three energies, plus a mono for measured values. */
+  --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "Spline Sans Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --wide: 112%;   /* display: extended, light, full-out */
+  --narrow: 72%;  /* labels: condensed caps, the way you letter tape */
+
+  --t-xs: 12px; --t-sm: 13px; --t-md: 15px; --t-lg: 18px; --t-xl: 24px; --t-2xl: 34px; --t-3xl: clamp(34px, 3.6vw, 52px);
+
+  /* Space on a 4px floor grid. */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px; --s8: 64px;
-  --r-sm: 3px; --r-md: 5px; --header-height: 48px; --dur: 120ms; --ease: ease-out;
+  --gutter: 40px;
+
+  --r: 2px;
+  --control: 40px;
+  --header: 56px;
+  --dur: 120ms;
+  --dur-slow: 180ms;
+  --ease: cubic-bezier(.2, .6, .2, 1);
 }
+
+@media (max-width: 1100px) { :root { --gutter: 24px; } }
+@media (max-width: 640px) { :root { --gutter: 16px; --header: 52px; } }

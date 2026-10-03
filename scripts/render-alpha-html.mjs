@@ -209,8 +209,8 @@ function buildAlphaArtifacts() {
           "../../../apps/relay-web/src/practice-relay-app.mjs",
         ],
         [
-          "./assets/rehearsal-duet.png",
-          "../../../apps/relay-web/src/assets/rehearsal-duet.png",
+          'url("../assets/fonts/',
+          'url("../../../apps/relay-web/src/assets/fonts/',
         ],
       ],
     },

@@ -1,9 +1,8 @@
-/** Shared high-key design system with preserved evidence preview styling. */
+/** Practice Relay workspace styles, "Marking" system: tokens first, then shell, then each task context. */
 @import "./styles/tokens.css";
 @import "./styles/base.css";
-@import "./styles/dossier.css";
-@import "./styles/decision.css";
-@import "./styles/dialog.css";
-@import "./styles/studio.css";
+@import "./styles/shell.css";
 @import "./styles/movement.css";
+@import "./styles/evidence.css";
 @import "./styles/handoff.css";
+@import "./styles/dialog.css";
