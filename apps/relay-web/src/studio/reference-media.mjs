@@ -13,7 +13,10 @@ export function mountReferenceMedia(host, { record, demo, request, onStatus }) {
   const showBlob = blob => {
     if (!active) return;
     if (objectUrl) URL.revokeObjectURL(objectUrl);
-    objectUrl = URL.createObjectURL(blob);
+    const url = URL.createObjectURL(blob);
+    const parsed = new URL(url, host.ownerDocument.location.href);
+    if (parsed.protocol !== "blob:") { URL.revokeObjectURL(url); return; }
+    objectUrl = parsed.href;
     const video = host.ownerDocument.createElement("video");
     video.controls = true;
     video.preload = "metadata";

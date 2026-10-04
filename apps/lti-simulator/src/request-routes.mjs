@@ -57,7 +57,7 @@ function sendRequestError(context, err) {
   sendJson(context.res, status, {
     ok: false,
     banner: MOCK_PLATFORM_BANNER,
-    error: err instanceof Error ? err.message : String(err),
+    error: err instanceof MockRequestError ? err.message : "internal mock platform error",
     ...(status === 500
       ? { hint: "Is the Practice Relay API running at " + context.apiBase + "?" }
       : {}),

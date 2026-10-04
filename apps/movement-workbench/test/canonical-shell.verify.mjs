@@ -26,5 +26,5 @@ test("canonical shell payload and edited sessions retain all Motif fields", () =
   const projection = renderProjectionHtml(edited);
   assert.match(projection, /Read-only projection/);
   assert.match(projection, /effort_light → level low/);
-  assert.doesNotMatch(projection, /<script>/);
+  assert.doesNotMatch(projection, /<script/i);
 });
