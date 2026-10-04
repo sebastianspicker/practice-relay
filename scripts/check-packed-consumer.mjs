@@ -70,6 +70,17 @@ function run(command, args, options = {}) {
   return result;
 }
 
+// npm occasionally aborts with "Exit handler never called!" on CI runners; retry that known flake.
+function runNpmPack(args, options) {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return run("npm", args, options);
+    } catch (error) {
+      if (attempt >= 3 || !String(error.message).includes("Exit handler never called")) throw error;
+    }
+  }
+}
+
 function pathEscapes(base, candidate) {
   const path = relative(base, candidate);
   return path === ".." || path.startsWith(`..${sep}`) || isAbsolute(path);
@@ -144,8 +155,7 @@ function packageInstalledDependency(name, tarballsDirectory) {
       .find((candidate) => existsSync(join(candidate, "package.json")));
   }
   assert.equal(typeof packageDirectory, "string", `cannot find installed runtime dependency ${name}`);
-  const output = run(
-    "npm",
+  const output = runNpmPack(
     ["pack", `file:${packageDirectory}`, "--ignore-scripts", "--pack-destination", tarballsDirectory, "--json"],
     { cwd: root },
   ).stdout;
