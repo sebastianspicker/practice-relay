@@ -115,8 +115,7 @@ pnpm check:all
 | `pnpm check:boundaries` | Package and application dependency rules |
 | `pnpm check:unit` | Workspace tests |
 
-`pnpm check:release` adds public-source hygiene. The PostgreSQL/S3 integration
-lane (`pnpm check:integration`) requires Docker and runs separately. See
+`pnpm check:release` adds public-source hygiene. See
 [Testing](docs/testing.md) for focused commands and gate ordering.
 
 ## Documentation

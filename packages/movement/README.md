@@ -28,13 +28,13 @@ and `partial` documents as intentionally incomplete but valid.
 
 The Motif vocabulary JSON, JavaScript, and declarations are generated from a
 single canonical contract, so do not edit them independently. The package build,
-type-check, and test scripts run the generator in check mode.
+type-check, and `verify:generated` scripts run the generator in check mode.
 
 ## Verify
 
 ```bash
 pnpm --filter @practice-relay/movement typecheck
-pnpm --filter @practice-relay/movement test
+pnpm --filter @practice-relay/movement verify:generated
 pnpm --filter @practice-relay/movement run build
 pnpm check:packages
 pnpm check:contracts

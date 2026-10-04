@@ -31,14 +31,9 @@ failures never switch the workspace into demo mode. `globalThis.PRACTICE_RELAY_S
 forces static demonstration mode. Demo actions are simulated and make no API or
 service writes.
 
-## Verify
+## Pages
 
-```bash
-pnpm --filter @practice-relay/relay-web test
-```
-
-The GitHub Pages workflow runs the same dependency-free Node test pattern, stages
-the application with `node apps/relay-web/scripts/build.mjs`, and publishes
+The GitHub Pages workflow stages the application with `node apps/relay-web/scripts/build.mjs`, and publishes
 `apps/relay-web/dist`. Staging includes the movement browser modules, schemas,
 vocabulary, public corpus fixtures, and the screenshot tour. Relative import-map
 URLs work under a GitHub Pages repository subpath. Generated HTML snapshots and

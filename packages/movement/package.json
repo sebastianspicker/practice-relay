@@ -78,8 +78,6 @@
   ],
   "scripts": {
     "build": "node scripts/generate-motif-contract.mjs --check && tsc -p tsconfig.build.json",
-    "test": "node scripts/generate-motif-contract.mjs --check && node --import tsx --test tests/*.test.ts",
-    "test:emitted": "pnpm run build && node --test tests/emitted-import.test.mjs",
     "typecheck": "node scripts/generate-motif-contract.mjs --check && tsc -p tsconfig.json --noEmit",
     "verify:generated": "node scripts/generate-motif-contract.mjs --check"
   },

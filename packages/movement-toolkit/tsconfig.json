@@ -9,5 +9,5 @@
       "@practice-relay/movement/glyphs": ["../movement/glyphs/index.ts"]
     }
   },
-  "include": ["src/**/*", "tests/**/*"]
+  "include": ["src/**/*"]
 }

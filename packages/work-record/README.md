@@ -51,6 +51,5 @@ From the repository root:
 
 ```bash
 pnpm --filter @practice-relay/work-record typecheck
-pnpm --filter @practice-relay/work-record test
 pnpm check:contracts
 ```

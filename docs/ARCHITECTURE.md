@@ -50,7 +50,7 @@ flowchart LR
 | Domain | `packages/work-record`, `packages/movement` | Portable WorkRecord and movement contracts |
 | Interchange | `packages/handoff`, `packages/movement-toolkit` | Handoff packages, projections, movement import, validation, rendering |
 | Adapters | `packages/auth`, `packages/lti`, `packages/media-store`, `packages/record-store`, `packages/runtime-state`, `packages/database` | Identity, protocol, media, persistence, shared login/LTI state, PostgreSQL pooling and migrations |
-| Verification | `tests/acceptance`, `tests/integration`, package and app tests, root `scripts/` | Cross-component behavior, the shared-service lane, and repository-wide checks and docs/demo tooling |
+| Verification | root `scripts/` | Repository-wide checks and docs/demo tooling |
 
 ## Dependency direction
 
@@ -210,8 +210,7 @@ recovery, or orchestrator configuration. See [lab deployment](../deploy/README.m
 - `apps/relay-api` reads process configuration once; packages take explicit
   options or an injected environment object.
 - Root `scripts/` holds repository-wide checks and docs/demo tooling only.
-  Operational CLIs live with the workspace that owns them, and the
-  Docker-backed lane lives in `tests/integration`.
+  Operational CLIs live with the workspace that owns them.
 
 For subsystem details, read [Practice Relay](relay/README.md) and
 [MvEI](movement/README.md).

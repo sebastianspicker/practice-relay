@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "node src/dev.mjs",
-    "test": "node --test test/*.verify.mjs && node --import tsx --test test/role-parity.test.mjs",
     "build": "node scripts/build.mjs"
   },
   "dependencies": {

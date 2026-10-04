@@ -205,3 +205,15 @@ agent-instructions.*
 /audit-output.*
 /implementation-report.*
 /completion-report.*
+
+# Internal design and test files kept out of the published tree
+/DESIGN_BRIEF.md
+/tests/
+/apps/lti-simulator/test/
+/apps/movement-schema-site/test/
+/apps/movement-workbench/test/
+/apps/relay-web/test/
+/packages/handoff/tests/
+/packages/movement-toolkit/tests/
+/packages/movement/tests/
+/packages/work-record/tests/

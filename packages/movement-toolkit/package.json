@@ -25,7 +25,6 @@
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node scripts/copy-reference-reader.mjs",
-    "test": "node --import tsx --test tests/*.test.*",
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {

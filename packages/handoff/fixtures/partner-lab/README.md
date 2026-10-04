@@ -10,6 +10,5 @@ completed field deployments.
 | `partner-session.eaf` | ELAN-like: regions, comments, multiple unknown tiers, empty annotation, orphan comment, missing media, bad time slots |
 | `partner-nle.otio.json` | OTIO-like NLE: multi-clip, multiple gaps and transitions, freeze, generator, offline media, markers |
 
-`packages/handoff/tests/field-fidelity.test.ts` consumes these files and asserts
-specific `ImportWarningCode` values. The taxonomy lives in
+These files exercise specific `ImportWarningCode` values. The taxonomy lives in
 `packages/handoff/src/projections/import-warnings.ts`.

@@ -16,17 +16,11 @@ pnpm --filter @practice-relay/movement-workbench dev
 The command regenerates `src/index.html` from the shared demo Motif, then serves
 the application on `http://127.0.0.1:5175`. Set `MVEI_WORKBENCH_PORT` to change
 the port. The server mounts the repository's movement package so browser imports
-resolve to the same contracts the package tests use.
+resolve to the same contracts the packages use.
 
 Workbench sessions and synchronization are local application state. There is no
 hosted collaboration service, hardware capture pipeline, or full professional
 Labanotation environment.
-
-## Verify
-
-```bash
-pnpm --filter @practice-relay/movement-workbench test
-```
 
 Read [MvEI architecture](../../docs/movement/architecture.md) before changing
 document or vocabulary behavior.

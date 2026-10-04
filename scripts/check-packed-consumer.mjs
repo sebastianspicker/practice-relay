@@ -70,17 +70,6 @@ function run(command, args, options = {}) {
   return result;
 }
 
-// npm occasionally aborts with "Exit handler never called!" on CI runners; retry that known flake.
-function runNpmPack(args, options) {
-  for (let attempt = 1; ; attempt += 1) {
-    try {
-      return run("npm", args, options);
-    } catch (error) {
-      if (attempt >= 3 || !String(error.message).includes("Exit handler never called")) throw error;
-    }
-  }
-}
-
 function pathEscapes(base, candidate) {
   const path = relative(base, candidate);
   return path === ".." || path.startsWith(`..${sep}`) || isAbsolute(path);
@@ -155,15 +144,15 @@ function packageInstalledDependency(name, tarballsDirectory) {
       .find((candidate) => existsSync(join(candidate, "package.json")));
   }
   assert.equal(typeof packageDirectory, "string", `cannot find installed runtime dependency ${name}`);
-  const output = runNpmPack(
-    ["pack", `file:${packageDirectory}`, "--ignore-scripts", "--pack-destination", tarballsDirectory, "--json"],
+  const output = run(
+    "pnpm",
+    ["--dir", packageDirectory, "pack", "--config.ignore-scripts=true", "--pack-destination", tarballsDirectory, "--json"],
     { cwd: root },
   ).stdout;
   const packed = JSON.parse(output);
-  assert.equal(packed.length, 1, `npm pack must produce one ${name} tarball`);
-  assert.equal(packed[0]?.name, name, `npm pack must report ${name}`);
-  assert.equal(typeof packed[0]?.filename, "string", `npm pack must report ${name} filename`);
-  const tarball = resolve(tarballsDirectory, packed[0].filename);
+  assert.equal(packed.name, name, `pnpm pack must report ${name}`);
+  assert.equal(typeof packed.filename, "string", `pnpm pack must report ${name} filename`);
+  const tarball = resolve(tarballsDirectory, packed.filename);
   assert.ok(!pathEscapes(tarballsDirectory, tarball), `${name} tarball escapes temporary directory`);
   assert.ok(existsSync(tarball), `missing ${name} tarball`);
   return { name, tarball };
@@ -179,6 +168,10 @@ function writeConsumerManifest(consumerDirectory, tarballs) {
         private: true,
         type: "module",
         dependencies: Object.fromEntries(tarballs.map(({ name, tarball }) => [name, relativeTarball(tarball)])),
+        // pnpm 9 reads overrides from package.json only; pnpm 10 also reads pnpm-workspace.yaml.
+        pnpm: {
+          overrides: Object.fromEntries(tarballs.map(({ name, tarball }) => [name, relativeTarball(tarball)])),
+        },
       },
       null,
       2,

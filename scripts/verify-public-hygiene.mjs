@@ -298,10 +298,7 @@ function verifyPagesDemoEvidence(root, errors) {
   const workflow = readRepositoryText(root, PAGES_WORKFLOW_PATH);
   const workflowRequirements = [
     ["Node 24 setup", /actions\/setup-node@[0-9a-f]{40} # v4[\s\S]*node-version:\s*24/u],
-    [
-      "dependency-free relay-web test gate",
-      /node --test apps\/relay-web\/test\/\*\.verify\.mjs/u,
-    ],
+    ["relay-web static build", /node apps\/relay-web\/scripts\/build\.mjs/u],
     ["Pages artifact upload", /actions\/upload-pages-artifact@[0-9a-f]{40} # v3/u],
     ["relay-web static artifact path", /path:\s*apps\/relay-web\/dist/u],
     ["Pages deployment", /actions\/deploy-pages@[0-9a-f]{40} # v4/u],

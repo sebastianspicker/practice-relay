@@ -5,19 +5,16 @@ focused workspace test, then run the broadest practical root gate.
 
 ## Focused checks
 
-Every workspace exposes a `test` script:
+Workspaces with colocated tests expose a `test` script:
 
 ```bash
 pnpm --filter @practice-relay/relay-api test
-pnpm --filter @practice-relay/relay-web test
-pnpm --filter @practice-relay/lti-simulator test
-pnpm --filter @practice-relay/movement-workbench test
-pnpm --filter @practice-relay/movement-schema-site test
-pnpm --filter @practice-relay/work-record test
-pnpm --filter @practice-relay/handoff test
-pnpm --filter @practice-relay/movement test
-pnpm --filter @practice-relay/movement-toolkit test
-pnpm --dir tests/acceptance test
+pnpm --filter @practice-relay/auth test
+pnpm --filter @practice-relay/database test
+pnpm --filter @practice-relay/lti test
+pnpm --filter @practice-relay/media-store test
+pnpm --filter @practice-relay/record-store test
+pnpm --filter @practice-relay/runtime-state test
 ```
 
 The relay-api `test` script also runs the migration CLI tests in
@@ -68,15 +65,7 @@ browser interaction, accessibility inspection, or Pages verification.
 
 Report failed, skipped, unavailable, and environment-blocked checks separately.
 
-## Shared-service lane
-
-`pnpm check:integration` (`tests/integration/`) provisions a disposable Compose
-project with PostgreSQL 18 and an S3-compatible service. Build the API first with
-`pnpm --filter @practice-relay/relay-api run build`. The lane starts two API
-processes, exercises shared state and failure recovery, and restores a PostgreSQL
-dump into a second disposable database. It needs a working Docker engine and never
-connects to configured user databases or mounts user data. CI runs this lane
-separately from the deterministic local gate.
+## Benchmarks
 
 `pnpm benchmark:runtime` measures single-record JSON reads and mutations at 100,
 1,000, and 10,000 records, plus authentication event-loop responsiveness, on
@@ -86,4 +75,4 @@ comparisons, not service-level guarantees.
 `pnpm benchmark:media` measures 1 MiB and 64 MiB filesystem uploads and verified
 downloads using generated 64 KiB chunks. It reports timing and sampled RSS growth
 and removes its private temporary store. It does not measure cross-host S3
-throughput, which belongs to the shared-service lane.
+throughput.

@@ -29,12 +29,6 @@ The fixtures under [`fixtures`](fixtures) describe Canvas- and Moodle-shaped
 registration fields for testing only; they do not prove that an external LMS
 accepts this tool.
 
-## Verify
-
-```bash
-pnpm --filter @practice-relay/lti-simulator test
-```
-
 Use `dev` instead of `start` for Node watch mode. See the
 [API and contracts guide](../../docs/relay/api-and-contracts.md) and
 [operations guide](../../docs/relay/operations.md).

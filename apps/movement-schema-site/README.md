@@ -26,11 +26,5 @@ pnpm --filter @practice-relay/movement-schema-site generate
 This overwrites `index.html`. Review the generated diff rather than editing the
 page by hand.
 
-## Verify
-
-```bash
-pnpm --filter @practice-relay/movement-schema-site test
-```
-
 The site is a local reference implementation, not a standards publication or a
 compatibility certification.

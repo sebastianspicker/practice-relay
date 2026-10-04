@@ -2,11 +2,11 @@
 
 | Surface | Where the evidence lives |
 | --- | --- |
-| Practice Relay | `apps/relay-api`, `apps/relay-web`, `apps/lti-simulator`, focused and acceptance tests, root verification |
-| WorkRecord contracts | `packages/work-record` domain, parser, policy, time, media-reference, and persistence-port tests |
-| Handoff | `packages/handoff` manifest, integrity, RO-Crate, ZIP, import, and declared-loss projection tests |
+| Practice Relay | `apps/relay-api`, `apps/relay-web`, `apps/lti-simulator`, colocated tests and root verification |
+| WorkRecord contracts | `packages/work-record` domain, parser, policy, time, media-reference, and persistence-port sources |
+| Handoff | `packages/handoff` manifest, integrity, RO-Crate, ZIP, import, and declared-loss projection sources |
 | MvEI | `packages/movement`, `packages/movement-toolkit`, movement applications, schemas, and corpus checks |
-| MvEI Workbench | local authoring, validation, session, synchronization, and accessibility-oriented source tests |
+| MvEI Workbench | local authoring, validation, session, synchronization, and accessibility-oriented sources |
 
 The repository provides source evidence and deterministic local gates. It does
 not establish a deployed service, production identity or database, real LMS

@@ -5,8 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node src/dev.mjs",
-    "generate": "node --import tsx scripts/generate-site.mjs",
-    "test": "node --import tsx --test test/*.verify.mjs"
+    "generate": "node --import tsx scripts/generate-site.mjs"
   },
   "dependencies": {
     "@practice-relay/movement": "workspace:*"

@@ -23,7 +23,7 @@ capture pipeline.
 The browser entrypoint avoids filesystem access and Node-only validator
 dependencies. The toolkit adds Ajv, filesystem, and CLI behavior without changing
 schema ownership. Generated vocabulary modules and the TypeScript contract must
-match their canonical source; the package build and test scripts run the
+match their canonical source; the package build and type-check scripts run the
 generator in check mode.
 
 The `@practice-relay/movement` package paths and current `urn:mvei:*` schema

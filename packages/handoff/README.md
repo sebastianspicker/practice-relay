@@ -32,7 +32,6 @@ The canonical package manifest schema is
 
 ```bash
 pnpm --filter @practice-relay/handoff typecheck
-pnpm --filter @practice-relay/handoff test
 pnpm check:contracts
 ```
 

@@ -13,8 +13,7 @@
     "./media": "./src/media/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --import tsx --test tests/*.test.ts"
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "ajv": "^8.17.1",

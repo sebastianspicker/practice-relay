@@ -6,7 +6,6 @@ on:
     paths:
       - ".github/workflows/pages.yml"
       - "apps/relay-web/src/**"
-      - "apps/relay-web/test/**"
       - "apps/relay-web/package.json"
       - "apps/relay-web/scripts/**"
       - "docs/images/**"
@@ -39,8 +38,6 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 24
-      - name: Verify static demo assets
-        run: node --test apps/relay-web/test/*.verify.mjs
       - name: Stage static workspace and movement modules
         run: node apps/relay-web/scripts/build.mjs
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0

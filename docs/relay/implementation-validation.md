@@ -40,13 +40,6 @@ rename. It verifies canonical records, revisions, counters, and exactly-once
 audit recovery. These checks exercise filesystem recovery logic; they do not
 simulate storage hardware losing acknowledged writes.
 
-`pnpm check:integration` is the separate required PostgreSQL 18/S3 lane. It
-starts two API processes and covers concurrency, admission, single-use LTI, media
-failure injection, query budgets, cardinality measurements, and a PostgreSQL
-dump/restore comparison. Docker execution was rejected by the local automatic
-approval review during this implementation, so this lane must not be reported as
-passed in that environment.
-
 Native Chrome desktop checks exercised Relay login, pagination, title filtering,
 lazy details, focus retention, request timeout, forbidden-response clearing, and
 expiry against a synthetic HTTP API. Workbench checks exercised save/edit/load,

@@ -26,12 +26,11 @@ From the repository root:
 
 ```bash
 pnpm --filter @practice-relay/movement-toolkit typecheck
-pnpm --filter @practice-relay/movement-toolkit test
 pnpm --filter @practice-relay/movement-toolkit run build
 pnpm check:packages
 ```
 
-Type-check and tests run from source on a fresh install. The build emits the
+Type-check runs from source on a fresh install. The build emits the
 library subpaths and CLI binaries under `dist`. The packed-consumer check installs
 both movement package tarballs in an isolated project and verifies declarations,
 exports, fixtures, and command-line behavior without publishing them.

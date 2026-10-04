@@ -19,7 +19,6 @@
     "check:release:strict": "pnpm check:release && node scripts/verify-public-hygiene.mjs --strict",
     "demo:render-html": "node --import tsx scripts/render-alpha-html.mjs",
     "benchmark:runtime": "node --import tsx scripts/benchmark-runtime.ts",
-    "check:integration": "node tests/integration/run.mjs",
     "screenshots": "node scripts/capture-screenshots.mjs",
     "hash-password": "node --import tsx packages/auth/scripts/hash-password.mjs",
     "migrate:postgres": "node --import tsx apps/relay-api/scripts/migrate-postgres.ts",

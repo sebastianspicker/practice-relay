@@ -24,12 +24,11 @@ Do not disable package-manager verification to work around a toolchain error.
 
 ```bash
 pnpm install --frozen-lockfile
-node --test apps/relay-web/test/*.verify.mjs
+node apps/relay-web/scripts/build.mjs
 ```
 
 The Pages workflow stages the static application with
-`node apps/relay-web/scripts/build.mjs` and uploads `apps/relay-web/dist`, after
-the same dependency-free Node 24 test gate. Once publication is confirmed, verify
+`node apps/relay-web/scripts/build.mjs` and uploads `apps/relay-web/dist`. Once publication is confirmed, verify
 the loaded page interactively at the expected URL:
 <https://sebastianspicker.github.io/practice-relay/>. Until then, treat that URL
 as unverified.

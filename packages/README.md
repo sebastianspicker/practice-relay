@@ -43,6 +43,6 @@ pnpm check:boundaries
 ```
 
 A single suite, for example, is
-`pnpm --filter @practice-relay/work-record test`. See [Testing](../docs/testing.md)
+`pnpm --filter @practice-relay/auth test`. See [Testing](../docs/testing.md)
 for every workspace command and [Architecture](../docs/ARCHITECTURE.md) for
 dependency rules.

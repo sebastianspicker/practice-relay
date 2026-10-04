@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node src/dev.mjs",
-    "test": "node --test test/*.verify.mjs"
+    "dev": "node src/dev.mjs"
   },
   "dependencies": {
     "@practice-relay/movement": "workspace:*"
