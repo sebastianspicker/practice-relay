@@ -17,7 +17,14 @@ The local server defaults to `http://127.0.0.1:5173`; set
 `globalThis.PRACTICE_RELAY_API_BASE` before the application module loads, and
 otherwise defaults to `http://localhost:8787`.
 
-Sign in with a configured user to load authorized record summaries. Tokens stay
+The API rejects browser origins it has not been told to trust. Start it with
+`PRACTICE_RELAY_ALLOWED_ORIGINS=http://127.0.0.1:5173` (or the workspace's
+actual origin), as in the [quick start](../../README.md#quick-start), or sign-in
+fails with `403 untrusted Origin header`.
+
+Sign in with a configured user to load authorized record summaries. With the
+API started in synthetic mode, use one of the
+[synthetic users](../../README.md#synthetic-users). Tokens stay
 in memory until expiry, sign out, or page reload, and authentication failures
 clear private records and local package previews. Requests have a ten-second
 deadline, and newer filters or selections cancel superseded requests.

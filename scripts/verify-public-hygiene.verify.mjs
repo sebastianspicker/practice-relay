@@ -1,17 +1,18 @@
 /** Deterministic PATH-hijack verification for public-hygiene Git probes. */
 import { spawnSync } from "node:child_process";
 import assert from "node:assert/strict";
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { collectPublicHygiene } from "./verify-public-hygiene.mjs";
+import { collectPublicHygiene, hasUnconfiguredConfidentialReporting } from "./verify-public-hygiene.mjs";
 
 const repositoryRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const trustedGitExecutable = "/usr/bin/git";
 const trustedTeeExecutable = "/usr/bin/tee";
 const trustedChmodExecutable = "/bin/chmod";
+const trustedTarExecutable = "/usr/bin/tar";
 
 function requireIncludes(values, value, label) {
   if (!values.includes(value)) throw new Error(`${label}: missing ${value}`);
@@ -33,10 +34,44 @@ function requireNoGitStatusFailure(result, label) {
   }
 }
 
+function verifyReportingRouteDetection() {
+  assert.equal(hasUnconfiguredConfidentialReporting("Confidential reporting is not configured yet."), true);
+  assert.equal(hasUnconfiguredConfidentialReporting("Report vulnerabilities privately through GitHub private vulnerability reporting."), false);
+
+  // Route an unconfigured policy through the full collector: a warning in candidate mode, an error in strict mode.
+  const fixtureRoot = mkdtempSync(join(tmpdir(), "practice-relay-reporting-route-"));
+  try {
+    const archive = spawnSync(trustedGitExecutable, ["archive", "--format=tar", "HEAD"], {
+      cwd: repositoryRoot,
+      maxBuffer: 256 * 1024 * 1024,
+    });
+    requireSuccessfulHelper({ ...archive, stderr: String(archive.stderr) }, "fixture archive");
+    requireSuccessfulHelper(
+      spawnSync(trustedTarExecutable, ["-x", "-C", fixtureRoot], { input: archive.stdout, encoding: "utf8" }),
+      "fixture extraction",
+    );
+    writeFileSync(join(fixtureRoot, "SECURITY.md"), "# Security policy\n\nConfidential reporting is not configured yet.\n");
+    const reportingWarning = "confidential security reporting route is not configured";
+    const candidate = collectPublicHygiene(fixtureRoot);
+    const strict = collectPublicHygiene(fixtureRoot, { strict: true });
+    requireIncludes(candidate.warnings, reportingWarning, "fixture candidate reporting warning");
+    requireExcludes(candidate.errors, reportingWarning, "fixture candidate reporting error");
+    requireIncludes(strict.errors, reportingWarning, "fixture strict reporting error");
+  } finally {
+    rmSync(fixtureRoot, { recursive: true, force: true });
+  }
+  return true;
+}
+
 function verifyResultClassification(candidate, strict, insideWorktree, status) {
   const reportingWarning = "confidential security reporting route is not configured";
-  requireIncludes(candidate.warnings, reportingWarning, "candidate reporting warning");
-  requireIncludes(strict.errors, reportingWarning, "strict reporting error");
+  if (hasUnconfiguredConfidentialReporting(readFileSync(join(repositoryRoot, "SECURITY.md"), "utf8"))) {
+    requireIncludes(candidate.warnings, reportingWarning, "candidate reporting warning");
+    requireIncludes(strict.errors, reportingWarning, "strict reporting error");
+  } else {
+    requireExcludes(candidate.warnings, reportingWarning, "candidate reporting warning");
+    requireExcludes(strict.errors, reportingWarning, "strict reporting error");
+  }
 
   const metadataMessage = "Git metadata is unavailable; tracked-set and clean-tree checks were skipped";
   if (insideWorktree.status !== 0 || insideWorktree.stdout.trim() !== "true") {
@@ -124,4 +159,5 @@ function verifyPagesDemoContract() {
   return true;
 }
 
-export const verificationComplete = verifyTrustedGitPath() && verifyPagesDemoContract();
+export const verificationComplete =
+  verifyReportingRouteDetection() && verifyTrustedGitPath() && verifyPagesDemoContract();

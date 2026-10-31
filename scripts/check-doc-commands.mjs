@@ -168,6 +168,8 @@ function scanSource({ file, source, rootScripts, packageNames, packageDirectorie
 
   const legacyPathPattern = /(?<![@\w.-])(?:practice-relay|mvei)\/[A-Za-z0-9._-]+(?:\/[A-Za-z0-9._-]+)*/giu;
   for (const match of source.matchAll(legacyPathPattern)) {
+    const precedingToken = /[^\s<>()[\]`"']*$/u.exec(source.slice(0, match.index ?? 0))[0];
+    if (/^https?:\/\//iu.test(precedingToken)) continue;
     findings.push(finding({
       file,
       source,

@@ -1,21 +1,24 @@
 # Maintainer status
 
-No maintainer is assigned in this source snapshot. There is no public maintainer
-contact, funded team, external board, or consortium. This is a governance gap
-that blocks a public alpha publication.
+A release owner is assigned (see the appointment record below). The Practice
+Relay lead, MvEI lead, and documentation steward roles remain unassigned, and
+there is no public maintainer contact, funded team, external board, or
+consortium. The release checklist still requires those roles before a public
+alpha publication.
 
 ## Required roles
 
 | Role | Assigned | Scope |
 |---|---|---|
-| Release owner | Unassigned | Candidate approval, local and CI evidence, source-archive review, publication controls |
+| Release owner | Sebastian Spicker | Candidate approval, local and CI evidence, source-archive review, publication controls |
 | Practice Relay lead | Unassigned | Practice Relay application, WorkRecord consumers, API, storage, and the lab-only LTI boundary |
 | MvEI lead | Unassigned | MvEI schemas, corpus, validators, reference implementations, and MvEI Workbench |
 | Documentation steward | Unassigned | Public documentation, evidence boundaries, release notes, claim guards |
 
 Names and public contact details appear here only after the person accepts the
 role and approves publishing them. Confidential vulnerability reporting is
-separate and remains unconfigured; see [`../SECURITY.md`](../SECURITY.md).
+separate and uses GitHub private vulnerability reporting; see
+[`../SECURITY.md`](../SECURITY.md).
 
 ## Appointment record
 
@@ -29,6 +32,10 @@ Record each appointment with:
 
 Do not put private addresses, personal phone numbers, or unapproved contact
 details in this file.
+
+| Role | Person | Accepted | Effective | Review | Public contact | Permissions |
+| --- | --- | --- | --- | --- | --- | --- |
+| Release owner | Sebastian Spicker | 2026-10-31, by the person, for the alpha-readiness pass | 2026-10-31 | at the next release candidate | not published; use the issue process or the private route in [`../SECURITY.md`](../SECURITY.md) | repository owner on the canonical GitHub repository |
 
 ## Shared-contract review
 
@@ -44,8 +51,8 @@ signature format remains a non-live template.
 
 Public defects and documentation problems can use the normal issue process once
 the canonical repository owner confirms it. Security reports must not be filed
-publicly, and no confidential route is published yet — that route must be
-configured and tested before the public alpha.
+publicly; use the private route in [`../SECURITY.md`](../SECURITY.md), which
+must be tested end to end before the public alpha.
 
 See [`CONTRIBUTING.md`](../CONTRIBUTING.md), [`RELEASING.md`](../RELEASING.md),
 and [`RELEASE-CHECKLIST.md`](RELEASE-CHECKLIST.md) for the current local process.

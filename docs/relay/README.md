@@ -30,10 +30,12 @@ implementation measurements separate from service verification.
 
 ```bash
 pnpm --filter @practice-relay/relay-api run build
-PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1 pnpm --filter @practice-relay/relay-api start
+PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1 PRACTICE_RELAY_ALLOWED_ORIGINS=http://127.0.0.1:5173 pnpm --filter @practice-relay/relay-api start
 pnpm --filter @practice-relay/relay-web dev
 pnpm --filter @practice-relay/lti-simulator start
 ```
 
 The simulator is optional and local-only: a test surface, not a real LMS
-integration or certification implementation.
+integration or certification implementation. It only works when the API and the
+simulator share one `PRACTICE_RELAY_LTI_SECRET`; the
+[simulator README](../../apps/lti-simulator/README.md#run) shows how.

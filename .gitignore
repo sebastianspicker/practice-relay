@@ -121,6 +121,9 @@ docker-compose.override.yml
 !deploy/**/*.example
 /data/**
 !data/README.md
+# Runtime data written under a workspace's working directory (pnpm --filter … start)
+/apps/*/data/
+/packages/*/data/
 deploy/secrets/local/
 deploy/secrets/*
 !deploy/secrets/README.md

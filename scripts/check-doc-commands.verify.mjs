@@ -19,7 +19,14 @@ function verifyFixture() {
     write(root, "apps/relay-web/package.json", JSON.stringify({ name: "@practice-relay/relay-web" }));
     write(root, "packages/work-record/package.json", JSON.stringify({ name: "@practice-relay/work-record" }));
     write(root, "README.md", "Run `pnpm check:docs` and `pnpm --filter @practice-relay/relay-web dev`.\n");
-    write(root, "docs/guide.md", "Run `pnpm release:check` and see `@practice-relay/work-record`.\n");
+    write(root, "docs/guide.md", [
+      "Run `pnpm release:check` and see `@practice-relay/work-record`.",
+      "Old layout: `practice-relay/handoff-core`.",
+      "See [the old guide](mvei/legacy-guide.md) and [the tracker](https://github.com/example/practice-relay/issues).",
+      "Glued: <https://example.org>practice-relay/glued-path stays flagged",
+      "Report at <https://github.com/example/practice-relay/security/advisories/new>.",
+      "",
+    ].join("\n"));
     write(root, ".github/PULL_REQUEST_TEMPLATE.md", "Use `@practice-relay/movement-encode` and `packages/movement-encode`.\n");
     write(root, ".github/ISSUE_TEMPLATE/feature_request.yml", "description: '`pnpm run check:all`'\n");
 
@@ -36,6 +43,9 @@ function verifyFixture() {
         { kind: "root-script", value: "release:check" },
         { kind: "package-name", value: "@practice-relay/movement-encode" },
         { kind: "package-path", value: "packages/movement-encode" },
+        { kind: "legacy-path", value: "practice-relay/handoff-core" },
+        { kind: "legacy-path", value: "mvei/legacy-guide.md" },
+        { kind: "legacy-path", value: "practice-relay/glued-path" },
       ].sort((left, right) => `${left.kind}:${left.value}`.localeCompare(`${right.kind}:${right.value}`)),
       "fixture stale references",
     );

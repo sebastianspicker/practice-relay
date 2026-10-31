@@ -7,21 +7,21 @@ no production support or response-time commitment is offered.
 
 ## Reporting a vulnerability
 
-Confidential reporting is not configured yet. This is a hard blocker before any
-public alpha release.
+Report vulnerabilities privately through GitHub private vulnerability
+reporting on the canonical repository: open the **Security** tab and choose
+**Report a vulnerability**, or go directly to
+<https://github.com/sebastianspicker/practice-relay/security/advisories/new>.
+Only the repository maintainers can see the report.
+
+The release owner aims to acknowledge a report within 14 days. This is a
+best-effort goal, not a response-time commitment.
 
 Please do not open a public issue or discussion containing an exploit,
-credential, personal data, or anything else sensitive. This repository does not
-yet publish a monitored address or a verified GitHub private vulnerability
-reporting route.
+credential, personal data, or anything else sensitive.
 
-Before publication, a release owner must:
-
-1. enable and test GitHub private vulnerability reporting on the canonical
-   repository, or publish and test a monitored security address;
-2. record the exact route and expected acknowledgement window here;
-3. point the Code of Conduct and issue chooser at the same route;
-4. verify the route without disclosing report contents publicly.
+The route was enabled on 2026-10-31. Before publication, the release owner must
+still verify it end to end with a test report from a non-maintainer account,
+without disclosing report contents publicly.
 
 A useful report names the affected package or path, minimal reproduction steps,
 expected impact, and any relevant version or commit. Do not include real

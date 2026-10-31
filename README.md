@@ -69,6 +69,8 @@ import applications, and the WorkRecord and movement domains stay independent.
 ## Quick start
 
 Requirements: **Node.js 24 LTS** and **pnpm 9.15.0** through Corepack.
+Testers: read the [alpha known issues](ALPHA_KNOWN_ISSUES.md) for current
+limitations, workarounds, and how to report problems.
 
 ```bash
 corepack enable
@@ -88,13 +90,29 @@ To run the API as well, use a second terminal:
 
 ```bash
 pnpm --filter @practice-relay/relay-api run build
-PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1 pnpm --filter @practice-relay/relay-api start
+PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1 PRACTICE_RELAY_ALLOWED_ORIGINS=http://127.0.0.1:5173 pnpm --filter @practice-relay/relay-api start
 ```
 
-The API listens on `http://127.0.0.1:8787`. Synthetic users and development
+The API listens on `http://127.0.0.1:8787`. It rejects browser requests from
+any origin not listed in `PRACTICE_RELAY_ALLOWED_ORIGINS`, so the setting above
+is what lets the workspace at `http://127.0.0.1:5173` sign in; list the
+workspace's actual origin if you change its port. Synthetic users and development
 signing material are local-only. For durable storage, configured users, object
 storage, or a non-loopback listener, start with the
 [operations guide](docs/relay/operations.md).
+
+### Synthetic users
+
+`PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1` seeds four demo accounts. They exist
+only in that mode, and the API refuses a non-loopback listener unless strict
+configured users replace them.
+
+| User | Password | Role |
+| --- | --- | --- |
+| `teacher-1` | `teach` | faculty |
+| `student-1` | `learn` | student |
+| `examiner-1` | `jury` | examiner |
+| `ops-1` | `ops` | admin |
 
 ## Verification
 
