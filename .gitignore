@@ -186,6 +186,7 @@ agent-instructions.*
 /ai-prompts/
 /prompts/
 /AUDIT_LEDGER.md
+/ALPHA_AUDIT_REPORT.md
 /TASK_LEDGER.md
 /IMPLEMENTATION_LEDGER.md
 /CHANGE_LEDGER.md

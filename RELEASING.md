@@ -27,7 +27,8 @@ pnpm install --frozen-lockfile
 node apps/relay-web/scripts/build.mjs
 ```
 
-The Pages workflow stages the static application with
+Run the Pages workflow manually on `main` after publication is authorized; pushes, tags
+and pull requests never deploy the site. It stages the static application with
 `node apps/relay-web/scripts/build.mjs` and uploads `apps/relay-web/dist`. Once publication is confirmed, verify
 the loaded page interactively at the expected URL:
 <https://sebastianspicker.github.io/practice-relay/>. Until then, treat that URL
@@ -41,6 +42,10 @@ PNG screenshots as release evidence; the retained review artifacts and the
 screenshot tour are illustrative and local-only.
 
 ## 3. Run release gates
+
+Generic CI runs automatically only for pull requests authored by `dependabot[bot]`.
+For other candidates, use **Actions → ci → Run workflow** on the candidate branch.
+Local checks do not trigger publication.
 
 ```bash
 pnpm check:release

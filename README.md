@@ -8,15 +8,29 @@ media and movement references, and revision history. From one record it produces
 either an integrity-checked package (manifest, RO-Crate metadata, ZIP) or an
 explicitly lossy interoperability projection that names what it left out.
 
+<details>
+<summary>Status and limitations</summary>
+
+**Project status:** Practice Relay is an independent experimental project exploring policy-aware
+handoffs of work records, evidence and media. Developed independently alongside my main
+professional work. Version `0.4.0-alpha.1` is a source candidate for local evaluation and
+adaptation, not a ready-to-use service or completed institutional pilot. Use demo accounts and
+sample material during evaluation.
+
+**Disclaimer.** Package integrity and recorded permissions do not themselves authorize
+disclosure or establish institutional compliance. Check participant consent, permitted purposes,
+destination access and interoperability before transferring real records or recordings.
+
+It is not a published package set or certified LMS integration. See [Alpha
+limits](docs/ALPHA.md).
+
+</details>
+
 It is not another authoring, assessment, portfolio, or repository system. Those
 stay authoritative for the work itself; Practice Relay handles the transfer
 between them. The monorepo also contains **MvEI** (Movement Encoding Initiative),
 a separate movement-schema and authoring effort that Practice Relay can reference
 without depending on.
-
-> **Status: `0.4.0-alpha.1`.** A source candidate for local evaluation. It is not
-> a production service, a published package set, a certified LMS integration, or
-> a completed pilot. See [Alpha limits](docs/ALPHA.md).
 
 ![Practice Relay movement workspace with a rehearsal still and a partial Motif phrase](docs/images/0.4.0-alpha.1/relay-web-movement.png)
 
@@ -48,6 +62,16 @@ Regenerate these with `pnpm screenshots` after interface changes. The
 Pages build stages them into the tour above from `apps/relay-web/dist`.
 
 ## How it fits together
+
+A handoff starts with a review of its purpose and recorded permissions:
+
+```mermaid
+flowchart LR
+  A[Select evidence and participants] --> B[Review purpose and permissions]
+  B --> C[Prepare handoff]
+  C --> D[Integrity-checked package]
+  C --> E[Projection lists omitted fields]
+```
 
 | Component | Responsibility |
 | --- | --- |

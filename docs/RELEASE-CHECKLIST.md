@@ -31,7 +31,7 @@ node apps/relay-web/scripts/build.mjs
 ```
 
 - [ ] The dependency-free Pages-demo build passes on Node.js 24.
-- [ ] The Pages workflow stages `apps/relay-web/dist` and deploys it.
+- [ ] An authorized manual Pages run on `main` stages `apps/relay-web/dist` and deploys it; ordinary pushes and pull requests do not publish.
 - [ ] Once publication is confirmed, the loaded page is checked interactively at <https://sebastianspicker.github.io/practice-relay/>. Until then it is an expected URL, not a live claim.
 - [ ] The visible demo notice identifies synthetic, sanitized local mock data; primary controls are simulated; no API or service writes occur.
 - [ ] Interactive Pages checks are recorded only as static-demo evidence, never as participant, pilot, deployment-readiness, adoption, or workflow-completion evidence.

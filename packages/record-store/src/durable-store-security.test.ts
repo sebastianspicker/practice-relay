@@ -6,6 +6,7 @@ import {
   lstatSync,
   linkSync,
   mkdtempSync,
+  mkdirSync,
   readFileSync,
   readdirSync,
   rmSync,
@@ -187,7 +188,9 @@ describe("durable record-store filesystem safety", () => {
   });
 
   it("rolls mismatched restore-removal quarantines back without touching external files or trees", () => {
-    const root = mkdtempSync(path.join(tmpdir(), "hub-store-remove-race-"));
+    const parent = mkdtempSync(path.join(tmpdir(), "hub-store-remove-race-parent-"));
+    const root = path.join(parent, "root");
+    mkdirSync(root, { mode: 0o700 });
     const external = mkdtempSync(path.join(tmpdir(), "hub-store-remove-external-"));
     const filePath = path.join(root, "record.json");
     const sentinel = path.join(external, "sentinel.txt");
@@ -231,7 +234,7 @@ describe("durable record-store filesystem safety", () => {
       assert.equal(lstatSync(root).isSymbolicLink(), true);
       assert.equal(readFileSync(sentinel, "utf8"), "outside");
     } finally {
-      rmSync(root, { recursive: true, force: true });
+      rmSync(parent, { recursive: true, force: true });
       rmSync(external, { recursive: true, force: true });
     }
   });
