@@ -166,10 +166,11 @@ function verifyExistingStylesheetIdentity() {
 }
 
 function generatedArtifactState() {
+  const { version } = JSON.parse(readRepositoryText(repositoryRoot, "release.json"));
   const paths = [
-    "docs/images/0.4.0-alpha.1/practice-relay-web.source.html",
-    "docs/images/0.4.0-alpha.1/mvei-schema-site.source.html",
-    "docs/images/0.4.0-alpha.1/mvei-workbench.source.html",
+    `docs/images/${version}/practice-relay-web.source.html`,
+    `docs/images/${version}/mvei-schema-site.source.html`,
+    `docs/images/${version}/mvei-workbench.source.html`,
     "apps/movement-schema-site/index.html",
     "apps/movement-workbench/src/index.html",
   ];

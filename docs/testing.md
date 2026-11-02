@@ -34,10 +34,14 @@ type-check lane.
 6. `pnpm check:docs`
 7. `pnpm check:boundaries`
 8. `pnpm check:unit`
+9. `pnpm check:local`
 
 `check:build` emits `movement`, `movement-toolkit`, and the API runtime.
 `check:packages` then consumes the emitted movement artifacts in isolated
 checks. Unit tests run from source, so they are valid on a fresh checkout.
+`check:local` runs the domain, handoff, MvEI, and static-application suites that
+are kept out of the published tree, when they exist in the checkout; a fresh
+clone reports each as skipped.
 
 `pnpm check:release` adds public-source hygiene. The strict release gate also
 requires external security-reporting closure and a clean Git worktree, so it is

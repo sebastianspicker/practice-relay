@@ -100,10 +100,23 @@ export function attachMusicCoTimeline(
   };
 }
 
-/** Count `<measure …>` elements in MusicXML markup (simple structural check). */
+/**
+ * Count measures in MusicXML markup (simple structural check).
+ * Partwise scores repeat measures per part, so only the first part is counted.
+ */
 export function countMusicXmlMeasures(musicxml: string): number {
-  const matches = musicxml.match(/<measure\b[^>]*>/gi);
+  const firstPart = /<score-timewise\b/i.test(musicxml) ? undefined : firstPartBody(musicxml);
+  const matches = (firstPart ?? musicxml).match(/<measure\b[^>]*>/gi);
   return matches?.length ?? 0;
+}
+
+/** Body of the first `<part>` element, found with indexOf so unclosed parts stay linear. */
+function firstPartBody(musicxml: string): string | undefined {
+  const open = /<part(?=[\s>])[^>]{0,1024}>/i.exec(musicxml);
+  if (!open) return undefined;
+  const start = open.index + open[0].length;
+  const end = musicxml.toLowerCase().indexOf("</part>", start);
+  return end === -1 ? undefined : musicxml.slice(start, end);
 }
 
 /** Count `<measure …>` elements in MEI markup (simple structural check). */
@@ -135,7 +148,9 @@ export function validateCoTimelineAnchors(
 function invalidCoTimelineAnchorErrors(anchors: MusicCoTimelineAnchor[], measureCount: number): string[] {
   return anchors.flatMap((anchor) => {
     if (anchor.musicMeasure == null || anchor.musicMeasure === "") return [];
-    const measure = Number(anchor.musicMeasure);
+    // Anchors are 1-based ordinal positions, so "0", "2.5" and "0x2" are invalid.
+    const text = String(anchor.musicMeasure);
+    const measure = /^\d+$/.test(text) ? Number(text) : NaN;
     if (Number.isFinite(measure) && measure >= 1 && measure <= measureCount) return [];
     return [`anchor ${anchor.motifItemId}: musicMeasure ${anchor.musicMeasure} out of range 1..${measureCount}`];
   });

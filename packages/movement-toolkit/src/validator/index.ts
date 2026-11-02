@@ -42,7 +42,7 @@ export function validateMveiDocument(filePath: string): ValidateResult {
       message: "MvEI document must be a non-null JSON object",
     };
   }
-  const data = parsed as { profile?: string; kind?: string };
+  const data = parsed as { profile?: string; kind?: string; events?: unknown };
 
   let schemaPath: string;
   if (data.profile === "mvei-motif") {
@@ -53,7 +53,7 @@ export function validateMveiDocument(filePath: string): ValidateResult {
     schemaPath = movementRequire.resolve(
       "@practice-relay/movement/schemas/mvei-laban-subset.schema.json",
     );
-  } else if (data.kind === "movement_annotation") {
+  } else if (data.kind === "movement_annotation" || (data.kind === undefined && Array.isArray(data.events))) {
     schemaPath = movementRequire.resolve(
       "@practice-relay/movement/schemas/movement-annotation-v0.schema.json",
     );

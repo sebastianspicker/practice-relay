@@ -13,7 +13,7 @@ import {
   type WorkRecord,
 } from "@practice-relay/work-record";
 import type { RequestContext, RouteResult } from "./request-context.ts";
-import { demoPackageExport, interoperabilityExport } from "./application/exports.ts";
+import { demoPackageExport, interoperabilityExport, packageExport } from "./application/exports.ts";
 import { handleRecordIntegrationRoute } from "./routes-record-integrations.ts";
 import { createApiRuntime, type ApiRuntime } from "./runtime.ts";
 import { mockReq, mockRes, type MockRes } from "./test-support/http-mocks.ts";
@@ -197,4 +197,49 @@ test("demo ZIP export names the package after its actual record", () => {
 
   assert.equal(result.format, "zip");
   assert.equal(result.filename, "wr-demo.work-record.zip");
+});
+
+type ConsentSummaryPackage = {
+  manifest: { consentSummary: { purposes: string[] } };
+  roCrateMetadata: { "@graph": Array<Record<string, unknown>> };
+};
+
+function consentSummaryRecord(consents: Array<[subjectId: string, purposes: string[]]>): WorkRecord {
+  let record = addMember(addTrack(createEmptyRecord("consent-summary", "Consent summary"), { id: "video", type: "video" }), { userId: "teacher-1", role: "faculty" });
+  for (const subjectId of new Set(consents.map(([subjectId]) => subjectId))) {
+    record = addMember(record, { userId: subjectId, role: "student" });
+  }
+  consents.forEach(([subjectId, purposes], index) => {
+    record = attachUsePolicySnapshot(record, {
+      id: `consent-${index}`, subjectId, purposes, exportAllowed: true, createdAt: "2026-08-01T00:00:00.000Z",
+    });
+  });
+  return record;
+}
+
+function exportedPurposes(record: WorkRecord): string[] {
+  const pkg = packageExport(record, undefined, "") as unknown as ConsentSummaryPackage;
+  const root = pkg.roCrateMetadata["@graph"].find((node) => node["@id"] === "./");
+  assert.deepEqual((root?.["workRecord:consentSummary"] as { purposes: string[] }).purposes, pkg.manifest.consentSummary.purposes);
+  return pkg.manifest.consentSummary.purposes;
+}
+
+test("package consent summary omits purposes a student later withdrew", () => {
+  const record = consentSummaryRecord([
+    ["student-1", ["course_assessment", "public_showcase"]],
+    ["student-1", ["course_assessment"]],
+  ]);
+  assert.deepEqual(exportedPurposes(record), ["course_assessment"]);
+});
+
+test("package consent summary lists only purposes every student currently allows", () => {
+  const record = consentSummaryRecord([
+    ["student-1", ["course_assessment", "formative_feedback"]],
+    ["student-2", ["public_showcase", "formative_feedback", "course_assessment"]],
+  ]);
+  assert.deepEqual(exportedPurposes(record), ["course_assessment", "formative_feedback"]);
+  assert.deepEqual(exportedPurposes(consentSummaryRecord([
+    ["student-1", ["course_assessment"]],
+    ["student-2", ["public_showcase"]],
+  ])), []);
 });

@@ -254,6 +254,7 @@ export function verifyLtiJwt(token, opts = {}) {
  *   platformIss?: string,
  *   deploymentId?: string,
  *   targetLinkUri?: string,
+ *   audience?: string,
  *   secret?: string,
  *   privateKeyPem?: string,
  *   kid?: string,
@@ -276,7 +277,7 @@ export function buildLtiResourceLinkLaunch(score, opts = {}) {
   const claims = {
     iss: opts.platformIss ?? "https://practice-relay.local/mock-platform",
     sub: opts.userId ?? "teacher-1",
-    aud: "practice-relay-tool",
+    aud: opts.audience ?? "practice-relay-tool",
     exp: now + 3600,
     iat: now,
     nonce: opts.nonce ?? randomUUID(),

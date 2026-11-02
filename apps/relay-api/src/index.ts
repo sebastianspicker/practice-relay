@@ -11,18 +11,13 @@ import {
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { MediaStoreAdapter } from "@practice-relay/media-store";
-import {
-  renderPrometheusMetricsText,
-  resetRequestMetrics,
-} from "./api-metrics.ts";
-import { logRequestLine as writeLogRequestLine } from "./api-observability.ts";
 import { handleRequestWithRuntime } from "./router.ts";
 import {
   defaultRuntime,
   type ApiRecordStore,
 } from "./runtime.ts";
 import { initializeRuntime, closeRuntime } from "./runtime-lifecycle.ts";
-import { storageMetrics, storageFreshnessMetrics, startStorageMetrics } from "./storage-metrics.ts";
+import { startStorageMetrics } from "./storage-metrics.ts";
 
 /** Maximum time allowed to receive request headers on an API connection. */
 export const API_HEADERS_TIMEOUT_MS = 15_000;
@@ -74,25 +69,6 @@ export function assertDirectRuntimeIdentity(
       "direct API runtime requires strict configured authentication or PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH=1",
     );
   }
-}
-
-/** Render the current process metrics using the live replaceable record store. */
-export function renderPrometheusMetrics(opts?: {
-  recordCount?: number;
-  mediaBytes?: number;
-  auditEvents?: number;
-}): string {
-  return renderPrometheusMetricsText({ ...storageMetrics(defaultRuntime), ...opts }) + storageFreshnessMetrics(defaultRuntime);
-}
-
-/** Reset the process request metrics for deterministic tests. */
-export function __resetMetricsForTests(): void {
-  resetRequestMetrics();
-}
-
-/** Write one structured JSON-lines request log event. */
-export function logRequestLine(entry: Record<string, unknown>): void {
-  writeLogRequestLine(entry);
 }
 
 /** Replace the live record adapter used by existing and future servers. */

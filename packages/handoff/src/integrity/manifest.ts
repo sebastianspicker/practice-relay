@@ -57,10 +57,28 @@ function assertPackageExportAllowed(record: WorkRecord, opts: BuildWorkRecordPac
   }
 }
 
-/** Build stable package consent metadata from explicit or record policy purposes. */
+/** Build stable package consent metadata from explicit or currently released purposes. */
 function packageConsentSummary(record: WorkRecord, opts: BuildWorkRecordPackageOptions) {
-  const purposes = opts.purposes ?? (record.usePolicySnapshots ?? []).flatMap((snapshot) => snapshot.purposes).filter(Boolean);
-  return { allTagged: opts.consentAllTagged ?? hasExportableUsePolicy(record), purposes: purposes.length > 0 ? purposes : ["course_assessment"], exportFiltered: true };
+  return { allTagged: opts.consentAllTagged ?? hasExportableUsePolicy(record), purposes: opts.purposes ?? currentReleasePurposes(record), exportFiltered: true };
+}
+
+/**
+ * Purposes every subject counted by the record-release gate currently allows.
+ * Same subject rule as hasExportableUsePolicy: latest snapshot per subject, all
+ * student members when present. Withdrawn or superseded purposes never appear,
+ * and no purpose is invented when the subjects share none.
+ */
+function currentReleasePurposes(record: WorkRecord): string[] {
+  const latest = new Map<string, WorkRecord["usePolicySnapshots"][number]>();
+  for (const snapshot of record.usePolicySnapshots) latest.set(snapshot.subjectId, snapshot);
+  const students = [...new Set(record.members.filter((member) => member.role === "student").map((member) => member.userId))];
+  const subjects = students.length > 0 ? students : [...latest.keys()];
+  const releases = subjects.flatMap((subjectId) => {
+    const release = latest.get(subjectId);
+    return release && release.purposes.length > 0 && release.exportAllowed !== false ? [release] : [];
+  });
+  if (releases.length === 0 || (students.length > 0 && releases.length < students.length)) return [];
+  return [...new Set(releases[0]?.purposes ?? [])].filter((purpose) => releases.every((release) => release.purposes.includes(purpose)));
 }
 
 /** Prefer rich take metadata while retaining legacy take-id-only export support. */

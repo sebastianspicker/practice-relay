@@ -47,11 +47,16 @@ async function handleJwks(context) {
 async function handleOidcInit(context) {
   if (!matches(context, "/api/oidc-init", "POST")) return false;
   const body = await readJson(context);
+  const tool = toolRegistration(context);
+  const platform = platformRegistration(context);
   const init = buildMockOidcLoginInitiation({
     loginHint: body.loginHint ?? body.userId,
     ltiMessageHint: body.ltiMessageHint,
+    targetLinkUri: tool.targetLinkUri,
+    clientId: tool.clientId,
+    deploymentId: tool.deploymentId,
+    iss: platform.issuer,
   });
-  const tool = toolRegistration(context);
   const loginPath = localPath(
     context.apiBase,
     tool.oidcLoginInitiationUrl,
@@ -107,6 +112,8 @@ async function handleLaunch(context) {
     secret,
     deploymentId: tool.deploymentId,
     platformIss: platform.issuer,
+    targetLinkUri: tool.targetLinkUri,
+    clientId: tool.clientId,
     nonce: oidcParams.nonce,
   });
   if (!issued.validation.ok) {
@@ -145,8 +152,13 @@ async function handleAgsScore(context) {
   if (!matches(context, "/api/ags-score", "POST")) return false;
   const body = await readJson(context);
   const secret = resolveLtiSecret(body.secret ?? process.env.PRACTICE_RELAY_LTI_SECRET);
-  const issued = issueMockAgsClientCredentials({ secret });
   const tool = toolRegistration(context);
+  const issued = issueMockAgsClientCredentials({
+    secret,
+    clientId: tool.clientId,
+    tokenUrl: tool.agsTokenUrl,
+    scoreUrl: tool.agsScoreUrl,
+  });
   const tokenRes = await apiFetch(
     context,
     localPath(context.apiBase, tool.agsTokenUrl, `${context.apiBase}/lti/oauth/token`),

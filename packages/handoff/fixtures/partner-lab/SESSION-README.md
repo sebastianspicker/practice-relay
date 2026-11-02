@@ -53,7 +53,9 @@ assert stable `ImportWarningCode` values (see
 | `UNKNOWN_TIER` | Tiers other than `regions` / `comments` (effort, camera, gesture, speaker, …) |
 | `MISSING_MEDIA` | Empty `MEDIA_FILE`, no `MEDIA_DESCRIPTOR` |
 | `EMPTY_ANNOTATION` | Blank region annotation value |
-| `ORPHAN_COMMENT` | Comment span matches no region |
+| `ORPHAN_COMMENT` | Comment span matches no region; the comment is dropped |
+| `REGION_DROPPED` | Region with end <= start (e.g. unknown time slot) or a duplicate region id is dropped |
+| `MALFORMED_ANNOTATION` | Unclosed `ANNOTATION_VALUE`; remaining annotations on that tier are skipped |
 | `MISSING_TIME_SLOT` | Broken `TIME_SLOT_REF` from the partner export |
 
 ### From `partner-nle.otio.json`
@@ -65,6 +67,10 @@ assert stable `ImportWarningCode` values (see
 | `UNSUPPORTED_OTIO_NODE` | Generator / non-clip schemas |
 | `MISSING_MEDIA` | Close-up offline (null media reference) |
 | `MARKERS_NOT_IMPORTED` | Timeline markers not mapped to regions |
+| `EXTRA_CLIPS_SKIPPED` | Only the first clip per track is imported |
+
+Any import reports at most 200 warnings, each message and path at most 256
+characters; beyond that a single `WARNINGS_TRUNCATED` entry is added.
 
 ---
 

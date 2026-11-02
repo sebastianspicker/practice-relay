@@ -128,20 +128,6 @@ export const CO_TIMELINE = Object.freeze({
   summary: "Optional musicCoTimeline on Motif (MusicXML/MEI anchors).",
 });
 
-/**
- * True when NEIGHBOURS cover the honesty set
- * (LabanLab, LaMoGen/LabanLite, MARC 358, LabanWriter: all ≠ MvEI).
- */
-export function hasNeighbourHonesty() {
-  const blob = NEIGHBOURS.map((n) => `${n.name} ${n.note}`).join(" ");
-  const hasLabanLab = blob.includes("LabanLab");
-  const hasLaMoGenOrLite =
-    blob.includes("LaMoGen") || blob.includes("LabanLite");
-  const hasMarc = blob.includes("MARC 358");
-  const hasLabanWriter = blob.includes("LabanWriter");
-  return hasLabanLab && hasLaMoGenOrLite && hasMarc && hasLabanWriter;
-}
-
 /** Corpus sample ids for listing / verification. */
 export function listsCorpus() {
   return CORPUS_SAMPLES.map((s) => s.id);
@@ -163,18 +149,6 @@ export function getSiteCopy() {
     migration: MIGRATION,
     coTimeline: CO_TIMELINE,
   };
-}
-
-/** True when the capture bridge declares every accepted landmark source label. */
-export function hasCapturePreference() {
-  return ["opencap", "mediapipe", "pose2sim", "other"].every((source) =>
-    CAPTURE_PREFERENCE.acceptedSources.includes(source),
-  );
-}
-
-/** True when consortium seed documents ≥2 orgs path. */
-export function hasConsortiumSeed() {
-  return CONSORTIUM_SEED.minOrgs >= 2 && Boolean(CONSORTIUM_SEED.doc);
 }
 
 /**

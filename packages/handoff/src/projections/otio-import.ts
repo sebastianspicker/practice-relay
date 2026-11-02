@@ -13,6 +13,7 @@ const SUPPORTED_OTIO_SCHEMAS = new Set([
   "Stack.1",
   "Track.1",
   "Clip.1",
+  "Clip.2",
   "Marker.1",
   "TimeRange.1",
   "RationalTime.1",
@@ -142,9 +143,13 @@ export function importOtioToRecordParts(
 
 /** Parse a JSON string only at the public OTIO import boundary. */
 function parseOtioDocument(otioJson: string | object): Record<string, unknown> {
-  return typeof otioJson === "string"
-    ? (JSON.parse(otioJson) as Record<string, unknown>)
-    : (otioJson as Record<string, unknown>);
+  const document: unknown = typeof otioJson === "string" ? JSON.parse(otioJson) : otioJson;
+  if (!isPlainObject(document)) throw new Error("OTIO document must be a JSON object");
+  return document;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 /** Project all OTIO track children while retaining the maximum known duration. */
@@ -152,13 +157,20 @@ function importOtioTracks(
   document: Record<string, unknown>,
   warnings: ImportWarning[],
 ): Pick<OtioImportResult, "takes" | "tracks" | "durationMs"> {
-  const container = document.tracks as
-    | { children?: Array<Record<string, unknown>> }
-    | undefined;
+  const container = document.tracks;
+  if (container !== undefined && container !== null && !isPlainObject(container)) {
+    throw new Error("OTIO tracks must be an object");
+  }
+  const children = container?.children ?? [];
+  if (!Array.isArray(children)) throw new Error("OTIO tracks.children must be an array");
   const tracks: OtioImportResult["tracks"] = [];
   const takes: OtioImportResult["takes"] = [];
   let durationMs = EMPTY_OTIO_DURATION_MS;
-  for (const [index, track] of (container?.children ?? []).entries()) {
+  for (const [index, track] of children.entries()) {
+    if (!isPlainObject(track)) {
+      pushWarning(warnings, "UNSUPPORTED_OTIO_NODE", `non-object track ignored at index ${index}`, `track-${index}`);
+      continue;
+    }
     const imported = importOtioTrack(track, index, warnings);
     durationMs = Math.max(durationMs, imported.durationMs);
     tracks.push(imported.track);
@@ -193,21 +205,39 @@ function warnUnsupportedOtioSchemas(schemas: Set<string>, warnings: ImportWarnin
 function importOtioTrack(track: Record<string, unknown>, index: number, warnings: ImportWarning[]) {
   const name = String(track.name ?? `track-${index}`);
   const clip = firstOtioClip(track.children, name, warnings);
-  const media = clip?.media_reference as { target_url?: string } | null | undefined;
+  const media = clip ? otioClipMedia(clip) : undefined;
   const ref = media?.target_url;
   if (clip && (media == null || !ref)) pushWarning(warnings, "MISSING_MEDIA", `missing media on track "${name}" (clip has no target_url)`, name);
   const duration = rationalTimeDurationMs((clip?.source_range as { duration?: { value?: unknown; rate?: unknown } } | undefined)?.duration) ?? EMPTY_OTIO_DURATION_MS;
-  return { durationMs: duration, track: { id: `otio-tr-${index}`, type: String(track.kind ?? "video"), label: name, ref }, take: ref ? { id: `otio-take-${index}`, label: name, mediaPath: ref } : undefined };
+  return { durationMs: duration, track: { id: `otio-tr-${index}`, type: String(track.kind ?? "video").toLowerCase(), label: name, ref }, take: ref ? { id: `otio-take-${index}`, label: name, mediaPath: ref } : undefined };
+}
+
+/** Clip.2 keeps media under media_references[active_media_reference_key]; Clip.1 uses media_reference. */
+function otioClipMedia(clip: Record<string, unknown>): { target_url?: string } | null | undefined {
+  const { media_references: refs, active_media_reference_key: key } = clip;
+  if (isPlainObject(refs) && typeof key === "string" && Object.hasOwn(refs, key)) {
+    return refs[key] as { target_url?: string } | null;
+  }
+  return clip.media_reference as { target_url?: string } | null | undefined;
 }
 
 /** Find the first clip and report non-clip timeline nodes skipped by the importer. */
 function firstOtioClip(children: unknown, name: string, warnings: ImportWarning[]): Record<string, unknown> | undefined {
   let clip: Record<string, unknown> | undefined;
-  for (const child of Array.isArray(children) ? children as Array<Record<string, unknown>> : []) {
+  let extraClips = 0;
+  for (const child of Array.isArray(children) ? children : []) {
+    if (!isPlainObject(child)) {
+      pushWarning(warnings, "UNSUPPORTED_OTIO_NODE", `non-object child ignored on track "${name}"`, name);
+      continue;
+    }
     const schema = String(child.OTIO_SCHEMA ?? "");
-    if (schema.startsWith("Clip.")) clip ??= child;
+    if (schema.startsWith("Clip.")) {
+      if (clip) extraClips += 1;
+      else clip = child;
+    }
     if (schema.startsWith("Gap.")) pushWarning(warnings, "GAP_SKIPPED", `Gap skipped on track "${name}"`, name);
     if (schema.startsWith("Transition.")) pushWarning(warnings, "TRANSITION_SKIPPED", `Transition skipped on track "${name}"`, name);
   }
+  if (extraClips > 0) pushWarning(warnings, "EXTRA_CLIPS_SKIPPED", `${extraClips} additional clip(s) skipped on track "${name}" (only the first clip is imported)`, name);
   return clip;
 }

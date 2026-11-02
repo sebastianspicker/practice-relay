@@ -8,10 +8,10 @@ export function maskFencedCode(markdown) {
   const masked = [];
   let fence = null;
   for (const line of markdown.split("\n")) {
-    const match = line.match(/^\s*(`{3,}|~{3,})/u);
-    const marker = match ? match[1] : null;
-    const fenceLine = marker && (!fence || marker[0] === fence);
-    if (fenceLine) fence = fence ? null : marker[0];
+    const marker = line.match(/^\s*(`{3,}|~{3,})/u)?.[1] ?? null;
+    const closes = fence && marker && marker[0] === fence[0] && marker.length >= fence.length;
+    if (closes) fence = null;
+    else if (!fence && marker) fence = marker;
     masked.push(fence || marker ? "" : line);
   }
   return masked.join("\n");

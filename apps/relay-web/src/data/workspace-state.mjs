@@ -61,8 +61,8 @@ export function createWorkspaceState(base, {
       if (controller.signal.aborted || epoch !== generation) throw superseded();
       return value;
     } catch (error) {
-      const sessionEnded = error.status === 401
-        || (expireOnForbidden && error.status === 403);
+      const sessionEnded = lane !== "login"
+        && (error.status === 401 || (expireOnForbidden && error.status === 403));
       if (epoch === generation && !controller.signal.aborted && sessionEnded) {
         clear();
         changed();

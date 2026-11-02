@@ -34,10 +34,10 @@ export function updateMotifItem(document, index, patch) {
 }
 
 /** Append a new symbol without modifying existing order or metadata. */
-export function appendMotifItem(document, id) {
+export function appendMotifItem(document, id, symbol = "walk") {
   if (document.items.some((item) => item.id === id)) throw new Error("Item identity already exists.");
   const order = document.items.reduce((max, item) => Math.max(max, item.order + 1), 0);
-  return loadMotif({ ...document, items: [...document.items, { id, symbol: "walk", order }] });
+  return loadMotif({ ...document, items: [...document.items, { id, symbol, order }] });
 }
 
 /** Remove one selected item; all unrelated document fields remain intact. */

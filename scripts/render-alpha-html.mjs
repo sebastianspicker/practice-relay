@@ -19,7 +19,8 @@ import {
 } from "./repository-files.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const alphaDir = join(root, "docs/images/0.4.0-alpha.1");
+const { version } = JSON.parse(readRepositoryText(root, "release.json"));
+const alphaDir = join(root, "docs/images", version);
 const MAX_CSS_IMPORT_DEPTH = 16;
 const MAX_CSS_BYTES = 1024 * 1024;
 

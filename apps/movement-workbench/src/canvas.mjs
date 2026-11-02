@@ -1,14 +1,7 @@
 /**
- * MvEI Workbench Motif canvas model: palette, reorder, glyph tiles, a11y helpers.
+ * MvEI Workbench Motif canvas model: palette, glyph tiles, a11y helpers.
  */
-import {
-  addItem,
-  loadMotif,
-  emitMotif,
-  removeItem,
-  reorderItems,
-  updateItem,
-} from "./motif.mjs";
+import { appendMotifItem } from "@practice-relay/movement/browser/authoring";
 import { escapeHtml } from "./html-escape.mjs";
 import { MOTIF_SYMBOL_IDS } from "@practice-relay/movement/browser/vocabulary";
 
@@ -16,7 +9,7 @@ import { MOTIF_SYMBOL_IDS } from "@practice-relay/movement/browser/vocabulary";
 export const MOTIF_PALETTE = MOTIF_SYMBOL_IDS;
 
 /**
- * @param {import("./motif.mjs").MotifDocument} doc
+ * @param {import("@practice-relay/movement").MotifDocument} doc
  * @param {string} symbol
  */
 export function addFromPalette(doc, symbol) {
@@ -24,22 +17,7 @@ export function addFromPalette(doc, symbol) {
     throw new Error(`symbol not in palette: ${symbol}`);
   }
   const id = `i-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-  return addItem(doc, { id, symbol, order: doc.items.length });
-}
-
-/**
- * Keyboard: Enter/Space on a focused palette control adds the symbol.
- * @param {import("./motif.mjs").MotifDocument} doc
- * @param {string} symbol
- * @param {{ key?: string }} event
- * @returns {import("./motif.mjs").MotifDocument}
- */
-export function addFromPaletteKeyboard(doc, symbol, event) {
-  const key = event?.key ?? "";
-  if (key !== "Enter" && key !== " ") {
-    return doc;
-  }
-  return addFromPalette(doc, symbol);
+  return appendMotifItem(doc, id, symbol);
 }
 
 /**
@@ -59,92 +37,6 @@ export function renderPaletteButtonHtml(symbol) {
     throw new Error(`symbol not in palette: ${symbol}`);
   }
   return `<button type="button" class="palette-btn" data-symbol="${escapeHtml(symbol)}" aria-label="Add ${escapeHtml(symbol)} to Motif" title="${escapeHtml(symbol)}">${escapeHtml(symbol)}</button>`;
-}
-
-/**
- * Canvas tile HTML with ARIA listitem + focusable tab stop.
- * @param {{ id: string, symbol: string, order: number }} item
- */
-export function renderTileHtml(item) {
-  const label = tileAriaLabel(item);
-  return `<div class="motif-tile" role="listitem" tabindex="0" data-item-id="${escapeHtml(item.id)}" aria-label="${escapeHtml(label)}"><span class="motif-tile-symbol">${escapeHtml(item.symbol)}</span></div>`;
-}
-
-/**
- * Render Motif items as an accessible list of tiles.
- * @param {import("./motif.mjs").MotifDocument} doc
- */
-export function renderCanvasTilesHtml(doc) {
-  const tiles = [...doc.items]
-    .sort((a, b) => a.order - b.order)
-    .map((item) => renderTileHtml(item))
-    .join("\n");
-  return `<div class="motif-canvas" role="list" aria-label="Motif sequence">${tiles}</div>`;
-}
-
-/**
- * CSS fragment for visible focus rings (palette + tiles).
- */
-export const FOCUS_STYLES = `
-.palette-btn:focus-visible,
-.motif-tile:focus-visible {
-  outline: 2px solid var(--focus, #146DA3);
-  outline-offset: 2px;
-}
-.palette-btn:focus,
-.motif-tile:focus {
-  outline: 2px solid var(--focus, #146DA3);
-  outline-offset: 2px;
-}
-`.trim();
-
-/**
- * Move item at index to new index.
- * @param {import("./motif.mjs").MotifDocument} doc
- * @param {number} from
- * @param {number} to
- */
-export function moveItem(doc, from, to) {
-  const ids = doc.items.map((i) => i.id);
-  if (from < 0 || from >= ids.length || to < 0 || to >= ids.length) {
-    throw new Error("index out of range");
-  }
-  const [id] = ids.splice(from, 1);
-  ids.splice(to, 0, id);
-  return reorderItems(doc, ids);
-}
-
-/**
- * Set time anchor tMs on item.
- * @param {import("./motif.mjs").MotifDocument} doc
- * @param {string} itemId
- * @param {number} tMs
- */
-export function setItemTimeMs(doc, itemId, tMs) {
-  const item = doc.items.find((i) => i.id === itemId);
-  if (!item) throw new Error(`item not found: ${itemId}`);
-  return updateItem(doc, itemId, {
-    timeAnchor: { ...(item.timeAnchor ?? {}), tMs },
-  });
-}
-
-/**
- * Validate optional media URL for video element (robust load gate).
- * @param {string} url
- */
-export function validateMediaUrl(url) {
-  const s = String(url ?? "").trim();
-  if (!s) return { ok: false, error: "empty url" };
-  if (s.startsWith("blob:") || s.startsWith("data:")) return { ok: true, url: s };
-  try {
-    const u = new URL(s, "http://localhost");
-    if (!["http:", "https:", "file:"].includes(u.protocol)) {
-      return { ok: false, error: `unsupported protocol ${u.protocol}` };
-    }
-    return { ok: true, url: s };
-  } catch {
-    return { ok: false, error: "invalid url" };
-  }
 }
 
 /**
@@ -178,11 +70,9 @@ export function setEditorMode(session, mode, opts = {}) {
   return { ...session, mode, lastAnnouncement: announcement };
 }
 
-export { loadMotif, emitMotif, removeItem, reorderItems };
-
 /**
  * Ordered item ids for canvas navigation (by order).
- * @param {import("./motif.mjs").MotifDocument} doc
+ * @param {import("@practice-relay/movement").MotifDocument} doc
  * @returns {string[]}
  */
 export function orderedItemIds(doc) {
@@ -191,7 +81,7 @@ export function orderedItemIds(doc) {
 
 /**
  * Roving tabindex model: only selected (or first) tile is tab stop.
- * @param {import("./motif.mjs").MotifDocument} doc
+ * @param {import("@practice-relay/movement").MotifDocument} doc
  * @param {string | null | undefined} selectedId
  * @returns {Array<{ id: string, tabIndex: number, ariaSelected: boolean }>}
  */
@@ -209,7 +99,7 @@ export function rovingTabindexState(doc, selectedId) {
 
 /**
  * Keyboard navigation between tiles (ArrowLeft/Right/Home/End).
- * @param {import("./motif.mjs").MotifDocument} doc
+ * @param {import("@practice-relay/movement").MotifDocument} doc
  * @param {string | null | undefined} selectedId
  * @param {{ key?: string }} event
  * @returns {{ selectedId: string | null, changed: boolean }}
@@ -252,7 +142,7 @@ export function renderTileHtmlA11y(item, opts = {}) {
 
 /**
  * Accessible listbox canvas with roving tabindex + aria-selected.
- * @param {import("./motif.mjs").MotifDocument} doc
+ * @param {import("@practice-relay/movement").MotifDocument} doc
  * @param {string | null | undefined} [selectedId]
  */
 export function renderCanvasTilesHtmlA11y(doc, selectedId) {

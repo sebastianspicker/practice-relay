@@ -284,8 +284,6 @@ export function createFilesystemMediaStore(rootDir: string, options: { stagingRo
   return createMediaStoreOnObjectStore(createFilesystemObjectStore(rootDir), { rootDir: path.resolve(rootDir), stateRoot: rootDir, stagingRoot: options.stagingRoot ?? path.join(rootDir, ".staging"), limits: options.limits });
 }
 
-export const createMediaStore = createFilesystemMediaStore;
-
 /** Create an isolated in-memory object store with staged transfer semantics. */
 export function createMemoryMediaStore(options: { stagingRoot?: string; limits?: Partial<MediaStoreLimits> } = {}): MediaStoreAdapter {
   return createMediaStoreOnObjectStore(createMemoryObjectStore(), { rootDir: ":memory:", ...options });

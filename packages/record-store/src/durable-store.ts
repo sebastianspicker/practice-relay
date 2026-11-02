@@ -74,7 +74,6 @@ export function createDurableRecordStore(opts: DurableStoreOptions): RecordStore
     ensureDir(path.join(root, "records"));
     ensureDir(path.join(root, "events"));
     ensureDir(path.join(root, "audit"));
-    ensureDir(path.join(root, "journal"));
   };
   ensureManagedLayout();
 
@@ -109,7 +108,6 @@ export function createDurableRecordStore(opts: DurableStoreOptions): RecordStore
   const ensureReady = (): void => {
     ensureManagedLayout();
     recoverJsonMutation(root);
-    recoverJsonRestore(root);
   };
   const append = (recordId: string, kind: string, detail?: string, actorId?: string): void => {
     ensureReady();

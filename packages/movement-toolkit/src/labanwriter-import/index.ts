@@ -226,7 +226,9 @@ function importMeasures(
   measures: LabanWriterIntermediate["measures"],
   warnings: string[],
 ): LabanWriterIntermediate["measures"] {
-  if (measures.length > 0) return measures;
+  if (measures.length > 0) {
+    return measures.map(({ id, index, beats }) => (beats === undefined ? { id, index } : { id, index, beats }));
+  }
   warnings.push("No measures; inserted default m0");
   return [{ id: "m0", index: 0, beats: 4 }];
 }
@@ -265,7 +267,22 @@ function validateIntermediate(input: unknown): LabanWriterIntermediate {
   validateIntermediateHeader(value);
   validateIntermediateMeasures(value.measures);
   validateIntermediateCells(value.cells);
+  validateIntermediateReferences(input as LabanWriterIntermediate);
   return input as LabanWriterIntermediate;
+}
+
+/** Reject cells that point at undeclared measures or reuse an id. */
+function validateIntermediateReferences(value: LabanWriterIntermediate): void {
+  // The importer inserts m0 when no measures are declared.
+  const measureIds = new Set(value.measures.length > 0 ? value.measures.map((m) => m.id) : ["m0"]);
+  const cellIds = new Set<string>();
+  value.cells.forEach((cell, index) => {
+    if (!measureIds.has(cell.measureId)) {
+      invalidIntermediate(`cells[${index}].measureId references an unknown measure`);
+    }
+    if (cellIds.has(cell.id)) invalidIntermediate(`cells[${index}].id is a duplicate`);
+    cellIds.add(cell.id);
+  });
 }
 
 /** Narrow an untrusted intermediate root to an object before reading its fields. */

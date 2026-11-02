@@ -113,15 +113,15 @@ function resolveSchema(schema) {
 function validateObject(value, schema, path, errors) {
   const properties = schema.properties ?? {};
   for (const required of schema.required ?? []) {
-    if (!(required in value)) errors.push(`${path}.${required} is required`);
+    if (!Object.hasOwn(value, required)) errors.push(`${path}.${required} is required`);
   }
   if (schema.additionalProperties === false) {
     for (const key of Object.keys(value)) {
-      if (!(key in properties)) errors.push(`${path}.${key} is not allowed`);
+      if (!Object.hasOwn(properties, key)) errors.push(`${path}.${key} is not allowed`);
     }
   }
   for (const [key, propertySchema] of Object.entries(properties)) {
-    if (key in value) validateAgainstSchema(value[key], propertySchema, `${path}.${key}`, errors);
+    if (Object.hasOwn(value, key)) validateAgainstSchema(value[key], propertySchema, `${path}.${key}`, errors);
   }
 }
 

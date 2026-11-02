@@ -73,7 +73,7 @@ async function handleRegister(context) {
   if (!matches(context, "/api/register", "POST")) return false;
   const body = await readJson(context);
   const saved = context.registry.register({
-    tool: body.tool ?? body,
+    tool: body.tool ?? {},
     platform: body.platform,
   });
   sendJson(context.res, 200, {

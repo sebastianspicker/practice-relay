@@ -280,3 +280,8 @@ test("custom PRACTICE_RELAY_LTI_SECRET signs and verifies; ephemeral fallback re
   const rs = signRs256Jwt({ sub: "rs" }, keys.privateKey);
   assert.ok(verifyRs256Jwt(rs, keys.publicKey));
 });
+
+test("LTI signing uses the registered client id as audience and defaults to the lab tool", () => {
+  assert.equal(buildLtiResourceLinkLaunch(scoreFromDemoSeed(), { audience: "my-client" }).claims.aud, "my-client");
+  assert.equal(buildLtiResourceLinkLaunch(scoreFromDemoSeed()).claims.aud, "practice-relay-tool");
+});

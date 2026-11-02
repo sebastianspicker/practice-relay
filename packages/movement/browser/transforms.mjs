@@ -65,7 +65,8 @@ function motifFixedMapping(symbol) {
  * reading is possible without claiming professional Laban density.
  */
 export function motifToLabanSubset(doc) {
-    const measureCount = Math.max(1, Math.ceil(doc.items.length / 2));
+    const items = [...doc.items].sort((a, b) => a.order - b.order);
+    const measureCount = Math.max(1, Math.ceil(items.length / 2));
     const measures = Array.from({ length: measureCount }, (_, index) => ({
         id: `m${index}`,
         index,
@@ -73,7 +74,7 @@ export function motifToLabanSubset(doc) {
     }));
     const allWarnings = [...MOTIF_TO_SUBSET_LOSSINESS];
     let supportIndex = 0;
-    const symbols = doc.items.map((item, i) => {
+    const symbols = items.map((item, i) => {
         const measureIndex = Math.min(Math.floor(i / 2), measures.length - 1);
         const measureId = measures[measureIndex].id;
         const isSupportLike = item.symbol === "walk" ||
@@ -97,7 +98,7 @@ export function motifToLabanSubset(doc) {
             beatOffset,
             simultaneousGroup: `g-m${measureIndex}`,
             motifSymbol: item.symbol,
-            timeAnchor: item.timeAnchor,
+            timeAnchor: structuredClone(item.timeAnchor),
         };
     });
     const columns = [
@@ -119,8 +120,8 @@ export function motifToLabanSubset(doc) {
         staff: { columns },
         measures,
         symbols,
-        annotationLinks: doc.annotationLinks,
-        musicCoTimeline: doc.musicCoTimeline,
+        annotationLinks: structuredClone(doc.annotationLinks),
+        musicCoTimeline: structuredClone(doc.musicCoTimeline),
         migrationProvenance: {
             source: "motif-map",
             warnings: [...new Set(allWarnings)],

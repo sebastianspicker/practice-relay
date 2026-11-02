@@ -4,6 +4,7 @@
  * Why: archive serialization and path hardening are isolated from work-record package and
  * RO-Crate construction so both contracts remain independently reviewable.
  */
+import { crc32 } from "node:zlib";
 
 /** Input file accepted by the deterministic store-only ZIP writer. */
 export type StoreZipEntry = { path: string; bytes: Buffer | string };
@@ -39,15 +40,6 @@ const hasUnpairedSurrogate = (value: string): boolean => {
   return false;
 };
 
-/** Static lookup table used by every entry checksum. */
-const CRC32_TABLE = Uint32Array.from({ length: 256 }, (_, value) => {
-  let checksum = value;
-  for (let bit = 0; bit < 8; bit += 1) {
-    checksum = checksum & 1 ? 0xedb88320 ^ (checksum >>> 1) : checksum >>> 1;
-  }
-  return checksum >>> 0;
-});
-
 const normalizeZipPath = (entryPath: string): string => {
   if (typeof entryPath !== "string" || entryPath.trim().length === 0) {
     throw new Error("ZIP entry path must not be empty");
@@ -77,14 +69,6 @@ const normalizeZipPath = (entryPath: string): string => {
 
 const zipPathKey = (entryPath: string): string => {
   return entryPath.normalize("NFC").toLowerCase();
-};
-
-const crc32 = (buffer: Buffer): number => {
-  let checksum = 0xffffffff;
-  for (const byte of buffer) {
-    checksum = CRC32_TABLE[(checksum ^ byte) & 0xff]! ^ (checksum >>> 8);
-  }
-  return (checksum ^ 0xffffffff) >>> 0;
 };
 
 /** Convert normalized entries into reusable header metadata and archive offsets. */

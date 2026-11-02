@@ -141,7 +141,7 @@ function checkImports(root, metadata, errors) {
       if (importedOwner?.startsWith("apps/") && owner.startsWith("apps/") && importedOwner !== owner) {
         errors.push(`${path}: app imports app ${specifier}`);
       }
-      if (owner === "packages/movement" && (specifier === "@practice-relay/work-record" || metadata.packages.get(specifier) === "packages/work-record")) {
+      if (owner === "packages/movement" && (packageSpecifier === "@practice-relay/work-record" || metadata.packages.get(packageSpecifier) === "packages/work-record")) {
         errors.push(`${path}: movement must not import work-record`);
       }
     }

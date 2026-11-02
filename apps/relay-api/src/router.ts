@@ -77,6 +77,11 @@ async function dispatch(ctx: RequestContext): Promise<void> {
 }
 
 function translateRequestError(ctx: RequestContext, err: unknown): void {
+  if (ctx.res.headersSent) {
+    logUnclassifiedError(ctx.res, err);
+    ctx.res.destroy();
+    return;
+  }
   if (sendClassifiedError(ctx.res, err, { duplicateDetail: "record already exists" })) return;
   if (err instanceof PayloadTooLargeError) {
     sendProblem(ctx.res, 413, "Payload Too Large", err.message);

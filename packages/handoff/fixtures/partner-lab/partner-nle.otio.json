@@ -15,7 +15,7 @@
       {
         "OTIO_SCHEMA": "Track.1",
         "name": "Wide",
-        "kind": "video",
+        "kind": "Video",
         "children": [
           {
             "OTIO_SCHEMA": "Clip.1",
@@ -66,7 +66,7 @@
       {
         "OTIO_SCHEMA": "Track.1",
         "name": "Close-up (offline disk)",
-        "kind": "video",
+        "kind": "Video",
         "children": [
           {
             "OTIO_SCHEMA": "Clip.1",
@@ -88,7 +88,7 @@
       {
         "OTIO_SCHEMA": "Track.1",
         "name": "Boom",
-        "kind": "audio",
+        "kind": "Audio",
         "children": [
           {
             "OTIO_SCHEMA": "Clip.1",
@@ -122,7 +122,7 @@
       {
         "OTIO_SCHEMA": "Track.1",
         "name": "Title card",
-        "kind": "video",
+        "kind": "Video",
         "children": [
           {
             "OTIO_SCHEMA": "GeneratorReference.1",
@@ -134,7 +134,7 @@
       {
         "OTIO_SCHEMA": "Track.1",
         "name": "Freeze hold",
-        "kind": "video",
+        "kind": "Video",
         "children": [
           {
             "OTIO_SCHEMA": "FreezeFrame.1",

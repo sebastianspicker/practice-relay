@@ -14,7 +14,11 @@ export type ImportWarningCode =
   | "GAP_SKIPPED"
   | "TRANSITION_SKIPPED"
   | "MISSING_TIME_SLOT"
-  | "EMPTY_DOCUMENT";
+  | "EMPTY_DOCUMENT"
+  | "REGION_DROPPED"
+  | "MALFORMED_ANNOTATION"
+  | "EXTRA_CLIPS_SKIPPED"
+  | "WARNINGS_TRUNCATED";
 
 /** One lossy-import diagnostic with an optional source path. */
 export interface ImportWarning {
@@ -37,14 +41,26 @@ export function formatImportWarning(warning: ImportWarning): string {
     : `[${warning.code}] ${warning.message}`;
 }
 
-/** Append a normalized warning without emitting an undefined path field. */
+/** Most warnings one import reports; input-sized names and node counts must not amplify the response. */
+export const MAX_IMPORT_WARNINGS = 200;
+const MAX_WARNING_TEXT = 256;
+
+const boundedText = (text: string): string =>
+  text.length > MAX_WARNING_TEXT ? `${text.slice(0, MAX_WARNING_TEXT)}…` : text;
+
+/** Append a normalized, length-bounded warning; past the cap, record one truncation notice instead. */
 export function pushWarning(
   warnings: ImportWarning[],
   code: ImportWarningCode,
   message: string,
   path?: string,
 ): void {
-  warnings.push(path !== undefined && path !== "" ? { code, message, path } : { code, message });
+  if (warnings.length > MAX_IMPORT_WARNINGS) return;
+  if (warnings.length === MAX_IMPORT_WARNINGS) {
+    warnings.push({ code: "WARNINGS_TRUNCATED", message: `more than ${MAX_IMPORT_WARNINGS} warnings; the rest were suppressed` });
+    return;
+  }
+  warnings.push(path !== undefined && path !== "" ? { code, message: boundedText(message), path: boundedText(path) } : { code, message: boundedText(message) });
 }
 
 /** Create a caller-actionable bounded-input error. */

@@ -54,10 +54,18 @@ async function dispatchOtio(
   harness: IntegrationHarness,
   document: object,
 ): Promise<DispatchResult> {
+  return dispatchImport(harness, "otio-json", JSON.stringify(document));
+}
+
+async function dispatchImport(
+  harness: IntegrationHarness,
+  importFormat: "eaf" | "otio-json",
+  importBody: string,
+): Promise<DispatchResult> {
   const response = mockRes();
   const request = mockReq("/direct-record-integration", "POST", {
-    importBody: JSON.stringify(document),
-    importFormat: "otio-json",
+    importBody,
+    importFormat,
   }, {
     authorization: harness.authorization,
   });
@@ -153,4 +161,37 @@ test("malformed duplicate generated OTIO track IDs remain ignored", async () => 
     (await harness.store.get(harness.id))?.tracks,
     [{ id: "otio-tr-0", type: "audio", label: "Existing" }],
   );
+});
+
+test("OTIO import accepts real-world capitalised track kinds", async () => {
+  const harness = (await integrationHarness());
+  const response = await dispatchOtio(harness, otioDocument("Video", "https://partner.example/a.mp4"));
+
+  assert.equal(response.response.statusCode, 200);
+  assert.equal((await harness.store.get(harness.id))?.tracks[0]?.type, "video");
+});
+
+const eafWith = (tiers: string): string =>
+  `<ANNOTATION_DOCUMENT><HEADER MEDIA_FILE="m.mp4"/><TIME_ORDER>` +
+  `<TIME_SLOT TIME_SLOT_ID="ts0" TIME_VALUE="0"/><TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="100"/>` +
+  `</TIME_ORDER>${tiers}</ANNOTATION_DOCUMENT>`;
+const commentsTier = `<TIER TIER_ID="comments"><ALIGNABLE_ANNOTATION ANNOTATION_ID="c1" TIME_SLOT_REF1="ts0" TIME_SLOT_REF2="ts1"><ANNOTATION_VALUE>rev: note</ANNOTATION_VALUE></ALIGNABLE_ANNOTATION></TIER>`;
+
+test("EAF import with a self-closed regions tier creates no comment-derived region", async () => {
+  const harness = (await integrationHarness());
+  const response = await dispatchImport(harness, "eaf", eafWith(`<TIER TIER_ID="regions" LINGUISTIC_TYPE_REF="x"/>${commentsTier}`));
+
+  assert.equal(response.response.statusCode, 200);
+  const record = (await harness.store.get(harness.id))!;
+  assert.deepEqual(record.spine.regions, []);
+});
+
+test("EAF import drops orphan comments with a warning instead of failing", async () => {
+  const harness = (await integrationHarness());
+  const response = await dispatchImport(harness, "eaf", eafWith(`<TIER TIER_ID="regions"></TIER>${commentsTier}`));
+
+  assert.equal(response.response.statusCode, 200);
+  const body = JSON.parse(response.response.body) as { warnings: Array<{ code: string }> };
+  assert.ok(body.warnings.some((warning) => warning.code === "ORPHAN_COMMENT"));
+  assert.deepEqual((await harness.store.get(harness.id))?.comments, []);
 });

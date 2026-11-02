@@ -10,7 +10,7 @@ export function validateMotif(document: unknown): { valid: boolean; errors: stri
 /** Edit a selected array position while preserving identity. */
 export function updateMotifItem(document: MotifDocument, index: number, patch: Partial<MotifItem>): MotifDocument;
 /** Append a symbol with a unique identity. */
-export function appendMotifItem(document: MotifDocument, id: string): MotifDocument;
+export function appendMotifItem(document: MotifDocument, id: string, symbol?: string): MotifDocument;
 /** Remove a selected array position. */
 export function removeMotifItem(document: MotifDocument, index: number): MotifDocument;
 /** Move a selected item in displayed order. */

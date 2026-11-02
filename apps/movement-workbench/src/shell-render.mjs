@@ -96,7 +96,7 @@ export function renderWorkbenchShellHtml(doc, opts, brand, standard) {
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>${escapeHtml(brand)}: ${escapeHtml(standard)} Motif editor</title>
   <link rel="stylesheet" href="./workbench.css" />
-  <script type="importmap">{"imports":{"@practice-relay/movement/browser":"/packages/movement/browser/index.mjs","@practice-relay/movement/browser/parser":"/packages/movement/browser/parser.mjs","@practice-relay/movement/browser/vocabulary":"/packages/movement/browser/vocabulary.mjs","@practice-relay/movement/browser/examples":"/packages/movement/browser/examples.mjs","@practice-relay/movement/browser/transforms":"/packages/movement/browser/transforms.mjs"}}</script>
+  <script type="importmap">{"imports":{"@practice-relay/movement/browser":"/packages/movement/browser/index.mjs","@practice-relay/movement/browser/parser":"/packages/movement/browser/parser.mjs","@practice-relay/movement/browser/authoring":"/packages/movement/browser/authoring.mjs","@practice-relay/movement/browser/vocabulary":"/packages/movement/browser/vocabulary.mjs","@practice-relay/movement/browser/examples":"/packages/movement/browser/examples.mjs","@practice-relay/movement/browser/transforms":"/packages/movement/browser/transforms.mjs"}}</script>
 </head>
 <body>
   ${renderAriaLiveRegion(message)}

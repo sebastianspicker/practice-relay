@@ -253,4 +253,24 @@ describe("ordered API router", () => {
       403,
     );
   });
+
+  it("destroys the response instead of rejecting when a handler fails after headers were sent", async () => {
+    // No route writes headers then throws, so the mock reports headersSent while the store throws.
+    const runtime = routerRuntime();
+    const session = await runtime.auth.login("teacher-1", "teach");
+    assert.ok(session);
+    runtime.recordStore.get = () => { throw new Error("boom"); };
+    let destroyed = false;
+    const response = Object.assign(mockRes(), {
+      headersSent: true,
+      destroy() { destroyed = true; },
+    });
+    await handleRequestWithRuntime(
+      runtime,
+      mockReq("/work-records/record-1", "GET", undefined, { authorization: `Bearer ${session.token}` }),
+      response as unknown as ServerResponse,
+    );
+    assert.equal(destroyed, true);
+    assert.equal(response.statusCode, 0);
+  });
 });

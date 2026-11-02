@@ -38,9 +38,6 @@ const DEFAULT_SKIPPED_DIRECTORIES = new Set([
   "tmp",
 ]);
 
-/** Re-export fenced-code masking for focused repository-tool tests. */
-export { maskFencedCode };
-
 function unwrapDestination(raw) {
   const value = raw.trim();
   if (value.startsWith("<")) {

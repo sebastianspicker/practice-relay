@@ -440,6 +440,10 @@ export function writeStorageFile(
     cleanupTemporary(temporaryPath, temporaryIdentity);
     throw error;
   }
+  if (process.platform !== "win32") {
+    const directoryDescriptor = openSync(path.dirname(filePath), constants.O_RDONLY);
+    closeAfter(directoryDescriptor, () => fsyncSync(directoryDescriptor));
+  }
 }
 
 /** Delete a contained regular object only when its identity still matches validation. */

@@ -39,21 +39,27 @@ export function landmarksToAnnotation(
   doc: LandmarkDocument,
 ): AnnotationV0Like {
   const events: AnnotationV0Like["events"] = [];
+  const regionCounts = new Map<string, number>();
   for (let i = 1; i < doc.frames.length; i++) {
     const prev = doc.frames[i - 1]!;
     const cur = doc.frames[i]!;
+    const curByName = new Map(cur.points.map((point) => [point.name, point]));
     let dist = 0;
-    const n = Math.min(prev.points.length, cur.points.length);
-    for (let p = 0; p < n; p++) {
-      const a = prev.points[p]!;
-      const b = cur.points[p]!;
+    let n = 0;
+    for (const a of prev.points) {
+      const b = curByName.get(a.name);
+      if (!b || ![a.x, a.y, b.x, b.y].every(Number.isFinite)) continue;
       dist += Math.hypot(b.x - a.x, b.y - a.y);
+      n++;
     }
     const mean = n ? dist / n : 0;
     const label = mean > 0.05 ? "travel" : "stillness";
+    const regionBase = `reg-t${cur.tMs}`;
+    const regionCount = (regionCounts.get(regionBase) ?? 0) + 1;
+    regionCounts.set(regionBase, regionCount);
     events.push({
       id: `ev-${i}`,
-      regionId: `reg-t${cur.tMs}`,
+      regionId: regionCount === 1 ? regionBase : `${regionBase}-${regionCount}`,
       label,
       source: "plugin_pose",
       quality: "sketch",

@@ -156,6 +156,7 @@ pnpm check:all
 | `pnpm check:docs` | Repository-relative Markdown links and documented commands |
 | `pnpm check:boundaries` | Package and application dependency rules |
 | `pnpm check:unit` | Workspace tests |
+| `pnpm check:local` | Maintainer-local suites when present; a fresh clone skips them |
 
 `pnpm check:release` adds public-source hygiene. See
 [Testing](docs/testing.md) for focused commands and gate ordering.

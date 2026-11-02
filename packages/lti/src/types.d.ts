@@ -93,6 +93,7 @@ export function buildLtiResourceLinkLaunch(
     platformIss?: string;
     deploymentId?: string;
     targetLinkUri?: string;
+    audience?: string;
     secret?: string;
     privateKeyPem?: string;
     kid?: string;

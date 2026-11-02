@@ -273,7 +273,7 @@ function verifyReleaseIdentity(root, errors) {
     "README.md",
     "docs/README.md",
     "docs/ALPHA.md",
-    "docs/images/0.4.0-alpha.1/README.md",
+    `docs/images/${release.version}/README.md`,
     "docs/relay/README.md",
     "docs/movement/README.md",
     "packages/README.md",
@@ -342,11 +342,12 @@ function verifyPagesDemoEvidence(root, errors) {
 }
 
 function verifyCandidateResidue(root, errors) {
+  const version = JSON.parse(readRepositoryText(root, "release.json")).version;
   const forbidden = [
-    "docs/images/0.4.0-alpha.1/practice-relay-concept.png",
-    "docs/images/0.4.0-alpha.1/mvei-workbench-concept.png",
-    "docs/images/0.4.0-alpha.1/lti-mock-admin.png",
-    "docs/images/0.4.0-alpha.1/mvei-corpus-site.png",
+    `docs/images/${version}/practice-relay-concept.png`,
+    `docs/images/${version}/mvei-workbench-concept.png`,
+    `docs/images/${version}/lti-mock-admin.png`,
+    `docs/images/${version}/mvei-corpus-site.png`,
     "docs/images/archive/0.2.7-alpha.1",
     "docs/pilot-pack/preference-survey.md",
     "docs/relay/mvp.md",

@@ -156,7 +156,7 @@ export function listGlyphIds(): string[] {
 
 /** Get a bundled glyph or a labelled fallback for an unknown Motif symbol. */
 export function getGlyph(symbol: string) {
-  return GLYPHS[symbol] ?? {
+  return Object.hasOwn(GLYPHS, symbol) ? GLYPHS[symbol] : {
     viewBox: "0 0 24 24",
     paths: ["M4 4 L20 20 M20 4 L4 20"],
     label: symbol,

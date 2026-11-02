@@ -11,7 +11,6 @@ import {
   buildMultiAssetAssignmentPayload,
   issueAgsServiceToken,
   parseOidcLoginInitiation,
-  buildOidcAuthorizationRedirect,
   validateMultiAssetAssignmentPayload,
   LTI_STATUS,
 } from "@practice-relay/lti";
@@ -79,6 +78,8 @@ function mockLaunchOptions(opts, tool, platform) {
     kid: opts.kid,
     deploymentId: opts.deploymentId ?? tool.deploymentId,
     platformIss: opts.platformIss ?? platform.issuer,
+    targetLinkUri: opts.targetLinkUri ?? tool.targetLinkUri,
+    audience: opts.clientId ?? tool.clientId,
     nonce: opts.nonce,
   };
 }
@@ -93,9 +94,9 @@ function mockLaunchResponse(launch, score, tool, opts) {
     assignment,
     validation: validateMultiAssetAssignmentPayload(assignment),
     alg: launch.alg,
-    targetLinkUri: tool.targetLinkUri,
-    clientId: tool.clientId,
-    deploymentId: tool.deploymentId ?? opts.deploymentId,
+    targetLinkUri: opts.targetLinkUri ?? tool.targetLinkUri,
+    clientId: opts.clientId ?? tool.clientId,
+    deploymentId: opts.deploymentId ?? tool.deploymentId,
   };
 }
 
@@ -110,6 +111,8 @@ function mockLaunchResponse(launch, score, tool, opts) {
  *   kid?: string,
  *   deploymentId?: string,
  *   platformIss?: string,
+ *   targetLinkUri?: string,
+ *   clientId?: string,
  *   nonce?: string,
  * }} [opts]
  */
@@ -172,52 +175,9 @@ export function buildMockOidcLoginInitiation(opts = {}) {
 }
 
 /**
- * After tool parses initiation, mock platform issues authorization response (id_token).
- * @param {ReturnType<typeof parseOidcLoginInitiation>} initiation
- * @param {import("@practice-relay/lti").MultiAssetAssignmentSource | Record<string, unknown>} score
- * @param {{ secret?: string, privateKeyPem?: string, kid?: string, userId?: string }} [opts]
- */
-export function completeMockPlatformAuth(initiation, score, opts = {}) {
-  if (!initiation.ok) {
-    return { ok: false, error: initiation.errors, banner: MOCK_PLATFORM_BANNER };
-  }
-  const registration = loadDeploymentRegistration();
-  const tool = /** @type {Record<string, string>} */ (registration.tool ?? {});
-  const authRedirect = buildOidcAuthorizationRedirect(initiation, {
-    platformAuthUrl:
-      /** @type {string} */ (
-        registration.platform?.authLoginUrl
-      ) ?? "http://localhost:8790/platform/auth",
-    redirectUri: tool.targetLinkUri,
-  });
-  const launch = issueMockPlatformLaunch(score, {
-    userId: opts.userId ?? String(initiation.params.login_hint),
-    secret: opts.secret,
-    privateKeyPem: opts.privateKeyPem,
-    kid: opts.kid,
-    deploymentId: String(initiation.params.lti_deployment_id),
-    platformIss: String(initiation.params.iss),
-    nonce: authRedirect.params.nonce,
-  });
-  return {
-    ok: true,
-    banner: MOCK_PLATFORM_BANNER,
-    status: MOCK_PLATFORM_STATUS,
-    authorizationRedirect: authRedirect,
-    idToken: launch.idToken,
-    assignment: launch.assignment,
-    validation: launch.validation,
-    formPost: {
-      id_token: launch.idToken,
-      state: authRedirect.params.state,
-    },
-  };
-}
-
-/**
  * Issue AGS client-credentials token the way a tool would against platform token URL.
  * Lab: Practice Relay API hosts the mock token endpoint.
- * @param {{ clientId?: string, secret?: string, scope?: string }} [opts]
+ * @param {{ clientId?: string, secret?: string, scope?: string, tokenUrl?: string, scoreUrl?: string }} [opts]
  */
 export function issueMockAgsClientCredentials(opts = {}) {
   const reg = loadDeploymentRegistration();
@@ -230,8 +190,8 @@ export function issueMockAgsClientCredentials(opts = {}) {
   return {
     banner: MOCK_PLATFORM_BANNER,
     status: MOCK_PLATFORM_STATUS,
-    tokenUrl: tool.agsTokenUrl,
-    scoreUrl: tool.agsScoreUrl,
+    tokenUrl: opts.tokenUrl ?? tool.agsTokenUrl,
+    scoreUrl: opts.scoreUrl ?? tool.agsScoreUrl,
     token,
   };
 }

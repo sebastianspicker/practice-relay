@@ -4,8 +4,17 @@
  * Why: storage keys cross filesystem and object-store boundaries before metadata is trusted.
  */
 import assert from "node:assert/strict";
+import { mkdtempSync, realpathSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import { describe, it } from "node:test";
-import { assertSafeStorageKey, parseMediaMeta } from "./media-safety.ts";
+import {
+  assertSafeStorageKey,
+  parseMediaMeta,
+  prepareStorageRoot,
+  readStorageFile,
+  writeStorageFile,
+} from "./media-safety.ts";
 
 const safeRelativePathError = "media storageKey must be a safe relative path";
 const traversalError = "media storageKey must not contain traversal segments";
@@ -166,5 +175,19 @@ describe("media safety", () => {
       extra: true,
     };
     assert.deepEqual(parse(permissiveMeta), permissiveMeta);
+  });
+});
+
+describe("writeStorageFile", () => {
+  // The directory fsync is not directly observable here; this asserts the write path still round-trips.
+  it("writes and reads back a leaf after the directory sync", () => {
+    const root = mkdtempSync(path.join(realpathSync(tmpdir()), "media-safety-"));
+    try {
+      const realRoot = prepareStorageRoot(root);
+      writeStorageFile(root, realRoot, "record/take.bin", "payload");
+      assert.equal(readStorageFile(root, realRoot, "record/take.bin")?.toString(), "payload");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
   });
 });

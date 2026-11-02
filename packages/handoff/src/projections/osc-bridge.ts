@@ -149,22 +149,6 @@ function preferredTakeMessages(score: OscScoreLike, base: string): OscMessage[] 
 }
 
 /**
- * Format projected OSC messages for external tools (JSON lines + description).
- * Does not open sockets or own a runtime - adapters ship the payload only.
- */
-export function formatOscUdpPayload(messages: OscMessage[]): OscUdpPayload {
-  return {
-    description:
-      "Practice Relay OSC document projection (not a runtime). " +
-      "Each JSON line is {address, args, tMs}. " +
-      "Map addresses into ossia score nodes, Max [udpreceive]/route, or QLab network cues. " +
-      "Schedule by tMs relative to the WorkRecord spine; do not treat Practice Relay as the show controller.",
-    jsonLines: messages.map((m) => JSON.stringify(m)).join("\n"),
-    messages,
-  };
-}
-
-/**
  * ossia receive-address JSON patch documenting how to schedule Practice Relay cues
  * inside an ossia score scenario. Not a binary .ossia file and not a runtime.
  */

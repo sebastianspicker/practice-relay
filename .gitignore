@@ -194,6 +194,8 @@ agent-instructions.*
 /.history-maintenance-provenance
 /*-ledger.md
 /*_ledger.md
+/*_LEDGER.md
+/*-LEDGER.md
 /plan.md
 /progress.md
 /scratchpad*

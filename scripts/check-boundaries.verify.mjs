@@ -41,6 +41,9 @@ try {
   write(root, "packages/movement/src/bad.ts", 'import { createEmptyRecord } from "@practice-relay/work-record";\n');
   assert.match(checkBoundaries(root).join("\n"), /movement must not import work-record/u);
   rmSync(join(root, "packages/movement/src/bad.ts"));
+  write(root, "packages/movement/src/bad.ts", 'import { x } from "@practice-relay/work-record/domain";\n');
+  assert.match(checkBoundaries(root).join("\n"), /movement must not import work-record/u);
+  rmSync(join(root, "packages/movement/src/bad.ts"));
 
   write(root, "packages/movement/browser/bad.mjs", 'import { readFileSync } from "node:fs";\nimport path from "path";\n');
   const browserErrors = checkBoundaries(root).join("\n");

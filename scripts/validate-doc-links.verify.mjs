@@ -92,6 +92,14 @@ function verifyNonMatchesAndMasking() {
   );
 }
 
+function verifyNestedFences() {
+  requireLinks(
+    ["````md", "```", "[in](masked.md)", "```", "[still](masked.md)", "````", "[out](active.md)"].join("\n"),
+    [{ target: "active.md", line: 7 }],
+    "shorter fence does not close a longer fence",
+  );
+}
+
 function verifyBracketCompatibility() {
   requireLinks(
     [
@@ -159,6 +167,7 @@ function verifyDocLinks() {
   verifyInlineForms();
   verifyReferenceDefinitions();
   verifyNonMatchesAndMasking();
+  verifyNestedFences();
   verifyBracketCompatibility();
   verifyLongMalformedInput();
   verifyRepositoryBoundaries();

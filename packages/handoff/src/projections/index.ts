@@ -367,7 +367,6 @@ export {
 // Re-export OSC thin-adapter surface (document projection, not a runtime).
 export {
   projectOscBundle,
-  formatOscUdpPayload,
   toOssianHint,
   toMaxDict,
   type OscMessage,

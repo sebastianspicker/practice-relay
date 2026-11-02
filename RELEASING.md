@@ -43,8 +43,8 @@ screenshot tour are illustrative and local-only.
 
 ## 3. Run release gates
 
-Generic CI runs automatically only for pull requests authored by `dependabot[bot]`.
-For other candidates, use **Actions → ci → Run workflow** on the candidate branch.
+CI runs on every pull request, on pushes to main, and on manual dispatch
+(**Actions → ci → Run workflow**).
 Local checks do not trigger publication.
 
 ```bash

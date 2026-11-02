@@ -4,7 +4,7 @@
  * Why: the alpha authoring surface edits local Motif data against the shared corpus.
  */
 import { MOVEMENT_CORPUS } from "@practice-relay/movement/browser/examples";
-import { emitMotif, loadMotif } from "./motif.mjs";
+import { loadMotif } from "./motif.mjs";
 import {
   announceToLiveRegion,
   renderAriaLiveRegion,
@@ -29,14 +29,6 @@ export function scaffoldBanner() {
 }
 
 /**
- * Load the shared corpus sketch Motif from disk.
- * @returns {import("./motif.mjs").MotifDocument}
- */
-export function loadCorpusSketch() {
-  return loadMotif(JSON.stringify(MOVEMENT_CORPUS.motifSketch));
-}
-
-/**
  * Load the bundled demo Motif used by the alpha workspace.
  * @returns {import("./motif.mjs").MotifDocument}
  */
@@ -45,20 +37,11 @@ export function loadDemoMotif() {
 }
 
 /**
- * Emit then load; returns the reloaded document (round-trip).
- * @param {import("./motif.mjs").MotifDocument} doc
- * @returns {import("./motif.mjs").MotifDocument}
- */
-export function roundTrip(doc) {
-  return loadMotif(emitMotif(doc));
-}
-
-/**
  * Alpha Motif surface HTML from shipped chrome + a real Motif document.
  * Ground-truth source for the MvEI Workbench alpha HTML surface.
  * Supports Motif canvas tiles + optional laban-subset multi-staff panel.
  * @param {import("./motif.mjs").MotifDocument} [doc]
- * @param {{ mode?: "motif"|"laban-subset", labanDoc?: object }} [opts]
+ * @param {{ mode?: "motif"|"laban-subset" }} [opts]
  * @returns {string}
  */
 /** Render the MvEI Workbench alpha shell around an optional Motif or laban-subset document. */
