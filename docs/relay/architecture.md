@@ -6,24 +6,8 @@ membership authorization, time, policy, media-reference semantics, and the
 minimal persistence port. Schema-backed parsing is a validation boundary in that
 package, not a second domain model.
 
-```mermaid
-flowchart LR
-  Client --> API[relay-api]
-  Simulator[lti-simulator] --> API
-  API --> Auth[auth]
-  API --> WR[work-record]
-  API --> RS[record-store]
-  API --> MS[media-store]
-  API --> H[handoff]
-  API --> LTI[lti]
-  API --> RT[runtime-state]
-  RS --> WR
-  RS --> DB[database]
-  MS --> DB
-  RT --> DB
-  H --> WR
-  Simulator --> LTI
-```
+The process, request-pipeline, dependency, and user-journey diagrams live in the
+whole-repository [Architecture](../ARCHITECTURE.md).
 
 `packages/record-store` is the only in-tree owner of the WorkRecord store port.
 Its memory and JSON adapters share parsing, revision, cloning, event, and audit

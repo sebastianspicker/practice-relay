@@ -2,8 +2,8 @@
 
 Current source candidate: `0.4.0-alpha.1`.
 
-- [Architecture](ARCHITECTURE.md) covers the whole repository: components,
-  dependencies, runtime flows, and state ownership.
+- [Architecture](ARCHITECTURE.md) covers the whole repository: processes,
+  request pipeline, traced user journeys, data model, build, and a code map.
 - [Practice Relay](relay/README.md) covers the API, web workspace, storage,
   handoff, local LTI simulation, and lab operations.
 - [MvEI](movement/README.md) covers movement schemas, corpus, applications, and

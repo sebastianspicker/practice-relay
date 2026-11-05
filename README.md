@@ -8,6 +8,8 @@ media and movement references, and revision history. From one record it produces
 either an integrity-checked package (manifest, RO-Crate metadata, ZIP) or an
 explicitly lossy interoperability projection that names what it left out.
 
+> _Claude was used to polish and proof-read the code and documentation of this repository._
+
 <details>
 <summary>Status and limitations</summary>
 
@@ -88,7 +90,8 @@ flowchart LR
 
 The graph runs in one direction: applications depend on packages, packages never
 import applications, and the WorkRecord and movement domains stay independent.
-[Architecture](docs/ARCHITECTURE.md) has the full picture.
+[Architecture](docs/ARCHITECTURE.md) shows what runs where, traces sign-in,
+evidence export, and media upload through the code, and ends with a code map.
 
 ## Quick start
 
@@ -163,7 +166,7 @@ pnpm check:all
 
 ## Documentation
 
-- [Architecture](docs/ARCHITECTURE.md) — components, dependency direction, and runtime flows
+- [Architecture](docs/ARCHITECTURE.md) — processes, request pipeline, user journeys, data model, build, and code map
 - [Product scope](PRODUCT.md) — intended users and documented limits
 - [Practice Relay guide](docs/relay/README.md) — API, web workspace, storage, and lab operations
 - [MvEI guide](docs/movement/README.md) — schemas, applications, and toolkit
