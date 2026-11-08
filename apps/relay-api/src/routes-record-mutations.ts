@@ -255,7 +255,8 @@ async function handleConsent(
     subjectId: actor,
     purposes: body.purposes,
     exportAllowed: body.exportAllowed,
-    createdAt: body.createdAt ?? new Date().toISOString(),
+    // The server, not the caller, records when the release decision was made.
+    createdAt: new Date().toISOString(),
   };
   const next = await attemptRequestOperation(ctx.res, () => executeRecordCommand(ctx, recordId, { type: "attach-use-policy-snapshot", policy: consent },
   ));

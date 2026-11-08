@@ -3,6 +3,7 @@
  *
  * Why: makes grade authorization independent from resource-link launch tokens.
  */
+import { createHash, timingSafeEqual } from "node:crypto";
 import { AGS_SCORE_SCOPE, LTI_STATUS } from "./assignment.mjs";
 import { resolveLtiSecret, signHs256Jwt, verifyHs256Jwt } from "./jwt.mjs";
 
@@ -110,6 +111,13 @@ export function simulateAgsScorePassback(grade) {
   };
 }
 
+/** Constant-time secret comparison; hashing equalizes lengths. */
+function sameSecret(received, expected) {
+  if (typeof received !== "string" || typeof expected !== "string") return false;
+  const digest = (value) => createHash("sha256").update(value).digest();
+  return timingSafeEqual(digest(received), digest(expected));
+}
+
 /**
  * Client-credentials mock: issue AGS service access token (Bearer JWT).
  * Lab-only - not a live LMS token endpoint.
@@ -125,10 +133,7 @@ export function simulateAgsScorePassback(grade) {
  * @returns {{ access_token: string, token_type: "Bearer", expires_in: number, scope: string, status: string } | null}
  */
 export function issueAgsServiceToken(opts = {}) {
-  if (
-    opts.expectedClientSecret != null &&
-    opts.clientSecret !== opts.expectedClientSecret
-  ) {
+  if (opts.expectedClientSecret != null && !sameSecret(opts.clientSecret, opts.expectedClientSecret)) {
     return null;
   }
   const secret = resolveLtiSecret(opts.secret);

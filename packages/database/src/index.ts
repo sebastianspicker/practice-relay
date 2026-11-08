@@ -62,10 +62,13 @@ export function createDatabase(options: CreateDatabaseOptions): Database {
     connectionTimeoutMillis: options.connectionTimeoutMs ?? 5_000,
   };
   const pool = new Pool(config);
+  // pg emits idle-client failures (e.g. a database restart) on the pool; unhandled, they crash Node.
+  pool.on("error", (error) => console.error(`practice-relay database: idle client error: ${error.message}`));
   return {
     ...queryAdapter(pool),
     async transaction<Result>(fn: (database: Database) => Promise<Result>): Promise<Result> {
       const client = await pool.connect();
+      let broken: Error | undefined;
       try {
         await client.query("BEGIN");
         const base = queryAdapter(client);
@@ -78,10 +81,14 @@ export function createDatabase(options: CreateDatabaseOptions): Database {
         await client.query("COMMIT");
         return result;
       } catch (error) {
-        await client.query("ROLLBACK");
+        try {
+          await client.query("ROLLBACK");
+        } catch (rollbackError) {
+          broken = rollbackError instanceof Error ? rollbackError : new Error(String(rollbackError));
+        }
         throw error;
       } finally {
-        client.release();
+        client.release(broken);
       }
     },
     async close() {

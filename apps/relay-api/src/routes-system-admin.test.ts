@@ -102,6 +102,11 @@ test("system restore preserves gate ordering and validates backup IDs before res
     }
     assert.equal(restoreCalls, 0);
 
+    const missing = await restoreRequest(durableRuntime, { backupId: "missing-backup" }, admin);
+    assert.equal(missing.statusCode, 400);
+    assert.ok(!restoreDetail(missing).includes(root), restoreDetail(missing));
+    assert.equal(restoreCalls, 0);
+
     (await durable.appendEvent("_system", "test-seed"));
     const backup = (await durable.backup());
     const backupId = path.basename(backup.backupDir);

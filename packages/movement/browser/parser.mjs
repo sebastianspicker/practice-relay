@@ -113,7 +113,7 @@ function resolveSchema(schema) {
 function validateObject(value, schema, path, errors) {
   const properties = schema.properties ?? {};
   for (const required of schema.required ?? []) {
-    if (!Object.hasOwn(value, required)) errors.push(`${path}.${required} is required`);
+    if (!Object.hasOwn(value, required) || value[required] === undefined) errors.push(`${path}.${required} is required`);
   }
   if (schema.additionalProperties === false) {
     for (const key of Object.keys(value)) {
@@ -121,7 +121,8 @@ function validateObject(value, schema, path, errors) {
     }
   }
   for (const [key, propertySchema] of Object.entries(properties)) {
-    if (Object.hasOwn(value, key)) validateAgainstSchema(value[key], propertySchema, `${path}.${key}`, errors);
+    // Like Ajv, an undefined value is an absent property (JSON serialization drops it).
+    if (Object.hasOwn(value, key) && value[key] !== undefined) validateAgainstSchema(value[key], propertySchema, `${path}.${key}`, errors);
   }
 }
 

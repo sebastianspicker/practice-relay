@@ -97,6 +97,16 @@ function findAsciiToken(value: string, token: string, start: number): number {
   return -1;
 }
 
+/** Match `tier_id="<id>"` as a whole attribute (whitespace before it) with an exact-case value. */
+function hasExactTierId(openingTag: string, attribute: string): boolean {
+  const valueStart = attribute.indexOf('"') + 1;
+  for (let at = findAsciiToken(openingTag, attribute, 0); at !== -1; at = findAsciiToken(openingTag, attribute, at + 1)) {
+    const boundary = at === 0 || /\s/u.test(openingTag[at - 1]!);
+    if (boundary && openingTag.slice(at + valueStart, at + attribute.length) === attribute.slice(valueStart)) return true;
+  }
+  return false;
+}
+
 /** Find one named tier without rescanning suffixes of malformed opening tags. */
 function findTierContent(eafXml: string, tierId: "regions" | "comments"): string | undefined {
   const attribute = `tier_id="${tierId}"`;
@@ -122,7 +132,7 @@ function findTierContent(eafXml: string, tierId: "regions" | "comments"): string
       continue;
     }
     const openingTag = eafXml.slice(start + 5, openingEnd);
-    if (findAsciiToken(openingTag, attribute, 0) !== -1) {
+    if (hasExactTierId(openingTag, attribute)) {
       if (eafXml[openingEnd - 1] === "/") return "";
       const closingStart = findAsciiToken(eafXml, "</tier>", openingEnd + 1);
       if (closingStart === -1) return undefined;

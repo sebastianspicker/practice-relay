@@ -93,7 +93,8 @@ function startRuntime(runtimeDirectory, port) {
   const child = spawn(process.execPath, ["dist/index.mjs"], {
     cwd: runtimeDirectory,
     env: {
-      ...process.env,
+      // Inherited PRACTICE_RELAY_* settings would point the smoke run at real data, auth and stores.
+      ...Object.fromEntries(Object.entries(process.env).filter(([name]) => !name.startsWith("PRACTICE_RELAY_"))),
       PORT: String(port),
       PRACTICE_RELAY_ALLOW_SYNTHETIC_AUTH: "1",
       PRACTICE_RELAY_HOST: "127.0.0.1",

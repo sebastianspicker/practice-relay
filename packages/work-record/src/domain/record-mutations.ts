@@ -80,7 +80,10 @@ export function submitVersion(
 ): WorkRecord {
   assertResourceId(name, "submission name");
   if (record.versions.some((version) => version.name === name)) return record;
-  const snapshotRef = `snapshot-${name}-${record.versions.length}`;
+  // add-snapshot may already have used the default id, so take the next free suffix.
+  let suffix = record.versions.length;
+  while (record.snapshots.some((snapshot) => snapshot.id === `snapshot-${name}-${suffix}`)) suffix += 1;
+  const snapshotRef = `snapshot-${name}-${suffix}`;
   const version: VersionTag = { id: `ver-${name}-${record.versions.length}`, name, createdAt, snapshotRef };
   const snapshot: Snapshot = { id: snapshotRef, createdAt, artifactIds: record.artifacts.map((artifact) => artifact.id), reason: name };
   return { ...record, versions: [...record.versions, version], snapshots: [...record.snapshots, snapshot] };

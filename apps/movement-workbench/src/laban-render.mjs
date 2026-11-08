@@ -45,6 +45,12 @@ export function renderLabanSubsetStaffHtml(doc) {
   if (doc.symbols.length > MAX_LABAN_RENDER_SYMBOLS) {
     throw new Error(`Laban staff exceeds the ${MAX_LABAN_RENDER_SYMBOLS} symbol render limit`);
   }
+  const declaredColumns = new Set(columns);
+  const declaredMeasures = new Set(measures.map((measure) => measure.id));
+  const offGrid = doc.symbols.filter((symbol) => !declaredColumns.has(symbol.column) || !declaredMeasures.has(symbol.measureId));
+  if (offGrid.length > 0) {
+    throw new Error(`Laban staff symbols lie outside the declared columns or measures: ${offGrid.map((symbol) => symbol.id).join(", ")}`);
+  }
   const indexedSymbols = symbolsByCell(doc.symbols);
   const colW = 72;
   const rowH = 48;

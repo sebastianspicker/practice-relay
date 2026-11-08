@@ -5,6 +5,7 @@
 import { createReadStream } from "node:fs";
 import { realpath, stat } from "node:fs/promises";
 import { createServer } from "node:http";
+import { pipeline } from "node:stream";
 import { extname, relative, resolve, sep } from "node:path";
 
 const CONTENT_TYPES = new Map([
@@ -111,7 +112,8 @@ export async function startStaticServer(options) {
         "X-Content-Type-Options": "nosniff",
       });
       if (request.method === "HEAD") response.end();
-      else createReadStream(file.path).pipe(response);
+      // pipeline destroys both sides on a read error or client abort instead of crashing the server.
+      else pipeline(createReadStream(file.path), response, () => undefined);
     } catch {
       response.writeHead(404, {
         "Content-Type": "text/plain; charset=utf-8",

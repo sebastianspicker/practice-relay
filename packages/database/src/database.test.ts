@@ -187,7 +187,7 @@ async function withScriptedPool<T>(
       if (text === failOn) throw new Error(`scripted failure on ${text}`);
       return { rows: [], rowCount: 0 };
     },
-    release() { log.push("release"); },
+    release(error?: Error) { log.push(error ? `release:${error.message}` : "release"); },
   };
   const original = pg.Pool.prototype.connect;
   (pg.Pool.prototype as unknown as { connect: () => Promise<typeof client> }).connect = async () => client;
@@ -233,4 +233,30 @@ test("transaction rolls back and rethrows when COMMIT itself fails", async () =>
     await assert.rejects(database.transaction(async () => "ok"), { message: "scripted failure on COMMIT" });
     assert.deepEqual(log, ["BEGIN", "COMMIT", "ROLLBACK", "release"]);
   });
+});
+
+test("transaction keeps the callback error and discards the client when ROLLBACK fails", async () => {
+  await withScriptedPool("ROLLBACK", async (database, log) => {
+    await assert.rejects(
+      database.transaction(async () => { throw new Error("callback failure"); }),
+      { message: "callback failure" },
+    );
+    assert.deepEqual(log, ["BEGIN", "ROLLBACK", "release:scripted failure on ROLLBACK"]);
+  });
+});
+
+test("an idle pool client error does not crash the process", async () => {
+  const original = pg.Pool.prototype.end;
+  let pool: pg.Pool | undefined;
+  pg.Pool.prototype.end = async function end(this: pg.Pool) { pool = this; };
+  const originalError = console.error;
+  console.error = () => undefined;
+  try {
+    await createDatabase({ connectionString: "postgres://user:pw@127.0.0.1:1/none" }).close();
+    assert.ok(pool);
+    assert.doesNotThrow(() => pool!.emit("error", new Error("terminating connection due to administrator command")));
+  } finally {
+    pg.Pool.prototype.end = original;
+    console.error = originalError;
+  }
 });

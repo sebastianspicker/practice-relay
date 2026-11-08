@@ -1,0 +1,11 @@
+# Build context for deploy/Dockerfile.* (context: repo root). The image installs and builds its own copies.
+**/node_modules
+**/dist
+**/.media-staging
+.git
+.claude
+.agents
+data
+deploy/secrets
+**/.env
+**/.env.*

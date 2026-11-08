@@ -87,12 +87,9 @@ export async function handleSystemRestoreRoute(
     const manifest = await durable.restoreFromBackup(backupPath);
     sendJson(res, 200, { ok: true, manifest: publicBackup(manifest) });
   } catch (err) {
-    sendProblem(
-      res,
-      400,
-      "Bad Request",
-      err instanceof Error ? err.message : "restore failed",
-    );
+    // Filesystem and manifest errors carry absolute host paths; publicBackup hides those too.
+    const detail = err instanceof Error && !err.message.includes("/") ? err.message : "backup not found or not restorable";
+    sendProblem(res, 400, "Bad Request", detail);
   }
   return "handled";
 }

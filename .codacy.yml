@@ -1,0 +1,15 @@
+---
+# Test and verification code: fixture credentials and long test bodies are not product risk.
+exclude_paths:
+  - "**/*.test.ts"
+  - "**/*.test.mjs"
+  - "**/*.test.mts"
+  - "**/test-support/**"
+  - "scripts/*.verify.mjs"
+  - "scripts/*.verify.ts"
+# Function size and complexity are gated in CI by `pnpm check:tooling`
+# (scripts/code-quality-check.mjs); Lizard's stricter 50-line / CCN-15 limits only duplicate it.
+engines:
+  lizard:
+    exclude_paths:
+      - "**"

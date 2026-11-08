@@ -415,6 +415,8 @@ export function buildOscDeepLinkProjection(record: WorkRecord): {
 /** Escape values interpolated into XML element content or attributes. */
 function escapeXml(s: string): string {
   return s
+    // XML 1.0 forbids these control characters even when escaped.
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/gu, "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")

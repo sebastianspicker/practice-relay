@@ -14,9 +14,9 @@ export function label(item, fallback) {
   return String(item?.label ?? item?.name ?? item?.title ?? item?.id ?? fallback);
 }
 
-/** First element of a list, or the provided fallback when empty. */
-function first(items, fallback) {
-  return strings(items)[0] ?? fallback;
+/** Latest element of an append-only list, or the provided fallback when empty. */
+function latest(items, fallback) {
+  return strings(items).at(-1) ?? fallback;
 }
 
 /** Adapt a canonical WorkRecord into the display fields the browser workspace needs. */
@@ -25,7 +25,7 @@ export function toWorkspaceRecord(record) {
   const snapshots = strings(record.snapshots);
   const versions = strings(record.versions);
   const policies = strings(record.usePolicies);
-  const snapshot = first(snapshots, null);
+  const snapshot = latest(snapshots, null);
   const includedIds = snapshot?.artifactIds?.length
     ? snapshot.artifactIds.map(String)
     : artifacts.map((artifact) => String(artifact.id));
@@ -46,7 +46,7 @@ export function toWorkspaceRecord(record) {
     comments: strings(record.comments),
     provenance: record.provenance ?? {},
     snapshotLabel: snapshot ? `Snapshot ${snapshot.id.replace(/^snapshot-/, "").replace(/-/g, " ")}` : "No snapshot",
-    submitted: snapshot?.createdAt ?? first(versions, null)?.createdAt ?? record.provenance?.createdAt,
+    submitted: snapshot?.createdAt ?? latest(versions, null)?.createdAt ?? record.provenance?.createdAt,
     handoff: snapshot?.reason ?? "Local review",
     preferred: record.preferredTakeId ? String(record.preferredTakeId) : "Not selected",
     motion: strings(record.tracks).findLast((track) => track.type === "movement_notation")

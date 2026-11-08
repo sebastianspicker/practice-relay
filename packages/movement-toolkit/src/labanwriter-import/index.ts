@@ -275,6 +275,14 @@ function validateIntermediate(input: unknown): LabanWriterIntermediate {
 function validateIntermediateReferences(value: LabanWriterIntermediate): void {
   // The importer inserts m0 when no measures are declared.
   const measureIds = new Set(value.measures.length > 0 ? value.measures.map((m) => m.id) : ["m0"]);
+  const seenMeasureIds = new Set<string>();
+  const seenMeasureIndices = new Set<number>();
+  value.measures.forEach((measure, index) => {
+    if (seenMeasureIds.has(measure.id)) invalidIntermediate(`measures[${index}].id is a duplicate`);
+    if (seenMeasureIndices.has(measure.index)) invalidIntermediate(`measures[${index}].index is a duplicate`);
+    seenMeasureIds.add(measure.id);
+    seenMeasureIndices.add(measure.index);
+  });
   const cellIds = new Set<string>();
   value.cells.forEach((cell, index) => {
     if (!measureIds.has(cell.measureId)) {

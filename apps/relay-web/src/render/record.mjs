@@ -95,7 +95,7 @@ function renderEvidenceItem(artifact, included, staticDemo = false) {
 /** Render durable record facts in a compact, labelled dossier strip. */
 function renderMetadata(record) {
   const source = record?.provenance?.sourceSystem ?? "Source system not recorded";
-  const snapshot = record?.snapshots?.[0]?.id ?? record?.snapshotLabel ?? "No snapshot";
+  const snapshot = record?.snapshots?.at?.(-1)?.id ?? record?.snapshotLabel ?? "No snapshot";
   return `<dl class="meta-strip">
       <div><dt>Submitted</dt><dd>${escapeHtml(formatDate(record?.submitted))}</dd></div>
       <div><dt>Snapshot</dt><dd class="mono">${escapeHtml(String(snapshot))}</dd></div>
@@ -175,7 +175,7 @@ export function renderRecord(record, options = {}) {
     return `<div class="empty"><h1 id="record-title">No record selected</h1><p>Choose a work record from the index, or refresh when the record service is reachable.</p></div>`;
   }
 
-  const versionName = record.versions?.[0]?.name ?? "Current record";
+  const versionName = record.versions?.at?.(-1)?.name ?? "Current record";
   const includedIds = Array.isArray(record.includedIds) ? record.includedIds.map(String) : [];
   const artifacts = Array.isArray(record.artifacts) ? record.artifacts : [];
   const includedCount = artifacts.filter((artifact) => includedIds.includes(String(artifact.id))).length;

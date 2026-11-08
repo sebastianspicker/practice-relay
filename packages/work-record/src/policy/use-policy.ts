@@ -23,7 +23,7 @@ export function attachUsePolicySnapshot(record: WorkRecord, policy: UsePolicySna
   return { ...record, usePolicySnapshots: [...record.usePolicySnapshots, { ...policy }] };
 }
 
-/** Checks whether all student members have a current record-release decision. */
+/** Checks that every required subject (all students, else every snapshot subject) currently allows release. */
 export function hasExportableUsePolicy(record: WorkRecord): boolean {
   const latestBySubject = new Map<string, UsePolicySnapshot>();
   for (const policy of record.usePolicySnapshots) latestBySubject.set(policy.subjectId, policy);
@@ -32,9 +32,8 @@ export function hasExportableUsePolicy(record: WorkRecord): boolean {
     return Boolean(policy && policy.purposes.length > 0 && policy.exportAllowed !== false);
   };
   const studentSubjects = [...new Set(record.members.filter((member) => member.role === "student").map((member) => member.userId))];
-  return studentSubjects.length > 0
-    ? studentSubjects.every(exportable)
-    : [...latestBySubject.keys()].some(exportable);
+  const subjects = studentSubjects.length > 0 ? studentSubjects : [...latestBySubject.keys()];
+  return subjects.length > 0 && subjects.every(exportable);
 }
 
 /** Throws if a record lacks an exportable whole-record release decision. */

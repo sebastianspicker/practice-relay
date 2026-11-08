@@ -65,7 +65,7 @@ function packageConsentSummary(record: WorkRecord, opts: BuildWorkRecordPackageO
 /**
  * Purposes every subject counted by the record-release gate currently allows.
  * Same subject rule as hasExportableUsePolicy: latest snapshot per subject, all
- * student members when present. Withdrawn or superseded purposes never appear,
+ * student members when present, otherwise every subject with a snapshot. Withdrawn or superseded purposes never appear,
  * and no purpose is invented when the subjects share none.
  */
 function currentReleasePurposes(record: WorkRecord): string[] {
@@ -77,7 +77,7 @@ function currentReleasePurposes(record: WorkRecord): string[] {
     const release = latest.get(subjectId);
     return release && release.purposes.length > 0 && release.exportAllowed !== false ? [release] : [];
   });
-  if (releases.length === 0 || (students.length > 0 && releases.length < students.length)) return [];
+  if (releases.length === 0 || releases.length < subjects.length) return [];
   return [...new Set(releases[0]?.purposes ?? [])].filter((purpose) => releases.every((release) => release.purposes.includes(purpose)));
 }
 

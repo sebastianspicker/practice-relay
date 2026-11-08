@@ -53,9 +53,11 @@ test("faculty drives create, take, media, consent, export, interop, and download
   assert.equal(json(uploaded).media.byteSize, bytes.length);
   assert.equal(json(uploaded).record.takes[0].storageKey, storageKey);
 
-  const consent = await call(`${base}/consent`, "POST", faculty.token, { purposes: ["course-assessment"], exportAllowed: true });
+  const beforeConsent = Date.now();
+  const consent = await call(`${base}/consent`, "POST", faculty.token, { purposes: ["course-assessment"], exportAllowed: true, createdAt: "2020-01-01T00:00:00Z" });
   assert.equal(consent.statusCode, 200);
   assert.equal(json(consent).usePolicySnapshots.at(-1).exportAllowed, true);
+  assert.ok(Date.parse(json(consent).usePolicySnapshots.at(-1).createdAt) >= beforeConsent, "server stamps the release decision time");
 
   const exported = await call(`${base}/export`, "POST", faculty.token, { format: "json" });
   assert.equal(exported.statusCode, 200);

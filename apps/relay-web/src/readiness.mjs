@@ -6,14 +6,16 @@
 /** Return the five visible handoff checks for a workspace record. */
 export function handoffChecks(record) {
   const policies = Array.isArray(record?.policies) ? record.policies : [];
-  const hasAssessmentPermission = policies.some(
-    (policy) => policy?.purpose === "assessment" && policy?.state === "granted",
-  );
-  const hasRepositoryPermission = policies.some(
-    (policy) =>
-      ["archive", "repository", "deposit"].includes(policy?.purpose) &&
-      policy?.state === "granted",
-  );
+  // Same rule as the handoff permission ledger: a subject's denial or withdrawal outranks its grant.
+  const permitted = (purposes) => {
+    const matching = policies.filter((policy) => purposes.includes(policy?.purpose));
+    const blocked = new Set(matching
+      .filter((policy) => policy?.state === "denied" || policy?.state === "withdrawn")
+      .map((policy) => policy?.representedSubjectId));
+    return matching.some((policy) => policy?.state === "granted" && !blocked.has(policy?.representedSubjectId));
+  };
+  const hasAssessmentPermission = permitted(["assessment"]);
+  const hasRepositoryPermission = permitted(["archive", "repository", "deposit"]);
 
   return [
     { label: "Intended version selected", complete: Boolean(record?.versions?.length) },

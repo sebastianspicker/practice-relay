@@ -69,3 +69,14 @@ test("snapshot import locks and rejects a nonempty media namespace even for no i
   assert.match(queries[0]!, /pg_advisory_xact_lock/u);
   assert.match(queries[1]!, /practice_relay_media_cleanup_jobs/u);
 });
+
+test("filesystem inventory skips temporaries left by an interrupted write or delete", async () => withRoot(async (root) => {
+  const uuid = "0f8fad5b-d9cb-469f-a165-70867728950e";
+  await writeFile(path.join(root, `.${uuid}.tmp`), "{}", { mode: 0o600 });
+  await mkdir(path.join(root, "record"), { mode: 0o700 });
+  await writeFile(path.join(root, `record/.${uuid}.delete`), "old", { mode: 0o600 });
+  await writeFile(path.join(root, `record/take.bin.${uuid}.tmp`), "partial", { mode: 0o600 });
+  assert.deepEqual((await scanFilesystemMediaInventory(root)).entries, []);
+  await writeFile(path.join(root, "record/.not-a-uuid.tmp"), "x", { mode: 0o600 });
+  await assert.rejects(scanFilesystemMediaInventory(root), /has no metadata/u);
+}));

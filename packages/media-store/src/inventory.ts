@@ -50,6 +50,9 @@ export function validateMediaInventory(value: unknown): MediaInventory {
   return { version: 1, entries };
 }
 
+// Temporaries from media-safety writers (`.<uuid>.tmp`, `.<uuid>.delete`, `<name>.<uuid>.tmp`) left by a crash.
+const INTERRUPTED_TEMPORARY = /(?:^|\.)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(?:tmp|delete)$/u;
+
 /** Scan and hash existing sidecar metadata without changing the source tree. */
 export async function scanFilesystemMediaInventory(
   rootDir: string,
@@ -60,6 +63,7 @@ export async function scanFilesystemMediaInventory(
   for (const recordDir of await readdir(root, { withFileTypes: true })) {
     if (recordDir.name === ".staging" && recordDir.isDirectory() && !recordDir.isSymbolicLink()) continue;
     if (recordDir.name === "__media-state.json" && recordDir.isFile() && !recordDir.isSymbolicLink()) continue;
+    if (recordDir.isFile() && INTERRUPTED_TEMPORARY.test(recordDir.name)) continue;
     if (recordDir.name.startsWith(".")) throw new Error(`unsupported media inventory entry: ${recordDir.name}`);
     if (!recordDir.isDirectory() || recordDir.isSymbolicLink()) throw new Error(`unsupported media inventory entry: ${recordDir.name}`);
     const directory = path.join(root, recordDir.name);
@@ -67,6 +71,7 @@ export async function scanFilesystemMediaInventory(
     const names = new Set(files.map((file) => file.name));
     for (const file of files) {
       if (!file.isFile() || file.isSymbolicLink()) throw new Error(`unsupported media inventory entry: ${recordDir.name}/${file.name}`);
+      if (INTERRUPTED_TEMPORARY.test(file.name)) continue;
       if (!file.name.endsWith(".meta.json")) {
         const storageKey = `${recordDir.name}/${file.name}`;
         const hasSidecar = names.has(`${file.name}.meta.json`);
