@@ -33,7 +33,7 @@
     "ajv-formats": "^3.0.1",
     "playwright-core": "^1.63.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2",
+    "typescript": "^7.0.2",
     "@practice-relay/auth": "workspace:*",
     "@practice-relay/database": "workspace:*",
     "@practice-relay/record-store": "workspace:*",
